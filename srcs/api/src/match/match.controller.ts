@@ -4,6 +4,7 @@ import { MatchService } from './match.service';
 import { CreateMatchDto } from './create-match.dto';
 import { Match } from 'src/match/match.entity';
 import { UserService } from 'src/user/user.service';
+import { CreateUserDto } from 'src/user/create-user.dto';
 
 @Controller('matches')
 export class MatchController {
@@ -34,7 +35,7 @@ export class MatchController {
  * @param userId 
  * @returns 
  */
-  @Get('user/:userId')
+  @Get(':userId/user')
   async getMatchesByUserId(@Param('userId', ParseIntPipe) userId: number) {
     let output, logger;
     try {
@@ -48,37 +49,28 @@ export class MatchController {
     return JSON.stringify(output);
   }
 
-/****************************************/
-/*                                      */
-/*   POST                               */
-/*                                      */
-/****************************************/
+
   
 /**
  * @description Create a new match
  * @param createMatchDto 
  * @returns 
  */
-  @Post()
-  async createMatch(@Body() createMatchDto: CreateMatchDto) {
+  @Get(':id/search')
+  async createMatch(@Param('id', ParseIntPipe) id: number) {
     let output, logger;
     try {
-      const { ID_user1, ID_user2, Score_user1, Score_user2 } = createMatchDto;
-      const user1 = await this.userService.getUserById(ID_user1);
-      const user2 = await this.userService.getUserById(ID_user2);
-      if (!user1 || !user2)
-        throw new NotFoundException('One or more users not found');
-      if (Score_user1 < Score_user2)  {
-        user2.Wins++;
-        user1.Loses++;
-      } else if (Score_user1 > Score_user2) {
-        user1.Wins++;
-        user2.Loses++;
+      const gameLoading = await this.matchService.getMatchLoading();
+      const user = await this.userService.getUserById(id);
+      if (gameLoading.length > 0) {
+        const game = gameLoading[0]
+        game.ID_user2 = user;
+        game.Status = 1;
+        output = await this.matchService.updateMatch(game);
+      } else {
+        output = await this.matchService.createMatch(user);
       }
-      user1.save();
-      user2.save();
       logger = ["The request is ok", "Request: POST[ /matches ]"];
-      output =  this.matchService.createMatch(user1, user2, Score_user1, Score_user2);
     } catch (error) {
       logger = ["The request doesn't work", "Request: POST[ /matches ]"];
       output = error;
@@ -87,6 +79,12 @@ export class MatchController {
     return JSON.stringify(output);
   }
 }
+
+/****************************************/
+/*                                      */
+/*   POST                               */
+/*                                      */
+/****************************************/
 
 /**
     let output, logger;

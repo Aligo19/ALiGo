@@ -16,7 +16,7 @@
 
 Il suffit de decommenter le code dans le docker-compose et de gcl le code du frontend dans srcs en le renommant /react.
 
-Ensuite, il faut y mettre le dockerfile "#Dockerfile.react" dans le meme dossier puis le rename "Dockerfile"
+Ensuite, il faut y mettre le dockerfile "Dockerfile.react" dans le meme dossier puis le rename "Dockerfile"
 
 Tadam on a un transcendance mdr
 

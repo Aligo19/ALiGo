@@ -1,24 +1,24 @@
 # Routes pour l'api
 
-|url                   |method  |details                                          |
-|----------------------|--------|-------------------------------------------------|
-|users                 |        |                                                 |
-|users/:id             | GET    | Donne toutes les infos relatives au user        |
-|users                 | POST   | Cree un user a partir des infos donnees au body |
-|users/:id/friends     | POST   | Ajout un ami a user                             |
-|users/:id/block       | POST   | Ajout un bloque a user                          |
-|users/:id             | PATCH  | Met a jour les donnees du user                  |
-|matches               |        |                                                 |
-|matches/:id           | GET    | Donne les infos du match                        |
-|matches/user/:userId  | GET    | Donne tous les matchs d'un user                 |
-|matches               | POST   | Ajoute les donnees d'un match                   |
-|conv                  |        |                                                 |
-|conv/:id              | GET    | Donne les donnees d'une conv                    |
-|conv/:id/users        | GET    | Donne les conv d'un id user                     |
-|conv                  | POST   | Cree la conv avec un name, status et password   |
-|conv/:id/users        | POST   | Ajoute un user a la conv                        |
-|conv/:id/admins       | POST   | Ajoute un admin a la conv                       |
-|conv/:id/muteds       | POST   | Ajoute un muted a la conv                       |
+|Status|Table     |Type        |Utilite                                                                                                                                 |Method       |Requete                 | Params           |
+|---   |-----     |----        |-------                                                                                                                                 |------       |------------------------|---------         |
+| OK   | User     | Get        | Fourni une liste complete sur les donnees directs d'un joueur                                                                          | GET         | /users/:id             | id = user        |
+| OK   | User     | Create     | Cree un user a partir des infos donnees au body                                                                                        | POST        | /users                 |                  |
+| OK   | User     | Ajout      | Ajout un ami a user                                                                                                                    | POST        | /users/:id/friends     | id = user        |
+| OK   | User     | Ajout      | Ajout un bloque a user                                                                                                                 | POST        | /users/:id/block       | id = user        |
+| OK   | User     | Edit       | Met a jour les donnees globales du user                                                                                                | PATCH       | /users/:id             | id = user        |
+| OK   | Match    | Get        | Donne les infos du match                                                                                                               | GET         | /matches/:id           | id = match       |
+| OK   | Match    | Get        | Donne tous les matchs d'un user                                                                                                        | GET         | /matches/:id/user      | id = user        |
+| OK   | Match    | Get        | Donne un id de match, si son status = 0 alors la partie attend un auter joueur si = 1 alors la partie a ses deux joueurs               | GET         | /matches/:id/search    | id = user        |
+| OK   | Conv     | Get        | Donne les donnees d'une conv, messages compris                                                                                         | GET         | /conv/:id              | id = conv        |
+| OK   | Conv     | Get        | Donne les donnees d'une conv, messages compris d'un user                                                                               | GET         | /conv/:id/user         | id = user        |
+| OK   | Conv     | Create     | Cree la conv avec un name, status et password                                                                                          | POST        | /conv                  |                  |
+| OK   | Conv     | Ajout      | Ajoute des users a la conv                                                                                                             | POST        | /conv/:id/users        | id = conv        |
+| OK   | Conv     | Ajout      | Ajoute des admins a la conv                                                                                                            | POST        | /conv/:id/admins       | id = conv        |
+| OK   | Conv     | Ajout      | Ajoute des muteds a la conv                                                                                                            | POST        | /conv/:id/muteds       | id = conv        |
+
+
+Si il y a besoin d'une requete en plus non renseignee, le channel API sur discord est la pour ca
 
 Une requete ce fait comme suit
 ```url

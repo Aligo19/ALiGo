@@ -13,6 +13,7 @@ export async function seedMatches()  {
     match.ID_user2 = user2;
     match.Score_user1 = field.Score_user1;
     match.Score_user2 = field.Score_user2;
+    match.Status = field.Status;
     await match.save();
   }
 };

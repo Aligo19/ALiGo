@@ -19,4 +19,7 @@ export class Match extends BaseEntity{
 
   @Column({ type: 'integer' })
   Score_user2: number;
+
+  @Column({ type: 'integer' })
+  Status: number;
 }

@@ -12,13 +12,18 @@ export class MatchService {
     private matchRepository: Repository<Match>,
   ) {}
 
-  async createMatch(user1: User, user2: User, scoreUser1: number, scoreUser2: number): Promise<Match> {
+  async createMatch(user1: User): Promise<Match> {
     const match = new Match();
     match.ID_user1 = user1;
-    match.ID_user2 = user2;
-    match.Score_user1 = scoreUser1;
-    match.Score_user2 = scoreUser2;
+    match.ID_user2 = null;
+    match.Score_user1 = 0;
+    match.Score_user2 = 0;
+    match.Status = 0;
 
+    return this.matchRepository.save(match);
+  }
+
+  async updateMatch(match: Match): Promise<Match> {
     return this.matchRepository.save(match);
   }
 
@@ -31,8 +36,15 @@ export class MatchService {
 
   async getMatchByIdUser(userId: number): Promise<Match[]> {
     return this.matchRepository.find({
-      where: { ID_user1: Equal(userId), ID_user2: Equal(userId)},
+      where: { ID_user1: Equal(userId), ID_user2: Equal(userId), Status: Equal(2)},
       relations: ['ID_user1', 'ID_user2'],
+    });
+  }
+
+  async getMatchLoading(): Promise<Match[]> {
+    return this.matchRepository.find({
+      where: { Status: Equal(0) },
+      relations: ['ID_user1'],
     });
   }
 

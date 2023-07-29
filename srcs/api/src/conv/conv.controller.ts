@@ -40,7 +40,7 @@ export class ConvController {
  * @param id 
  * @returns 
  */
-  @Get(':id/users')
+  @Get(':id/user')
   async getConvUsers(@Param('id', ParseIntPipe) id: number) {
     let output,
     logger = ["", ""];
