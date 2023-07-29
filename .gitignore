@@ -1,4 +1,7 @@
 .DS_Store
+
 srcs/data/
+
 srcs/api/node_modules/
-srcs/api/test/
+
+srcs/api/test
