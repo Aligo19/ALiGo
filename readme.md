@@ -1,15 +1,4 @@
-## Explicatifs
-
-Travail en date du 21 juin
-
-Nous reprenons donc la magie des dockers.
-
-Pour l'instant, il n'heberge qu'une DB et adminer qui permet d'interagir avec la DB. A terme, un autre serveur en NestJS fera l'interface API pour le site principal.
-
-Le schema de DB est repris sur le Notion du groupe
-
---------
-Liste des commandes du Makefile avec effets
+# Liste des commandes du Makefile avec effets
 
 | Commande make | Action | Etat |
 | ------ | ------ | ------ |
@@ -23,63 +12,26 @@ Liste des commandes du Makefile avec effets
 | make fclean | Efface les volumes des dockers, les reseauz et les images| Visible |
 
 
+# Pour react
 
-Voici la Db
-La table users possede
-ID
-Pseudo en string
-Avatar en String
+Il suffit de decommenter le code dans le docker-compose et de gcl le code du frontend dans srcs en le renommant /react.
 
-La table Fields possede
-ID
-name en String
+Ensuite, il faut y mettre le dockerfile "#Dockerfile.react" dans le meme dossier puis le rename "Dockerfile"
 
-La table conv possede
-Id 
-name en string
+Tadam on a un transcendance mdr
 
-La table DatasUser possede
-ID
-Id_user lie a la table users
-data
-Id_field lie a la table fields
-logged_at en date
+# Pour l'API
 
-La table matchs possede
-Id
-Id_user1 lie a la table user
-Id_user2 lie a la table user
-score_u1 en int
-score_u2 en int
-level en int
+Un [readme](./srcs/api/README.md#routes-pour-lapi) reprend toute la doc necessaire pour comprendre la matiere.
 
-La table DataConv possede
-ID
-Id_conv lie a conv
-data en string
-Id_field lie a fields
-logged_at en date
+Un [fichier sh](./srcs/api/ready.sh) est present egalement, il est execute pour faire en sorte que l'API ne demarre qu'une fois la DB entierement setup.
 
-La table DataMess possede
-Id 
-ID_conv lie a conv
-data en string
-Id_user lie a user
-logged_at en date
+Pour Essayer de faire des requetes sans passer par du code, je vous conseille [Postman](https://www.postman.com/)
 
+# Pour la DB
 
-@Method(':id')
-async function(@Param('id') id: string) {
-    let output = {};
-    let logger = "";
-    try {
-        ...
-    logger = 'MatchController getMatch: ' + id;
-    output = match;
-    } catch (error) {
-    logger = 'MatchController getMatch: ' + id + ' // Error in request';
-    output = {error: 'The request failed'};
-    }
-    Logger.log(logger, 'Request GET');
-    return  JSON.stringify(output);
-}
+Un rapide descriptif est repris dans le [readme](./srcs/api/README.md#details-sur-la-db) de l'API, egalement pour la visualiser sans faire de requetes.
+
+Il suffit de demarrer le docker et en suite de mettre dans l'URL [http://127.0.0.1:8081](http://127.0.0.1:8081).
+
+Mettez 'postgres' dans tous les inputs et changez le type pour 'PostgreSQL' (ATTENTION: le log se coupe a chaque restart du docker).

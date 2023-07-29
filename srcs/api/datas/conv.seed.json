@@ -1,0 +1,49 @@
+[
+    {
+      "Name": "Conversation 1",
+      "ID_user1": "User1",
+      "ID_user2": "User2",
+      "Status": 1,
+      "Messages": [
+        {
+          "ID_user": 1,
+          "data": "Salut User2, comment ça va ?",
+          "Logged_at": "2023-07-28T12:00:00"
+        },
+        {
+          "ID_user": 2,
+          "data": "Salut User1, ça va bien merci ! Et toi ?",
+          "Logged_at": "2023-07-28T12:05:00"
+        },
+        {
+          "ID_user": 1,
+          "data": "Je vais bien aussi, merci ! Que fais-tu aujourd'hui ?",
+          "Logged_at": "2023-07-28T12:10:00"
+        }
+      ]
+    },
+    {
+      "Name": "Conversation 2",
+      "ID_user1": "User3",
+      "ID_user2": "User4",
+      "Status": 1,
+      "Messages": [
+        {
+          "ID_user": 3,
+          "data": "Salut User4, tu es là ?",
+          "Logged_at": "2023-07-28T14:00:00"
+        },
+        {
+          "ID_user": 4,
+          "data": "Oui, je suis là ! Que se passe-t-il ?",
+          "Logged_at": "2023-07-28T14:05:00"
+        },
+        {
+          "ID_user": 3,
+          "data": "Je voulais juste discuter un peu. Comment s'est passée ta journée ?",
+          "Logged_at": "2023-07-28T14:10:00"
+        }
+      ]
+    }
+  ]
+  

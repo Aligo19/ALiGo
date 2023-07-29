@@ -1,73 +1,127 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Routes pour l'api
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+|url                   |method  |details                                          |
+|----------------------|--------|-------------------------------------------------|
+|users                 |        |                                                 |
+|users/:id             | GET    | Donne toutes les infos relatives au user        |
+|users                 | POST   | Cree un user a partir des infos donnees au body |
+|users/:id/friends     | POST   | Ajout un ami a user                             |
+|users/:id/block       | POST   | Ajout un bloque a user                          |
+|users/:id             | PATCH  | Met a jour les donnees du user                  |
+|matches               |        |                                                 |
+|matches/:id           | GET    | Donne les infos du match                        |
+|matches/user/:userId  | GET    | Donne tous les matchs d'un user                 |
+|matches               | POST   | Ajoute les donnees d'un match                   |
+|conv                  |        |                                                 |
+|conv/:id              | GET    | Donne les donnees d'une conv                    |
+|conv/:id/users        | GET    | Donne les conv d'un id user                     |
+|conv                  | POST   | Cree la conv avec un name, status et password   |
+|conv/:id/users        | POST   | Ajoute un user a la conv                        |
+|conv/:id/admins       | POST   | Ajoute un admin a la conv                       |
+|conv/:id/muteds       | POST   | Ajoute un muted a la conv                       |
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
+Une requete ce fait comme suit
+```url
+ http://localhost:3000/<request>
 ```
 
-## Running the app
+Exemple :
+```
+INPUT :
+    http://localhost:3000/users/1
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+OUTPUT:
+  {
+      "ID": 1,
+      "ID_19": "user1_ID_19",
+      "Pseudo": "User1",
+      "Avatar": "user1_avatar_url",
+      "Coins": 200,
+      "Actual_skin": 3,
+      "Global_skin": [
+          1,
+          2,
+          3,
+          4
+      ],
+      "Wins": 20,
+      "Loses": 10
+  }
 ```
 
-## Test
+# Details sur l'organisation des fichiers
 
-```bash
-# unit tests
-$ npm run test
+Le code se situe dans srcs
+Le fichier app.module reprend tous les modules present dans les dossiers, ca peut ressembler a un include (je fais simple)
+Pour le main, il est l'index/main de nestJS. C'est lui qui va tout lancer et start le projet.
 
-# e2e tests
-$ npm run test:e2e
+Ensuite nous avons 3 dossiers principaux:
+  - conv
+  - match
+  - user
 
-# test coverage
-$ npm run test:cov
-```
+Dans chacun se trouve 6 fichiers:
 
-## Support
+    - create.dto
+      Reprend le schema qui sera recu dans les requetes POST ou PATCH
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+    - controller
+      Reprend toutes les routes API
 
-## Stay in touch
+    - entity
+      Reprend l'architecture dans la DB
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+    - module
+      Reprend tous les fichiers de config en un seul
 
-## License
+    - seed
+      Reprend des donnes inits par defaut au lancement du serveur
 
-Nest is [MIT licensed](LICENSE).
+    - service
+      Reprend toutes les requetes vers la DB
+
+PS: les possibles fichiers objets sont des classes structurees a la maniere d'un JSON pour PostgreSQL
+
+Pour ce qui est du dossier datas, il reprend des fichiers JSON utilise par les fichiers seed pour setup des valeurs tests a l'init (voir les fichiers seed).
+
+# Details sur la DB
+
+Elle est generee par NestJS a l'init du projet, il s'agit de PostgreSQL interpete en TypeORM. 
+
+Voici un text recap de l'architecture:
+
+- La table user reprend:
+  - ID qui est une primary key
+  - ID_19 qui est un string
+  - Pseudo qui est un string
+  - Avatar qui est un url en string
+  - Friends qui est un tableau de int pour lister les id d’autre user en foreigns key
+  - Coins qui est un int pour la somme de pieces du joueur
+  - Actual_skin qui est un int pour le rgb de la barre de pong
+  - Global_skin qui est tableau de int reprenant tous les rgb du joueur
+  - Blocked qui est tableau de int reprenant les id d’autre user en foreigns key
+  - Wins qui est un int pour le nombre de partie gagnées
+  - Loses qui est un int pour le nombre de partie perdues
+
+- La table match reprend:
+  - ID qui est une primary key
+  - ID_user1 qui est un int en foreign key sur la table user
+  - ID_user2 qui est un int en foreign key sur la table user
+  - Score_user1 qui est un int pour les points du premier user
+  - Score_user1 qui est un int pour les points du deuxième user
+
+- La table conv reprend :
+  - ID qui est une primary key
+  - Name qui est un string
+  - Users qui est une liste de int reprenant les id de la user en foreign key
+  - Admin qui est une liste de int reprenant les id de la user en foreign key
+  - Status qui est un int pour le type de la conversation
+  - Password qui est un string par défaut NULL n’aura de valeur que si le Status est en prive
+  - Muted qui est une liste de int reprenant les id de la user en foreign key
+  - Messages qui est une liste d’objets Message (voir en dessous)
+
+- L’objet Message:
+  - ID_user qui reprend un id user en foreign key
+  - data qui est un string long
+  - Logged_at qui est un datetime
+

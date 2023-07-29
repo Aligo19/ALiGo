@@ -1,16 +1,39 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, BaseEntity } from 'typeorm';
 
 @Entity()
 export class User extends BaseEntity{
   @PrimaryGeneratedColumn()
   ID: number;
 
-  @Column({ name: 'ID_19', length: 255 })
-  ID19: string;
+  @Column()
+  ID_19: string;
 
-  @Column({ length: 255 })
+  @Column()
   Pseudo: string;
 
-  @Column({ length: 255 })
+  @Column()
   Avatar: string;
+
+  @ManyToMany(() => User)
+  @JoinTable()
+  Friends: User[];
+
+  @Column({ type: 'integer' })
+  Coins: number;
+
+  @Column({ type: 'integer' })
+  Actual_skin: number;
+
+  @Column('int', { array: true })
+  Global_skin: number[];
+
+  @ManyToMany(() => User)
+  @JoinTable()
+  Blocked: User[];
+
+  @Column({ type: 'integer' })
+  Wins: number;
+
+  @Column({ type: 'integer' })
+  Loses: number;
 }

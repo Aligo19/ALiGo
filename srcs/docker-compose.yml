@@ -1,17 +1,19 @@
 version: '3.7'
 services:
     postgres:
-        image: postgres:10.5-alpine
+        image: postgres:latest
         restart: always
         environment: 
           - POSTGRES_USER=postgres
           - POSTGRES_PASSWORD=postgres
+          - POSTGRES_DB=postgres
+          - LANG=en_US.utf8 
         logging:
           options:
             max-size: 10m
             max-file: "3"
         ports:
-          - '5438:5432'
+          - '5432:5432'
         networks:
           - private
         volumes:
@@ -20,9 +22,11 @@ services:
       image: adminer
       restart: always
       ports:
-        - 8080:8080
+        - 8081:8080
       networks:
         - private
+      depends_on:
+        - postgres
     api:
       build: api/
       restart: always
@@ -32,6 +36,14 @@ services:
         - private
       depends_on:
         - postgres
-
+    # react:
+    #   build: react/
+    #   restart: always
+    #   ports:
+    #     - '8080:3000'
+    #   networks:
+    #     - private
+    #   depends_on:
+    #     - api
 networks:
   private:

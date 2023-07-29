@@ -1,0 +1,15 @@
+[
+    {
+      "ID_user1": "User1",
+      "ID_user2": "User2",
+      "Score_user1": 3,
+      "Score_user2": 2
+    },
+    {
+      "ID_user1": "User3",
+      "ID_user2": "User4",
+      "Score_user1": 1,
+      "Score_user2": 1
+    }
+  ]
+  

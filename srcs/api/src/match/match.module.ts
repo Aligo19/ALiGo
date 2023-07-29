@@ -1,18 +1,14 @@
-import { ConfigService } from '@nestjs/config';
-import { Inject, Module, OnModuleInit } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MatchController } from './match.controller';
-import { MatchService } from './match.service';
 import { Match } from './match.entity';
+import { MatchService } from './match.service';
+import { MatchController } from './match.controller';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Match])],
-	controllers: [MatchController],
-  	providers: [MatchService],
+  imports: [TypeOrmModule.forFeature([Match]), 
+            UserModule],
+  providers: [MatchService],
+  controllers: [MatchController],
 })
-export class MatchModule {
-	constructor (
-		@Inject(MatchService)
-		private MatchService: MatchService,
-	) {}
-}
+export class MatchModule {}

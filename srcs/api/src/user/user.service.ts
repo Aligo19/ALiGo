@@ -1,32 +1,47 @@
+// user.service.ts
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from 'src/user/user.entity';
+import { Equal, Repository } from 'typeorm';
+import { User } from './user.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private userRepository: Repository<User>,
   ) {}
-  async findAll(): Promise<User[]> {
-    return this.userRepository.find();
-  }
 
-  async findOne(id: number): Promise<User> {
-    return this.userRepository.findByIds([id]).then((matches) => matches[0] || null);
-  }
+  async createUser(ID_19: string, Pseudo: string, Avatar: string): Promise<User> {
+    const user = new User();
+    user.ID_19 = ID_19;
+    user.Pseudo = Pseudo;
+    user.Avatar = Avatar;
+    user.Coins = 0;
+    user.Actual_skin = 0;
+    user.Global_skin = [];
+    user.Wins = 0;
+    user.Loses = 0;
 
-  async create(user: User): Promise<User> {
     return this.userRepository.save(user);
   }
 
-  // async update(id: number, user: User): Promise<User> {
-  //   await this.userRepository.update(id, user);
-  //   return this.userRepository.findOne(id);
-  // }
+  async getUserById(id: number): Promise<User> {
+    return this.userRepository.findOne({
+        where:{ID: Equal(id)}
+    });
+  }
 
-  async remove(id: number): Promise<void> {
-    await this.userRepository.delete(id);
+  async addFriend(user: User, friend: User): Promise<User> {
+    user.Friends = [...user.Friends, friend];
+    return this.userRepository.save(user);
+  }
+
+  async blockUser(user: User, blockedUser: User): Promise<User> {
+    user.Blocked = [...user.Blocked, blockedUser];
+    return this.userRepository.save(user);
+  }
+
+  async updateUser(user: User): Promise<User> {
+    return this.userRepository.save(user);
   }
 }

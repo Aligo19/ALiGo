@@ -1,10 +1,34 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany, BaseEntity } from 'typeorm';
+import { User } from '../user/user.entity';
+import { Message } from './message.objet';
+
 
 @Entity()
-export class Conv {
+export class Conv extends BaseEntity{
   @PrimaryGeneratedColumn()
-  Id: number;
+  ID: number;
 
-  @Column({ length: 255 })
-  bouh: string;
+  @Column()
+  Name: string;
+
+  @ManyToMany(() => User)
+  @JoinTable()
+  Users: User[];
+
+  @ManyToMany(() => User)
+  @JoinTable()
+  Admin: User[];
+
+  @Column({ type: 'integer' })
+  Status: number;
+
+  @Column({ nullable: true })
+  Password: string;
+
+  @ManyToMany(() => User)
+  @JoinTable()
+  Muted: User[];
+
+  @Column('jsonb', { nullable: true })
+  Messages: Message[];
 }
