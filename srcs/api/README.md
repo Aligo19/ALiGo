@@ -6,8 +6,9 @@
 | OK   | User     | Create     | Cree un user a partir des infos donnees au body                                                                                        | POST        | /users                 |                  |
 | OK   | User     | Ajout      | Ajout un ami a user                                                                                                                    | POST        | /users/:id/friends     | id = user        |
 | OK   | User     | Ajout      | Ajout un bloque a user                                                                                                                 | POST        | /users/:id/block       | id = user        |
-| OK   | User     | Edit       | Met a jour les donnees globales du user                                                                                                | PATCH       | /users/:id             | id = user        |
+| No   | User     | Update     | Met a jour les donnees globales du user                                                                                                | PATCH       | /users/:id             | id = user        |
 | OK   | Match    | Get        | Donne les infos du match                                                                                                               | GET         | /matches/:id           | id = match       |
+| No   | Match    | Update     | Mets a jour les donnees d'un match                                                                                                     | PATCH       | /matches/:id/          | id = match       |
 | OK   | Match    | Get        | Donne tous les matchs d'un user                                                                                                        | GET         | /matches/:id/user      | id = user        |
 | OK   | Match    | Get        | Donne un id de match, si son status = 0 alors la partie attend un auter joueur si = 1 alors la partie a ses deux joueurs               | GET         | /matches/:id/search    | id = user        |
 | OK   | Conv     | Get        | Donne les donnees d'une conv, messages compris                                                                                         | GET         | /conv/:id              | id = conv        |
@@ -16,6 +17,8 @@
 | OK   | Conv     | Ajout      | Ajoute des users a la conv                                                                                                             | POST        | /conv/:id/users        | id = conv        |
 | OK   | Conv     | Ajout      | Ajoute des admins a la conv                                                                                                            | POST        | /conv/:id/admins       | id = conv        |
 | OK   | Conv     | Ajout      | Ajoute des muteds a la conv                                                                                                            | POST        | /conv/:id/muteds       | id = conv        |
+| No   | Conv     | Ajout      | Ajoute un message a la conv                                                                                                            | PATCH       | /conv/:id/message      | id = conv        |
+| No   | Conv     | Update     | Modifie les donnees d'une conversation                                                                                                 | PATCH       | /conv/:id              | id = conv        |
 
 
 Si il y a besoin d'une requete en plus non renseignee, le channel API sur discord est la pour ca

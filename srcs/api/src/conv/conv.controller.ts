@@ -4,6 +4,7 @@ import { ConvService } from './conv.service';
 import { CreateConvDto } from './create-conv.dto'; // Replace this with your DTO if you have one
 import { Conv } from 'src/conv/conv.entity';
 import { UserService } from 'src/user/user.service';
+import { Message } from './message.objet';
 
 @Controller('conv')
 export class ConvController {
@@ -55,6 +56,39 @@ export class ConvController {
     return JSON.stringify(output);
   }
 
+  /**
+ * @description Add banned to conv
+ * @param id
+ * @param bannedIds
+ * @returns
+  */
+  @Get(':id/bannedUser/:bannedId')
+  async addBannedToConv( @Param('id', ParseIntPipe) id: number, @Param('bannedId', ParseIntPipe) bannedId: number ) {
+    let output, logger;
+    try {
+      output = await this.convService.removeUserFromConv(id, bannedId);
+      logger = ["The request is ok", "Request: POST[ /conv/:id/banneds ]"];
+    } catch (error) {
+      logger = ["The request doesn't work", "Request: POST[ /conv/:id/banneds ]"];
+      output = error;
+    }
+    Logger.log(logger[0], logger[1]);
+    return JSON.stringify(output);
+  }
+
+ @Get(':id/bannedAmin/:bannedId')
+ async addBannedAdminToConv( @Param('id', ParseIntPipe) id: number, @Param('bannedId', ParseIntPipe) bannedId: number ) {
+    let output, logger;
+    try {
+      output = await this.convService.removeAdminFromConv(id, bannedId);
+      logger = ["The request is ok", "Request: POST[ /conv/:id/banneds ]"];
+    } catch (error) {
+      logger = ["The request doesn't work", "Request: POST[ /conv/:id/banneds ]"];
+      output = error;
+    }
+    Logger.log(logger[0], logger[1]);
+    return JSON.stringify(output);
+  }
 /****************************************/
 /*                                      */
 /*   POST                               */
@@ -151,7 +185,22 @@ export class ConvController {
     Logger.log(logger[0], logger[1]);
     return JSON.stringify(output);
   }
+
+  @Post(':id/message')
+  async addMessageToConv( @Param('id', ParseIntPipe) id: number, @Body() messages: Message ) {
+    let output, logger;
+    try {
+      output = await this.convService.addMessageToConv(id, messages);
+      logger = ["The request is ok", "Request: POST[ /conv/:id/message ]"];
+    } catch (error) {
+      logger = ["The request doesn't work", "Request: POST[ /conv/:id/message ]"];
+      output = error;
+    }
+    Logger.log(logger[0], logger[1]);
+    return JSON.stringify(output);
+  }
 }
+
 
 
 /**

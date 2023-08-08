@@ -5,3 +5,27 @@ srcs/data/
 srcs/api/node_modules/
 
 srcs/api/test
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/srcs/react/node_modules
+/srcs/react/.pnp
+/srcs/react.pnp.js
+
+# testing
+/srcs/react/coverage
+
+# production
+/srcs/react/build
+
+# misc
+/srcs/react.DS_Store
+/srcs/react.env.local
+/srcs/react.env.development.local
+/srcs/react.env.test.local
+/srcs/react.env.production.local
+
+/srcs/reactnpm-debug.log*
+/srcs/reactyarn-debug.log*
+/srcs/reactyarn-error.log*

@@ -82,4 +82,55 @@ export class ConvService {
     .getMany();
 
   }
+
+  async removeUserFromConv(convId: number, userId: number): Promise<Conv> {
+    const conv = await this.convRepository.findOne({
+        where : {ID: Equal(convId)}, 
+        relations: ['Users']
+    });
+    if (!conv)
+      throw new Error('Conversation not found');
+
+    conv.Users = conv.Users.filter(user => user.ID !== userId);
+
+    return this.convRepository.save(conv);
+  }
+
+  async removeAdminFromConv(convId: number, userId: number): Promise<Conv> {
+    const conv = await this.convRepository.findOne({
+        where : {ID: Equal(convId)}, 
+        relations: ['Admin']
+    });
+    if (!conv)
+      throw new Error('Conversation not found');
+
+    conv.Admin = conv.Admin.filter(user => user.ID !== userId);
+
+    return this.convRepository.save(conv);
+  }
+
+  async removeMutedFromConv(convId: number, userId: number): Promise<Conv> {
+    const conv = await this.convRepository.findOne({
+        where : {ID: Equal(convId)}, 
+        relations: ['Muted']
+    });
+    if (!conv)
+      throw new Error('Conversation not found');
+
+    conv.Muted = conv.Muted.filter(user => user.ID !== userId);
+
+    return this.convRepository.save(conv);
+  }
+
+  async addMessageToConv(convId: number, message: Message): Promise<Conv> {
+    const conv = await this.convRepository.findOne({
+        where : {ID: Equal(convId)}
+    });
+    if (!conv)
+      throw new Error('Conversation not found');
+
+    conv.Messages = [...conv.Messages, message];
+
+    return this.convRepository.save(conv);
+  }
 }
