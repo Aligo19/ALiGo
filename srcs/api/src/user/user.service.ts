@@ -16,7 +16,7 @@ export class UserService {
     user.ID_19 = ID_19;
     user.Pseudo = Pseudo;
     user.Avatar = Avatar;
-    user.Coins = 0;
+    user.Elo = 0;
     user.Actual_skin = 0;
     user.Global_skin = [];
     user.Wins = 0;
@@ -26,8 +26,20 @@ export class UserService {
   }
 
   async getUserById(id: number): Promise<User> {
+      return this.userRepository.findOne({
+          where:{ID: Equal(id)}
+      });
+  }
+
+  async getUserByPseudo(pseudo: string): Promise<User> {
     return this.userRepository.findOne({
-        where:{ID: Equal(id)}
+        where:{Pseudo: Equal(pseudo)}
+    });
+  }
+
+  async getUserBy19Id(id: string): Promise<User> {
+    return this.userRepository.findOne({
+        where:{ID_19: Equal(id)}
     });
   }
 
@@ -41,7 +53,10 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  async updateUser(user: User): Promise<User> {
-    return this.userRepository.save(user);
+  async updateUser(user: User): Promise<String> {
+    //verif if user exist
+    await this.getUserById(user.ID);
+    this.userRepository.save(user);
+    return "User updated";
   }
 }

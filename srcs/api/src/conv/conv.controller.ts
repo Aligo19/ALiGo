@@ -62,7 +62,7 @@ export class ConvController {
  * @param bannedIds
  * @returns
   */
-  @Get(':id/bannedUser/:bannedId')
+  @Get(':id/banned/:bannedId')
   async addBannedToConv( @Param('id', ParseIntPipe) id: number, @Param('bannedId', ParseIntPipe) bannedId: number ) {
     let output, logger;
     try {
@@ -75,20 +75,7 @@ export class ConvController {
     Logger.log(logger[0], logger[1]);
     return JSON.stringify(output);
   }
-
- @Get(':id/bannedAmin/:bannedId')
- async addBannedAdminToConv( @Param('id', ParseIntPipe) id: number, @Param('bannedId', ParseIntPipe) bannedId: number ) {
-    let output, logger;
-    try {
-      output = await this.convService.removeAdminFromConv(id, bannedId);
-      logger = ["The request is ok", "Request: POST[ /conv/:id/banneds ]"];
-    } catch (error) {
-      logger = ["The request doesn't work", "Request: POST[ /conv/:id/banneds ]"];
-      output = error;
-    }
-    Logger.log(logger[0], logger[1]);
-    return JSON.stringify(output);
-  }
+  
 /****************************************/
 /*                                      */
 /*   POST                               */

@@ -19,7 +19,7 @@ export class User extends BaseEntity{
   Friends: User[];
 
   @Column({ type: 'integer' })
-  Coins: number;
+  Elo: number;
 
   @Column({ type: 'integer' })
   Actual_skin: number;

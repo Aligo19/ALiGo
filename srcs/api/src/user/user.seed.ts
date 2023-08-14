@@ -9,7 +9,7 @@ export async function seedUsers() {
     user.ID_19 = field.ID_19;
     user.Pseudo = field.Pseudo;
     user.Avatar = field.Avatar;
-    user.Coins = field.Coins;
+    user.Elo = field.Elo;
     user.Actual_skin = field.Actual_skin;
     user.Global_skin = field.Global_skin;
     user.Wins = field.Wins;

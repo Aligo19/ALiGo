@@ -36,7 +36,8 @@ export class MatchService {
 
   async getMatchByIdUser(userId: number): Promise<Match[]> {
     return this.matchRepository.find({
-      where: { ID_user1: Equal(userId), ID_user2: Equal(userId), Status: Equal(2)},
+      //userID = ID_user1 or ID_user2 and status = 2
+      where: [{ ID_user1: Equal(userId), Status: Equal(2) }, { ID_user2: Equal(userId), Status: Equal(2) }],
       relations: ['ID_user1', 'ID_user2'],
     });
   }

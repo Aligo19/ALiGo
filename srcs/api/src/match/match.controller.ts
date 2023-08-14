@@ -37,11 +37,11 @@ export class MatchController {
  * @returns 
  */
   @Get(':userId/user')
-  async getMatchesByUserId(@Param('userId', ParseIntPipe) userId: number) {
+  async getMatchesByUserId(@Param('userId', ParseIntPipe) userId: number): Promise<String> {
     let output, logger;
     try {
+      output = await this.matchService.getMatchByIdUser(userId);
       logger = ["The request is ok", "Request: GET[ /user/:userId ]"];
-      output = this.matchService.getMatchByIdUser(userId);
     } catch (error) {
       logger = ["The request doesn't work", "Request: GET[ /user/:userId ]"];
       output = error;
@@ -97,14 +97,17 @@ export class MatchController {
     let output, logger, match;
     try {
       match = await this.matchService.getMatchById(matchDatas.Id);
+      if (match.Status != 1){
+        throw new NotFoundException('Match is finished or not start');
+      }
       match.Status = 2;
       if (matchDatas.Score_user1 < matchDatas.Score_user2) {
-        match.ID_user1.Coins -= 10;
-        match.ID_user2.Coins += 10;
+        match.ID_user1.Elo -= 10;
+        match.ID_user2.Elo += 10;
       }
       else {
-        match.ID_user1.Coins += 10;
-        match.ID_user2.Coins -= 10;
+        match.ID_user1.Elo += 10;
+        match.ID_user2.Elo -= 10;
       }
       logger = ["The request is ok", "Request: POST[ /matches/:id/end ]"];
       output = await this.matchService.updateMatch(match);
