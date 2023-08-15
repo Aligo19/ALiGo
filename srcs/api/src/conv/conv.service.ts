@@ -28,7 +28,7 @@ export class ConvService {
         relations: ['Users']
     });
     if (!conv) {
-      throw new Error('Conversation not found');
+        throw new Error('Conversation not found');
     }
 
     conv.Users = [...conv.Users, ...users];
@@ -42,7 +42,7 @@ export class ConvService {
         relations: ['Admin']
     });
     if (!conv) {
-      throw new Error('Conversation not found');
+        throw new Error('Conversation not found');
     }
 
     conv.Admin = [...conv.Admin, ...admins];
@@ -71,8 +71,8 @@ export class ConvService {
     });
   }
 
-  async getConversationsByUserId(userId: number): Promise<Conv[]> {
-    return this.convRepository.createQueryBuilder('conv')
+  async getConversationsByUserId(userId: number): Promise<String[]> {
+    let allDatasConv =  await this.convRepository.createQueryBuilder('conv')
     .leftJoinAndSelect('conv.Users', 'user')
     .leftJoinAndSelect('conv.Admin', 'admin')
     .leftJoinAndSelect('conv.Muted', 'muted')
@@ -80,7 +80,18 @@ export class ConvService {
     .orWhere('admin.ID = :userId', { userId })
     .orWhere('muted.ID = :userId', { userId })
     .getMany();
-
+    let returnValue = [];
+    for (let i = 0; i < allDatasConv.length; i++) {
+      let conv = allDatasConv[i];
+      let convData = {
+        ID: conv.ID,
+        Name: conv.Name,
+        Status: conv.Status,
+        Password: conv.Password,
+      };
+      returnValue.push(convData);
+    }
+    return returnValue;
   }
 
   async removeUserFromConv(convId: number, userId: number): Promise<Conv> {
