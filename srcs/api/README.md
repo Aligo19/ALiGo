@@ -1,14 +1,11 @@
 
+Si des erreurs surviennent ou des manques de comprehension merci de bien fermer les yeux et faire genre ca marche
+
 # Api Request
 
     Principal lien :
         http://localhost:3000
 
-# Sommaire
-
-- [Users](##Users)
-  - [Connecter un joueur](###Connecter-un-joueur)
-  - [Mettre a jour les infos d'un joueur](###Mettre-a-jour-les-infos-d-un-joueur)
 ## Users
 
 ### Connecter un joueur
@@ -63,7 +60,7 @@ Renvoit un JSON avec toutes les donnees liees au profil de l'utilisateur.
 | id | int | Valeur de l'utilisateur |
 
 #### Input:
-Donner le JSON ([Details](./README.md##JSON-User-1)) avec toutes les donnees modifiees du profil de l'utilisateur.
+Donner le JSON ([Details](##JSON-User-1)) avec toutes les donnees modifiees du profil de l'utilisateur.
 
 ```JSON
 {
@@ -434,7 +431,7 @@ Si ce n'est pas le cas alors la requete est corrompue
 -----------
 -----------
 
-## Conv TODO
+## Conv
 
 ### Toutes les donnees d'une conv
 
@@ -442,13 +439,90 @@ Si ce n'est pas le cas alors la requete est corrompue
   GET /conv/${id}
 ```
 
------------
------------
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| id | int | Valeur de l'identifiant de la conversation |
 
-### Toutes les conv pour un utilisateur
+#### Return;
 
-```http
-  GET /conv/${id}/user
+Renvoi un JSON ([Details](##JSON-Conv-1))avec toutes les donnees liee a une conv, les messages, les utilisateurs, les admins, les muteds,... 
+
+```JSON
+{
+    "ID": 1,
+    "Name": "Conversation 1",
+    "Status": 1,
+    "Password": null,
+    "Messages": [
+        {
+            "data": "Salut User2, comment ça va ?",
+            "ID_user": 1,
+            "Logged_at": "2023-07-28T12:00:00"
+        },
+        {
+            "data": "Salut User1, ça va bien merci ! Et toi ?",
+            "ID_user": 2,
+            "Logged_at": "2023-07-28T12:05:00"
+        },
+        {
+            "data": "Je vais bien aussi, merci ! Que fais-tu aujourd'hui ?",
+            "ID_user": 1,
+            "Logged_at": "2023-07-28T12:10:00"
+        }
+    ],
+    "Admin": [
+        {
+            "ID": 1,
+            "ID_19": "user1_ID_19",
+            "Pseudo": "User1",
+            "Avatar": "user1_avatar_url",
+            "Elo": 200,
+            "Actual_skin": 3,
+            "Global_skin": [
+                1,
+                2,
+                3,
+                4
+            ],
+            "Wins": 20,
+            "Loses": 10
+        }
+    ],
+    "Users": [
+        {
+            "ID": 1,
+            "ID_19": "user1_ID_19",
+            "Pseudo": "User1",
+            "Avatar": "user1_avatar_url",
+            "Elo": 200,
+            "Actual_skin": 3,
+            "Global_skin": [
+                1,
+                2,
+                3,
+                4
+            ],
+            "Wins": 20,
+            "Loses": 10
+        },
+        {
+            "ID": 2,
+            "ID_19": "friend1_ID_19",
+            "Pseudo": "User2",
+            "Avatar": "friend1_avatar_url",
+            "Elo": 100,
+            "Actual_skin": 1,
+            "Global_skin": [
+                1,
+                2,
+                3
+            ],
+            "Wins": 10,
+            "Loses": 5
+        }
+    ],
+    "Muted": []
+}
 ```
 
 -----------
@@ -458,6 +532,31 @@ Si ce n'est pas le cas alors la requete est corrompue
 
 ```http
   GET /conv/${id}/user
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| id | int | Valeur de l'identifiant de l'utilisateur |
+
+#### Return 
+
+Renvoit un JSON contenant les infos basiques de toutes les convs voir [details](##JSON-Conv-2)
+ 
+```JSON
+[
+    {
+        "ID": 1,
+        "Name": "Conversation 1",
+        "Status": 1,
+        "Password": null
+    },
+    {
+        "ID": 3,
+        "Name": "Conversation 1",
+        "Status": 1,
+        "Password": null
+    }
+]
 ```
 
 -----------
@@ -469,14 +568,26 @@ Si ce n'est pas le cas alors la requete est corrompue
   GET /conv/:id/banned/:bannedId
 ```
 
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| id | int | Valeur de l'identifiant de l'utilisateur |
+
+
 -----------
 -----------
 
 ### Ajoute un utilisateur a une conv
 
 ```http
-  POST /conv/:id/users
+  GET /conv/:id/users/:idUser
 ```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| id | int | Valeur de l'identifiant de l'utilisateur |
+
+#### Return:
+Renvoi un JSON avec les donnees mise a jour voir [Details](##JSON-Conv-1)
 
 -----------
 -----------
@@ -484,8 +595,15 @@ Si ce n'est pas le cas alors la requete est corrompue
 ### Ajoute un utilisateur en tant qu'admin
 
 ```http
-  POST /conv/:id/admins
+  GET /conv/:id/admins/:idAdmin
 ```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| id | int | Valeur de l'identifiant de l'utilisateur |
+
+#### Return:
+Renvoi un JSON avec les donnees mise a jour voir [Details](##JSON-Conv-1)
 
 -----------
 -----------
@@ -493,8 +611,15 @@ Si ce n'est pas le cas alors la requete est corrompue
 ### Ajoute un utilisateur en tant que mute
 
 ```http
-  POST /conv/:id/muteds
+  GET /conv/:id/muteds/:idMuted
 ```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| id | int | Valeur de l'identifiant de l'utilisateur |
+
+#### Return:
+Renvoi un JSON avec les donnees mise a jour voir [Details](##JSON-Conv-1)
 
 -----------
 -----------
@@ -505,8 +630,12 @@ Si ce n'est pas le cas alors la requete est corrompue
   POST /conv/:id/message
 ```
 
------------
------------
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| id | int | Valeur de l'identifiant de l'utilisateur |
+
+#### Return:
+Renvoi un JSON avec les donnees mise a jour voir [Details](##JSON-Conv-1)
 
 -----------
 -----------
@@ -595,79 +724,71 @@ Si ce n'est pas le cas alors la requete est corrompue
 - ID_user1 donne toutes les infos du joueur 1 voir [Details](##JSON-User-1)
 - ID_user2 donne toutes les infos du joueur 2 voir [Details](##JSON-User-1)
 
-# Details sur l'organisation des fichiers
 
-Le code se situe dans srcs
-Le fichier app.module reprend tous les modules present dans les dossiers, ca peut ressembler a un include (je fais simple)
-Pour le main, il est l'index/main de nestJS. C'est lui qui va tout lancer et start le projet.
+## JSON Conv 1
 
-Ensuite nous avons 3 dossiers principaux:
-  - conv
-  - match
-  - user
+```JSON
+{
+    "ID": 1,
+    "Name": "Conversation 1",
+    "Status": 1,
+    "Password": null,
+    "Messages": [
+        {
+            "data": "Salut User2, comment ça va ?",
+            "ID_user": 1,
+            "Logged_at": "2023-07-28T12:00:00"
+        },
+        {
+            "data": "Salut User1, ça va bien merci ! Et toi ?",
+            "ID_user": 2,
+            "Logged_at": "2023-07-28T12:05:00"
+        },
+        {
+            "data": "Je vais bien aussi, merci ! Que fais-tu aujourd'hui ?",
+            "ID_user": 1,
+            "Logged_at": "2023-07-28T12:10:00"
+        }
+    ],
+    "Admin": [...],
+    "Users": [...],
+    "Muted": [...]
+}
+```
+- ID vaut l'identifiant de la conv
+- Name est le nom de la conversation
+- Status permet de savoir de qu'elle type de conv il s'agit
+  - 0 = conv de groupe public
+  - 1 = conv de groupe avec mot de passe
+  - 2 = conv duo
+- Password, utile si on a un status 1
+- Messages est une liste de tous les messages
+- Admins, Users et Muted sont des listes contenant de utilisateurs voir [Details](##JSON-User-1)
 
-Dans chacun se trouve 6 fichiers:
+## JSON Conv 2
 
-    - create.dto
-      Reprend le schema qui sera recu dans les requetes POST ou PATCH
+```JSON
+[
+    {
+        "ID": 1,
+        "Name": "Conversation 1",
+        "Status": 1,
+        "Password": null
+    },
+    {
+        "ID": 3,
+        "Name": "Conversation 1",
+        "Status": 1,
+        "Password": null
+    }
+]
+```
 
-    - controller
-      Reprend toutes les routes API
-
-    - entity
-      Reprend l'architecture dans la DB
-
-    - module
-      Reprend tous les fichiers de config en un seul
-
-    - seed
-      Reprend des donnes inits par defaut au lancement du serveur
-
-    - service
-      Reprend toutes les requetes vers la DB
-
-PS: les possibles fichiers objets sont des classes structurees a la maniere d'un JSON pour PostgreSQL
-
-Pour ce qui est du dossier datas, il reprend des fichiers JSON utilise par les fichiers seed pour setup des valeurs tests a l'init (voir les fichiers seed).
-
-# Details sur la DB
-
-Elle est generee par NestJS a l'init du projet, il s'agit de PostgreSQL interpete en TypeORM. 
-
-Voici un text recap de l'architecture:
-
-- La table user reprend:
-  - ID qui est une primary key
-  - ID_19 qui est un string
-  - Pseudo qui est un string
-  - Avatar qui est un url en string
-  - Friends qui est un tableau de int pour lister les id d’autre user en foreigns key
-  - Coins qui est un int pour la somme de pieces du joueur
-  - Actual_skin qui est un int pour le rgb de la barre de pong
-  - Global_skin qui est tableau de int reprenant tous les rgb du joueur
-  - Blocked qui est tableau de int reprenant les id d’autre user en foreigns key
-  - Wins qui est un int pour le nombre de partie gagnées
-  - Loses qui est un int pour le nombre de partie perdues
-
-- La table match reprend:
-  - ID qui est une primary key
-  - ID_user1 qui est un int en foreign key sur la table user
-  - ID_user2 qui est un int en foreign key sur la table user
-  - Score_user1 qui est un int pour les points du premier user
-  - Score_user1 qui est un int pour les points du deuxième user
-
-- La table conv reprend :
-  - ID qui est une primary key
-  - Name qui est un string
-  - Users qui est une liste de int reprenant les id de la user en foreign key
-  - Admin qui est une liste de int reprenant les id de la user en foreign key
-  - Status qui est un int pour le type de la conversation
-  - Password qui est un string par défaut NULL n’aura de valeur que si le Status est en prive
-  - Muted qui est une liste de int reprenant les id de la user en foreign key
-  - Messages qui est une liste d’objets Message (voir en dessous)
-
-- L’objet Message:
-  - ID_user qui reprend un id user en foreign key
-  - data qui est un string long
-  - Logged_at qui est un datetime
-
+Listes composee de :
+- ID de la conv
+- Nom de la conv
+- Status de la conv
+  - 0 = conv de groupe public
+  - 1 = conv de groupe avec mot de passe
+  - 2 = conv duo
+- Password, utile si on a un status 1

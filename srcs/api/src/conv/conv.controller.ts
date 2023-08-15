@@ -75,7 +75,7 @@ export class ConvController {
     Logger.log(logger[0], logger[1]);
     return JSON.stringify(output);
   }
-  
+
 /****************************************/
 /*                                      */
 /*   POST                               */
@@ -110,13 +110,12 @@ export class ConvController {
  * @param userIds 
  * @returns 
  */
-  @Post(':id/users')
-  async addUsersToConv( @Param('id', ParseIntPipe) id: number, @Body() userIds: number[] ) {
+  @Get(':id/users/:idUser')
+  async addUsersToConv( @Param('id', ParseIntPipe) id: number, @Param('idUser', ParseIntPipe) userId: number ) {
     let output, logger;
     try {
       let users = [];
-      for (const userId of userIds)
-        users.push(await this.userService.getUserById(userId));
+      users.push(await this.userService.getUserById(userId));
       logger = ["The request is ok", "Request: POST[ /conv/:id/users ]"];
       output = await this.convService.addUsersToConv(id, users);
     } catch (error) {
@@ -133,13 +132,12 @@ export class ConvController {
  * @param adminIds 
  * @returns 
  */
-  @Post(':id/admins')
-  async addAdminsToConv( @Param('id', ParseIntPipe) id: number, @Body() adminIds: number[] ) {
+  @Get(':id/admins/:adminId')
+  async addAdminsToConv( @Param('id', ParseIntPipe) id: number, @Param('adminId', ParseIntPipe) adminId: number) {
     let output, logger;
     try {
       let admins = [];
-      for (const adminId of adminIds)
-          admins.push(await this.userService.getUserById(adminId));
+      admins.push(await this.userService.getUserById(adminId));
       output = await this.convService.addAdminsToConv(id, admins);
       logger = ["The request is ok", "Request: POST[ /conv/:id/admins ]"];
     } catch (error) {
@@ -156,13 +154,12 @@ export class ConvController {
  * @param mutedIds 
  * @returns 
  */
-  @Post(':id/muteds')
-  async addMutedsToConv( @Param('id', ParseIntPipe) id: number, @Body() mutedIds: number[] ) {
+  @Get(':id/muteds/:mutedId')
+  async addMutedsToConv( @Param('id', ParseIntPipe) id: number, @Param('mutedId', ParseIntPipe) mutedId: number) {
     let output, logger;
     try {
       let muteds = [];
-      for (const mutedId of mutedIds)
-          muteds.push(await this.userService.getUserById(mutedId));
+      muteds.push(await this.userService.getUserById(mutedId));
       output = await this.convService.addMutedsToConv(id, muteds);
       logger = ["The request is ok", "Request: POST[ /conv/:id/muteds ]"];
     } catch (error) {
