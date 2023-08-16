@@ -1,3 +1,7 @@
+# TODO
+
+- Mettre toutes les variables importantes dans des fichiers env !
+
 # Liste des commandes du Makefile avec effets
 
 | Commande make | Action | Etat |
@@ -14,11 +18,9 @@
 
 # Pour react
 
-Il suffit de decommenter le code dans le docker-compose et de gcl le code du frontend dans srcs en le renommant /react.
+Une doc sommaire est reprise dans le [readme](./srcs/front/README.md#architecture) du front.
 
-Ensuite, il faut y mettre le dockerfile "Dockerfile.react" dans le meme dossier puis le rename "Dockerfile"
-
-Tadam on a un transcendance mdr
+Ne pas hesiter a l'agrementer (Lisa il y a une ligne pour toi pour implenter le jeu dans le front)
 
 # Pour l'API
 

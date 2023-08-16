@@ -46,7 +46,7 @@ export class UserController {
                 client_id: 'u-s4t2ud-3877a3e700b6b8841a31f110495b6d430ce41dc60be48f28aeca81423a03577b',
                 client_secret: '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',
                 code: code,
-                redirect_uri: 'http://127.0.0.1:8080',
+                redirect_uri: 'http://127.0.0.1:3000',
             },
             {   
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' }

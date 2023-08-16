@@ -31,19 +31,19 @@ services:
       build: api/
       restart: always
       ports:
-        - '3000:3000'
+        - '3001:3001'
       networks:
         - private
       depends_on:
         - postgres
-    # react:
-    #   build: react/
-    #   restart: always
-    #   ports:
-    #     - '8080:3000'
-    #   networks:
-    #     - private
-    #   depends_on:
-    #     - api
+    react:
+      build: front/
+      restart: always
+      ports:
+        - '3000:3000'
+      networks:
+        - private
+      depends_on:
+        - api
 networks:
   private:

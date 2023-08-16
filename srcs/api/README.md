@@ -19,7 +19,7 @@ Si des erreurs surviennent ou des manques de comprehension merci de bien fermer 
 | code | int | Valeur de obtenue en se connectant via OAuth de 42 dans l'url sous le variable "code" voir le readme dedie (si j'en fais un je mettrais le lien ici sinon il y a une doc) |
 
 #### Return:
-Renvoit un JSON avec toutes les donnees liees au profil de l'utilisateur.
+Renvoit un JSON avec toutes les donnees liees au profil de l'utilisateur voir [details](#json-user-1)
 
 ```JSON
 {
@@ -35,19 +35,6 @@ Renvoit un JSON avec toutes les donnees liees au profil de l'utilisateur.
 }
 ```
 
-#### Details de l'output:
-- ID renvoi vers l'id dans la db, ce sera cet id qui sera utilise pour les requetes API (Sauf si precisions dans une requete specifque)
-- ID_19 renvoi vers le pseudo de 19, non utile en l'occurence
-- Pseudo, tout est dans le nom
-- Avatar, l'url vers l'image du joueur
-- Elo equivaut au niveau du joueur, remplacant de la monnaie
-- Actual_skin est la couleur actuelle de la barre de pong
-- Global_skin est la liste de toutes les couleurs de la barre du joueur
-- Wins est le total de victoires
-- Loses est le total... bah de defaites
-
------------
------------
 
 ### Mettre a jour les infos d un joueur
 
@@ -60,7 +47,7 @@ Renvoit un JSON avec toutes les donnees liees au profil de l'utilisateur.
 | id | int | Valeur de l'utilisateur |
 
 #### Input:
-Donner le JSON ([Details](##JSON-User-1)) avec toutes les donnees modifiees du profil de l'utilisateur.
+Donner le JSON ([details](#json-user-1)) avec toutes les donnees modifiees du profil de l'utilisateur.
 
 ```JSON
 {
@@ -82,10 +69,8 @@ Donner le JSON ([Details](##JSON-User-1)) avec toutes les donnees modifiees du p
 ```
 
 #### Return:
-Si le JSON ([Details](##JSON-User-1)) renvoye est identique a celui envoye ca signifie que la requete c'est convenablement executee, si pas une erreur est survenue.
+Si le JSON ([Details](#json-user-1)) renvoye est identique a celui envoye ca signifie que la requete c'est convenablement executee, si pas une erreur est survenue.
 
------------
------------
 
 ### Avoir toutes les infos d'un joueur
 
@@ -98,7 +83,7 @@ Si le JSON ([Details](##JSON-User-1)) renvoye est identique a celui envoye ca si
 | id | int | Valeur de l'utilisateur |
 
 #### Return:
-Renvoit un JSON ([Details](##JSON-User-1)) avec toutes les donnees liees au profil de l'utilisateur.
+Renvoit un JSON ([Details](#json-user-1)) avec toutes les donnees liees au profil de l'utilisateur.
 
 ```JSON
 {
@@ -119,9 +104,6 @@ Renvoit un JSON ([Details](##JSON-User-1)) avec toutes les donnees liees au prof
 }
 ```
 
------------
------------
-
 ### Ajouter un ami
 
 ```http
@@ -136,8 +118,6 @@ Renvoit un JSON ([Details](##JSON-User-1)) avec toutes les donnees liees au prof
 #### Return:
 Si rien n'est renvoye la requete a marche sinon une erreur est survenue
 
------------
------------
 
 ### Bloquer un utilisateur
 
@@ -153,12 +133,10 @@ Si rien n'est renvoye la requete a marche sinon une erreur est survenue
 #### Return:
 Si rien n'est renvoye la requete a marche sinon une erreur est survenue
 
------------
------------
------------
------------
------------
------------
+### TODO
+
+Pouvoir retirer un user des amis et des blocks
+
 -----------
 
 ## Match
@@ -174,7 +152,7 @@ Si rien n'est renvoye la requete a marche sinon une erreur est survenue
 | id | int | Valeur de l'id du match |
 
 #### Return:
-Renvoit un JSON ([Details](##JSON-Match-1)) avec toutes les donnees liees a un match.
+Renvoit un JSON ([Details](#json-match-1)) avec toutes les donnees liees a un match.
 
 ```JSON
 {
@@ -216,9 +194,6 @@ Renvoit un JSON ([Details](##JSON-Match-1)) avec toutes les donnees liees a un m
 }
 ```
 
------------
------------
-
 ### Avoir toutes les infos des matchs d'un utilisateur
 
 ```http
@@ -230,7 +205,7 @@ Renvoit un JSON ([Details](##JSON-Match-1)) avec toutes les donnees liees a un m
 | id | int | Valeur de l'id de l'utilisateur |
 
 #### Return:
-Renvoit une liste de JSON. Chaque element est un match avec un JSON  ([Details](##JSON-Match-1))
+Renvoit une liste de JSON. Chaque element est un match avec un JSON  ([Details](#json-match-1))
 
 ```JSON
 [
@@ -311,9 +286,6 @@ Renvoit une liste de JSON. Chaque element est un match avec un JSON  ([Details](
 ]
 ```
 
------------
------------
-
 ### Lancer une recherche pour une game
 
 ```http
@@ -322,10 +294,10 @@ Renvoit une liste de JSON. Chaque element est un match avec un JSON  ([Details](
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'id du match |
+| id | int | Valeur de l'id de l'utilisateur qui cherche une game |
 
 #### Return:
-Renvoit un JSON ([Details](##JSON-Match-1)) avec toutes les donnees liees a un match.
+Renvoit un JSON ([Details](#json-match-1)) avec toutes les donnees liees a un match.
 Deux cas de figure possible
 1. le status est 0 alors la game vient d'etre cree et en attente du joueur 2
 2. le status est 1 alors la game a ses deux joueurs et la partie peut commencer
@@ -356,9 +328,6 @@ Deux cas de figure possible
 }
 ```
 
------------
------------
-
 ### Finir une game
 
 ```http
@@ -382,7 +351,7 @@ Recoit un JSON avec l'id et les scores, cela mettra les donnes des joueurs sur l
 
 
 #### Return:
-Renvoit un JSON ([Details](##JSON-Match-1)) avec toutes les donnees liees a un match.
+Renvoit un JSON ([Details](#json-match-1)) avec toutes les donnees liees a un match.
 Si ce n'est pas le cas alors la requete est corrompue
 ```JSON
 {
@@ -424,12 +393,6 @@ Si ce n'est pas le cas alors la requete est corrompue
 }
 ```
 -----------
------------
------------
------------
------------
------------
------------
 
 ## Conv
 
@@ -445,7 +408,7 @@ Si ce n'est pas le cas alors la requete est corrompue
 
 #### Return;
 
-Renvoi un JSON ([Details](##JSON-Conv-1))avec toutes les donnees liee a une conv, les messages, les utilisateurs, les admins, les muteds,... 
+Renvoi un JSON ([Details](#json-conv-1))avec toutes les donnees liee a une conv, les messages, les utilisateurs, les admins, les muteds,... 
 
 ```JSON
 {
@@ -525,8 +488,6 @@ Renvoi un JSON ([Details](##JSON-Conv-1))avec toutes les donnees liee a une conv
 }
 ```
 
------------
------------
 
 ### Toutes les conv pour un utilisateur
 
@@ -540,7 +501,7 @@ Renvoi un JSON ([Details](##JSON-Conv-1))avec toutes les donnees liee a une conv
 
 #### Return 
 
-Renvoit un JSON contenant les infos basiques de toutes les convs voir [details](##JSON-Conv-2)
+Renvoit un JSON contenant les infos basiques de toutes les convs voir [details](#json-conv-2)
  
 ```JSON
 [
@@ -559,9 +520,6 @@ Renvoit un JSON contenant les infos basiques de toutes les convs voir [details](
 ]
 ```
 
------------
------------
-
 ### Banni un utilisateur d'une conv
 
 ```http
@@ -572,9 +530,6 @@ Renvoit un JSON contenant les infos basiques de toutes les convs voir [details](
 | :-------- | :------- | :------------------------- |
 | id | int | Valeur de l'identifiant de l'utilisateur |
 
-
------------
------------
 
 ### Ajoute un utilisateur a une conv
 
@@ -587,10 +542,8 @@ Renvoit un JSON contenant les infos basiques de toutes les convs voir [details](
 | id | int | Valeur de l'identifiant de l'utilisateur |
 
 #### Return:
-Renvoi un JSON avec les donnees mise a jour voir [Details](##JSON-Conv-1)
+Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
 
------------
------------
 
 ### Ajoute un utilisateur en tant qu'admin
 
@@ -603,10 +556,8 @@ Renvoi un JSON avec les donnees mise a jour voir [Details](##JSON-Conv-1)
 | id | int | Valeur de l'identifiant de l'utilisateur |
 
 #### Return:
-Renvoi un JSON avec les donnees mise a jour voir [Details](##JSON-Conv-1)
+Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
 
------------
------------
 
 ### Ajoute un utilisateur en tant que mute
 
@@ -619,10 +570,8 @@ Renvoi un JSON avec les donnees mise a jour voir [Details](##JSON-Conv-1)
 | id | int | Valeur de l'identifiant de l'utilisateur |
 
 #### Return:
-Renvoi un JSON avec les donnees mise a jour voir [Details](##JSON-Conv-1)
+Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
 
------------
------------
 
 ### Ajoute un message dans une conv
 
@@ -635,14 +584,8 @@ Renvoi un JSON avec les donnees mise a jour voir [Details](##JSON-Conv-1)
 | id | int | Valeur de l'identifiant de l'utilisateur |
 
 #### Return:
-Renvoi un JSON avec les donnees mise a jour voir [Details](##JSON-Conv-1)
+Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
 
------------
------------
------------
------------
------------
------------
 -----------
 
 # Details sur les JSON
@@ -721,8 +664,8 @@ Renvoi un JSON avec les donnees mise a jour voir [Details](##JSON-Conv-1)
 - Score_user1, les points marque par le joueur 1
 - Score_user2, les points marque par le joueur 2
 - Status; 0 vaut en recherche, 1 vaut en cours, 2 vaut fini
-- ID_user1 donne toutes les infos du joueur 1 voir [Details](##JSON-User-1)
-- ID_user2 donne toutes les infos du joueur 2 voir [Details](##JSON-User-1)
+- ID_user1 donne toutes les infos du joueur 1 voir [Details](#json-user-1)
+- ID_user2 donne toutes les infos du joueur 2 voir [Details](#json-user-1)
 
 
 ## JSON Conv 1
@@ -763,7 +706,7 @@ Renvoi un JSON avec les donnees mise a jour voir [Details](##JSON-Conv-1)
   - 2 = conv duo
 - Password, utile si on a un status 1
 - Messages est une liste de tous les messages
-- Admins, Users et Muted sont des listes contenant de utilisateurs voir [Details](##JSON-User-1)
+- Admins, Users et Muted sont des listes contenant de utilisateurs voir [details](#json-user-1)
 
 ## JSON Conv 2
 
@@ -792,3 +735,19 @@ Listes composee de :
   - 1 = conv de groupe avec mot de passe
   - 2 = conv duo
 - Password, utile si on a un status 1
+
+
+## Pour Lisa
+
+Pour ce qui est de tes requetes ca va se passer en deux temps sur deux user differents
+
+```
+USER 1                USER 2
+/matches/1/search
+Renvoi status 0
+                      /matches/2/search   
+                      Renvoi status 2
+            Le match commence
+/matches/end
+
+```

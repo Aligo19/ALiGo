@@ -9,9 +9,9 @@ srcs/api/test
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/srcs/react/node_modules
-/srcs/react/.pnp
-/srcs/react.pnp.js
+srcs/react/node_modules/
+srcs/react/.pnp
+srcs/react.pnp.js
 
 # testing
 /srcs/react/coverage
