@@ -18,6 +18,8 @@
 
 # Pour react
 
+Pour acceder au site c'est [ici](http://127.0.0.1:3000), loggez vous avec vos id 19 ca sera gere !
+
 Une doc sommaire est reprise dans le [readme](./srcs/front/README.md#architecture) du front.
 
 Ne pas hesiter a l'agrementer (Lisa il y a une ligne pour toi pour implenter le jeu dans le front)

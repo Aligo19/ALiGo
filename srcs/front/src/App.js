@@ -37,7 +37,8 @@ function App() {
 	}
     async function fetchChats() {
 		try {
-			const response = await axios.get(`http://127.0.0.1:3001/conv/${id}/user`);
+
+			const response = await axios.get(`http://127.0.0.1:3001/conv/${JSON.parse(sessionStorage.getItem('userData')).ID}/user`);
 			const 	chats = response.data,
 					privateChats = [],
 					groupChats = [];
