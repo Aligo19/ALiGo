@@ -1,47 +1,208 @@
 [
     {
       "Name": "Conversation 1",
-      "ID_user1": "User1",
-      "ID_user2": "User2",
-      "Status": 1,
+      "ID_users": [ "LeGodurix",
+                    "LaLisa"],
+      "Status": 2,
       "Messages": [
         {
           "ID_user": 1,
-          "data": "Salut User2, comment ça va ?",
+          "data": "Salut Lisa, comment ça va ?",
           "Logged_at": "2023-07-28T12:00:00"
         },
         {
           "ID_user": 2,
-          "data": "Salut User1, ça va bien merci ! Et toi ?",
+          "data": "Salut Hugo, ça va bien merci ! Et toi ?",
           "Logged_at": "2023-07-28T12:05:00"
         },
         {
           "ID_user": 1,
           "data": "Je vais bien aussi, merci ! Que fais-tu aujourd'hui ?",
           "Logged_at": "2023-07-28T12:10:00"
+        },
+        {
+          "ID_user": 2,
+          "data": "Je vais aller faire du vélo, et toi ?",
+          "Logged_at": "2023-07-28T12:15:00"
+        },
+        {
+          "ID_user": 1,
+          "data": "Je vais aller faire du vélo aussi !",
+          "Logged_at": "2023-07-28T12:20:00"
+        },
+        {
+          "ID_user": 2,
+          "data": "Ahah, on se verra peut-être alors !",
+          "Logged_at": "2023-07-28T12:25:00"
+        },
+        {
+          "ID_user": 1,
+          "data": "Oui, à tout à l'heure !",
+          "Logged_at": "2023-07-28T12:30:00"
         }
       ]
     },
     {
       "Name": "Conversation 2",
-      "ID_user1": "User3",
-      "ID_user2": "User4",
-      "Status": 1,
+      "ID_users":["AlanCazam",
+                  "Philippeu"],
+      "Status": 2,
       "Messages": [
         {
           "ID_user": 3,
-          "data": "Salut User4, tu es là ?",
+          "data": "Salut Hugo, ca va l'Espagne ?",
           "Logged_at": "2023-07-28T14:00:00"
         },
         {
           "ID_user": 4,
-          "data": "Oui, je suis là ! Que se passe-t-il ?",
+          "data": "Oui oui, je m'amuse bien ! Et toi ?",
           "Logged_at": "2023-07-28T14:05:00"
         },
         {
           "ID_user": 3,
-          "data": "Je voulais juste discuter un peu. Comment s'est passée ta journée ?",
+          "data": "Super, je voulais juste discuter un peu. Comment s'est passée ta journée ?",
           "Logged_at": "2023-07-28T14:10:00"
+        },
+        {
+          "ID_user": 4,
+          "data": "Bien, j'ai fait du vélo et j'ai mangé une glace !",
+          "Logged_at": "2023-07-28T14:15:00"
+        },
+        {
+          "ID_user": 3,
+          "data": "Cool !",
+          "Logged_at": "2023-07-28T14:20:00"
+        },
+        {
+          "ID_user": 4,
+          "data": "Et toi ?",
+          "Logged_at": "2023-07-28T14:25:00"
+        },
+        {
+          "ID_user": 3,
+          "data": "J'ai fait du vélo aussi, mais je n'ai pas mangé de glace !",
+          "Logged_at": "2023-07-28T14:30:00"
+        },
+        {
+          "ID_user": 4,
+          "data": "Ahah, tu devrais !",
+          "Logged_at": "2023-07-28T14:35:00"
+        },
+        {
+          "ID_user": 3,
+          "data": "Oui, je vais y penser !",
+          "Logged_at": "2023-07-28T14:40:00"
+        }
+      ]
+    },
+    {
+      "Name": "Aligo",
+      "ID_users":["AlanCazam",
+                  "Philippeu",
+                  "LeGodurix",
+                  "LaLisa"],
+      "Status": 0,
+      "Messages": [
+        {
+          "ID_user": 3,
+          "data": "Salut tout le monde, comment ca va ?",
+          "Logged_at": "2023-07-28T14:00:00"
+        },
+        {
+          "ID_user": 4,
+          "data": "Ca va bien, et toi ?",
+          "Logged_at": "2023-07-28T14:05:00"
+        },
+        {
+          "ID_user": 1,
+          "data": "Ca va bien aussi !",
+          "Logged_at": "2023-07-28T14:10:00"
+        },
+        {
+          "ID_user": 2,
+          "data": "Ca va bien aussi !",
+          "Logged_at": "2023-07-28T14:15:00"
+        },
+        {
+          "ID_user": 3,
+          "data": "Super !",
+          "Logged_at": "2023-07-28T14:20:00"
+        },
+        {
+          "ID_user": 4,
+          "data": "Oui, c'est cool !",
+          "Logged_at": "2023-07-28T14:25:00"
+        },
+        {
+          "ID_user": 1,
+          "data": "Oui, c'est cool !",
+          "Logged_at": "2023-07-28T14:30:00"
+        },
+        {
+          "ID_user": 2,
+          "data": "Oui, c'est cool !",
+          "Logged_at": "2023-07-28T14:35:00"
+        },
+        {
+          "ID_user": 3,
+          "data": "Oui, c'est cool !",
+          "Logged_at": "2023-07-28T14:40:00"
+        }
+      ]
+    },
+    {
+      "Name": "Aligo mais chute",
+      "ID_users":["AlanCazam",
+                  "Philippeu",
+                  "LeGodurix",
+                  "LaLisa"],
+      "Status": 1,
+      "Password": "1234",
+      "Messages": [
+        {
+          "ID_user": 3,
+          "data": "Salut tout le monde, comment ca va ? on est secret",
+          "Logged_at": "2023-07-28T14:00:00"
+        },
+        {
+          "ID_user": 4,
+          "data": "Ca va bien, et toi ?",
+          "Logged_at": "2023-07-28T14:05:00"
+        },
+        {
+          "ID_user": 1,
+          "data": "Ca va bien aussi !",
+          "Logged_at": "2023-07-28T14:10:00"
+        },
+        {
+          "ID_user": 2,
+          "data": "Ca va bien aussi !",
+          "Logged_at": "2023-07-28T14:15:00"
+        },
+        {
+          "ID_user": 3,
+          "data": "Super !",
+          "Logged_at": "2023-07-28T14:20:00"
+        },
+        {
+          "ID_user": 4,
+          "data": "Oui, c'est cool !",
+          "Logged_at": "2023-07-28T14:25:00"
+        },
+        {
+          "ID_user": 1,
+          "data": "Oui, c'est cool !",
+          "Logged_at": "2023-07-28T14:30:00"
+        },
+        {
+          "ID_user": 2,
+          "data": "Oui, c'est cool !",
+          "Logged_at": "2023-07-28T14:35:00"
+        },
+        {
+          "ID_user": 3,
+          "data": "Oui, c'est cool !",
+          "Logged_at": "2023-07-28T14:40:00"
         }
       ]
     }

@@ -12,6 +12,8 @@ export class UserService {
   ) {}
 
   async createUser(ID_19: string, Pseudo: string, Avatar: string): Promise<User> {
+    if (await this.getUserBy19Id(ID_19))
+        throw new Error('User already exist');
     const user = new User();
     user.ID_19 = ID_19;
     user.Pseudo = Pseudo;
@@ -26,36 +28,51 @@ export class UserService {
   }
 
   async getUserById(id: number): Promise<User> {
-      return this.userRepository.findOne({
-          where:{ID: Equal(id)}
-      });
+        let out =  this.userRepository.findOne({
+            where:{ID: Equal(id)}
+        });
+        if (out)
+            return out;
+        return null;
   }
 
   async getUserByPseudo(pseudo: string): Promise<User> {
-    return this.userRepository.findOne({
+    let out = this.userRepository.findOne({
         where:{Pseudo: Equal(pseudo)}
     });
+    if (out)
+      return out;
+    return null;
   }
 
   async getUserBy19Id(id: string): Promise<User> {
-    return this.userRepository.findOne({
+    let out =  this.userRepository.findOne({
         where:{ID_19: Equal(id)}
     });
+    if (out)
+      return out;
+    return null;
   }
 
   async addFriend(user: User, friend: User): Promise<User> {
+    if (user.Friends.includes(friend))
+      throw new Error('User already friend');
     user.Friends = [...user.Friends, friend];
     return this.userRepository.save(user);
   }
 
   async blockUser(user: User, blockedUser: User): Promise<User> {
+    if (user.Blocked.includes(blockedUser))
+      throw new Error('User already blocked');
     user.Blocked = [...user.Blocked, blockedUser];
     return this.userRepository.save(user);
   }
 
   async updateUser(user: User): Promise<String> {
     //verif if user exist
-    await this.getUserById(user.ID);
+    let tmp = await this.getUserById(user.ID);
+    if (!tmp)
+      throw new Error('User not found');
     this.userRepository.save(user);
     return "User updated";
   }

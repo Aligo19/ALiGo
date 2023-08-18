@@ -1,7 +1,7 @@
 [
   {
     "ID_19": "hgoorick",
-    "Pseudo": "User1",
+    "Pseudo": "LeGodurix",
     "Avatar": "https://cdn.intra.42.fr/users/9fe27554c75228788d283a4dc48bf60c/hgoorick.png",
     "Elo": 200,
     "Actual_skin": 0,
@@ -11,7 +11,7 @@
   },
   {
     "ID_19": "lbuccher",
-    "Pseudo": "User2",
+    "Pseudo": "LaLisa",
     "Avatar": "friend1_avatar_url",
     "Elo": 100,
     "Actual_skin": 1,
@@ -21,7 +21,7 @@
   },
   {
     "ID_19": "acaillea",
-    "Pseudo": "User3",
+    "Pseudo": "AlanCazam",
     "Avatar": "friend2_avatar_url",
     "Elo": 150,
     "Actual_skin": 2,
@@ -31,7 +31,7 @@
   },
   {
     "ID_19": "hcremers",
-    "Pseudo": "User4",
+    "Pseudo": "Philippeu",
     "Avatar": "blocked1_avatar_url",
     "Elo": 50,
     "Actual_skin": 1,

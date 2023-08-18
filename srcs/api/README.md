@@ -573,6 +573,47 @@ Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
 Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
 
 
+### Retire un utilisateur a une conv
+
+```http
+  GET /conv/:id/users/:idUser/remove
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| id | int | Valeur de l'identifiant de l'utilisateur |
+
+#### Return:
+Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
+
+
+### Retire un utilisateur en tant qu'admin
+
+```http
+  GET /conv/:id/admins/:idAdmin/remove
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| id | int | Valeur de l'identifiant de l'utilisateur |
+
+#### Return:
+Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
+
+
+### Retire un utilisateur en tant que mute
+
+```http
+  GET /conv/:id/muteds/:idMuted/remove
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| id | int | Valeur de l'identifiant de l'utilisateur |
+
+#### Return:
+Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
+
 ### Ajoute un message dans une conv
 
 ```http

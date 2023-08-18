@@ -15,6 +15,7 @@
 | make clean | Efface les dockers | |Visible 
 | make fclean | Efface les volumes des dockers, les reseauz et les images| Visible |
 
+ATTENTION !!! j'ai oublie de specifier le makefile utilise sudo donc le mot de passe est demande a chaque fois.
 
 # Pour react
 

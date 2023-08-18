@@ -24,11 +24,18 @@ export class MatchController {
  */
   @Get(':id')
   async getMatchById(@Param('id', ParseIntPipe) id: number): Promise<Match> {
-    const match = await this.matchService.getMatchById(id);
-    if (!match) {
-      throw new NotFoundException('Match not found');
+    let output, logger;
+    try {
+      output = await this.matchService.getMatchById(id);
+      logger = ["The request is ok", "Request: GET[ /matches/:id ]"];
+      if (!output)
+        throw new NotFoundException('Match not found');
+    } catch (error) {
+      logger = ["The request doesn't work", "Request: GET[ /matches/:id ]"];
+      output = error;
     }
-    return match;
+    Logger.log(logger[0], logger[1]);
+    return output;
   }
 
 /**
@@ -61,20 +68,19 @@ export class MatchController {
   async createMatch(@Param('id', ParseIntPipe) id: number) {
     let output, logger;
     try {
-      const gameLoading = await this.matchService.getMatchLoading();
-      const user = await this.userService.getUserById(id);
-      if (gameLoading.length > 0) {
-        const game = gameLoading[0]
-        game.ID_user2 = user;
-        game.Status = 1;
-        output = await this.matchService.updateMatch(game);
-      } else {
-        output = await this.matchService.createMatch(user);
-      }
-      logger = ["The request is ok", "Request: POST[ /matches ]"];
+        const gameLoading = await this.matchService.getMatchLoading();
+        const user = await this.userService.getUserById(id);
+        if (gameLoading.length > 0) {
+            const game = gameLoading[0]
+            game.ID_user2 = user;
+            game.Status = 1;
+            output = await this.matchService.updateMatch(game);
+        } else
+            output = await this.matchService.createMatch(user);
+        logger = ["The request is ok", "Request: POST[ /matches ]"];
     } catch (error) {
-      logger = ["The request doesn't work", "Request: POST[ /matches ]"];
-      output = error;
+        logger = ["The request doesn't work", "Request: POST[ /matches ]"];
+        output = error;
     }
     Logger.log(logger[0], logger[1]);
     return JSON.stringify(output);
@@ -92,32 +98,31 @@ export class MatchController {
    * 
    * TODO: Add a winner and loser to the match and update the elo of the players and the status
    **/
-  @Post('/end')
-  async endMatch(@Body() matchDatas: EndMatchDto) {
-    let output, logger, match;
-    try {
-      match = await this.matchService.getMatchById(matchDatas.Id);
-      if (match.Status != 1){
-        throw new NotFoundException('Match is finished or not start');
-      }
-      match.Status = 2;
-      if (matchDatas.Score_user1 < matchDatas.Score_user2) {
-        match.ID_user1.Elo -= 10;
-        match.ID_user2.Elo += 10;
-      }
-      else {
-        match.ID_user1.Elo += 10;
-        match.ID_user2.Elo -= 10;
-      }
-      logger = ["The request is ok", "Request: POST[ /matches/:id/end ]"];
-      output = await this.matchService.updateMatch(match);
-    } catch (error) {
-      logger = ["The request doesn't work", "Request: POST[ /matches/:id/end ]"];
-      output = error;
+    @Post('/end')
+    async endMatch(@Body() matchDatas: EndMatchDto) {
+        let output, logger, match;
+        try {
+            match = await this.matchService.getMatchById(matchDatas.Id);
+            if (match.Status != 1)
+                throw new NotFoundException('Match is finished or not start');
+            match.Status = 2;
+            if (matchDatas.Score_user1 < matchDatas.Score_user2) {
+                match.ID_user1.Elo -= 10;
+                match.ID_user2.Elo += 10;
+            }
+            else {
+                match.ID_user1.Elo += 10;
+                match.ID_user2.Elo -= 10;
+            }
+            logger = ["The request is ok", "Request: POST[ /matches/:id/end ]"];
+            output = await this.matchService.updateMatch(match);
+        } catch (error) {
+            logger = ["The request doesn't work", "Request: POST[ /matches/:id/end ]"];
+            output = error;
+        }
+        Logger.log(logger[0], logger[1]);
+        return JSON.stringify(output);
     }
-    Logger.log(logger[0], logger[1]);
-    return JSON.stringify(output);
-  }
 }
 
 

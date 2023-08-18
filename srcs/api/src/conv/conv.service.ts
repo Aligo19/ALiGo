@@ -17,7 +17,10 @@ export class ConvService {
     const conv = new Conv();
     conv.Name = name;
     conv.Status = status;
-    conv.Password = password;
+    if (status === 1)
+      conv.Password = password;
+    else
+      conv.Password = null;
 
     return this.convRepository.save(conv);
   }
@@ -27,6 +30,8 @@ export class ConvService {
         where : {ID: Equal(convId)}, 
         relations: ['Users']
     });
+    if (conv.Users.find((user) => user.ID === users[0].ID))
+      throw new Error('User already in conversation');
     if (!conv) {
         throw new Error('Conversation not found');
     }
@@ -41,6 +46,10 @@ export class ConvService {
         where : {ID: Equal(convId)}, 
         relations: ['Admin']
     });
+    if (conv.Admin.find((admin) => admin.ID === admins[0].ID))
+      throw new Error('User already in conversation');
+    if (!conv.Users.find((user) => user.ID === admins[0].ID))
+      throw new Error('User not found in conversation');
     if (!conv) {
         throw new Error('Conversation not found');
     }
@@ -55,9 +64,13 @@ export class ConvService {
         where : {ID: Equal(convId)}, 
         relations: ['Muted']
     });
+    if (conv.Muted.find((muted) => muted.ID === muteds[0].ID))
+      throw new Error('User already muted in conversation');
     if (!conv) {
       throw new Error('Conversation not found');
     }
+    if (!conv.Users.find((user) => user.ID === muteds[0].ID))
+      throw new Error('User not found in conversation');
 
     conv.Muted = [...conv.Muted, ...muteds];
 
@@ -103,6 +116,8 @@ export class ConvService {
       throw new Error('Conversation not found');
 
     conv.Users = conv.Users.filter(user => user.ID !== userId);
+    conv.Admin = conv.Admin.filter(user => user.ID !== userId);
+    conv.Muted = conv.Muted.filter(user => user.ID !== userId);
 
     return this.convRepository.save(conv);
   }

@@ -4,15 +4,25 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 import { Match } from './match.entity';
 import { User } from '../user/user.entity';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class MatchService {
   constructor(
     @InjectRepository(Match)
     private matchRepository: Repository<Match>,
+    private userService: UserService
   ) {}
 
   async createMatch(user1: User): Promise<Match> {
+    let testUser = await this.userService.getUserById(user1.ID);
+    let testGame = await this.matchRepository.findOne({
+      where: { ID_user1: Equal(user1.ID), Status: Equal(0) },
+    });
+    if (!user1 || !testUser)
+      throw new Error('User1 not found');
+    if (testGame)
+      throw new Error('Game already in research');
     const match = new Match();
     match.ID_user1 = user1;
     match.ID_user2 = null;
@@ -24,6 +34,8 @@ export class MatchService {
   }
 
   async updateMatch(match: Match): Promise<Match> {
+    if (!match || !(await this.getMatchById(match.ID)))
+      throw new Error('Match not found');
     return this.matchRepository.save(match);
   }
 

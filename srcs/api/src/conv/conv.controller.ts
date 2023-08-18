@@ -170,6 +170,48 @@ export class ConvController {
     return JSON.stringify(output);
   }
 
+  @Get(':id/muteds/:mutedId/remove')
+  async removeMutedsToConv( @Param('id', ParseIntPipe) id: number, @Param('mutedId', ParseIntPipe) mutedId: number) {
+    let output, logger;
+    try {
+      output = await this.convService.removeMutedFromConv(id, mutedId);
+      logger = ["The request is ok", "Request: POST[ /conv/:id/muteds/:mutedId/remove ]"];
+    } catch (error) {
+      logger = ["The request doesn't work", "Request: POST[ /conv/:id/muteds/:mutedId/remove ]"];
+      output = error;
+    }
+    Logger.log(logger[0], logger[1]);
+    return JSON.stringify(output);
+  }
+
+  @Get(':id/admins/:adminId/remove')
+  async removeAdminsToConv( @Param('id', ParseIntPipe) id: number, @Param('adminId', ParseIntPipe) adminId: number) {
+    let output, logger;
+    try {
+      output = await this.convService.removeAdminFromConv(id, adminId);
+      logger = ["The request is ok", "Request: POST[ /conv/:id/admins/:adminId/remove ]"];
+    } catch (error) {
+      logger = ["The request doesn't work", "Request: POST[ /conv/:id/admins/:adminId/remove ]"];
+      output = error;
+    }
+    Logger.log(logger[0], logger[1]);
+    return JSON.stringify(output);
+  }
+
+  @Get(':id/users/:idUser/remove')
+  async removeUsersToConv( @Param('id', ParseIntPipe) id: number, @Param('idUser', ParseIntPipe) userId: number) {
+    let output, logger;
+    try {
+      output = await this.convService.removeUserFromConv(id, userId);
+      logger = ["The request is ok", "Request: POST[ /conv/:id/users/:idUser/remove ]"];
+    } catch (error) {
+      logger = ["The request doesn't work", "Request: POST[ /conv/:id/users/:idUser/remove ]"];
+      output = error;
+    }
+    Logger.log(logger[0], logger[1]);
+    return JSON.stringify(output);
+  }
+  
   @Post(':id/message')
   async addMessageToConv( @Param('id', ParseIntPipe) id: number, @Body() messages: Message ) {
     let output, logger;

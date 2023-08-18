@@ -1,6 +1,7 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_PIPE } from '@nestjs/core';
+import * as dotenv from 'dotenv'; // Import dotenv package
 
 import { User } from './user/user.entity';
 import { Conv } from './conv/conv.entity';
@@ -10,16 +11,18 @@ import { UserModule } from './user/user.module';
 import { MatchModule } from './match/match.module';
 import { ConvModule } from './conv/conv.module';
 
+dotenv.config(); // Load environment variables from .env file
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'postgres',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'postgres',
-      entities: [User ,Conv ,Match],
+      host: process.env.POSTGRES_HOST,
+      port: parseInt(process.env.POSTGRES_PORT, 10),
+      username: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DATABASE,
+      entities: [User, Conv, Match],
       autoLoadEntities: true,
       synchronize: true,
     }),
@@ -33,5 +36,4 @@ import { ConvModule } from './conv/conv.module';
     },
   ],
 })
-export class AppModule {
-}
+export class AppModule {}
