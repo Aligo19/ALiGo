@@ -8,6 +8,7 @@ export default function PrivateChats(props) {
 		  const response = await axios.get(`http://127.0.0.1:3001/conv/${props.value}`);
 		  const conversationDetails = response.data;
 		  props.onOpenConversation(conversationDetails);
+		  props.fetchUserInfo();
 		} catch (error) {
 		  console.error('Error opening conversation:', error);
 		}

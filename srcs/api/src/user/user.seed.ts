@@ -15,6 +15,11 @@ export async function seedUsers() {
     user.Wins = field.Wins;
     user.Loses = field.Loses;
     user.Last_connection = field.Last_connection;
+    let friends = [];
+    for (const friend of field.Friends) {
+      friends.push(await User.findOne({ where: { ID: friend } }));
+    }
+    user.Friends = friends;
     await user.save();
   }
 };

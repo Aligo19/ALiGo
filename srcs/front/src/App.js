@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 import Navbar from "./components/Navbar";
@@ -12,11 +12,33 @@ export default function App() {
   const [gchats, setGChats] = useState([]);
   const [pchats, setPChats] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [createGroup, setCreateGroup] = useState([]);
   const [currentView, setCurrentView] = useState("");
   const [userData, setUserData] = useState([]);
+  const [timeoutIdConv, setTimeoutIdConv] = useState(null);
+  const [timeoutIdConvs, setTimeoutIdConvs] = useState(null);
 
-  const id = 1;
+  async function fetchUserInfo(id = null) {
 
+	try {
+		let userProfile;
+		if (!id)
+		{
+			const y = JSON.parse(sessionStorage.getItem('userData'));
+			const response = await axios.get(`http://127.0.0.1:3001/users/${y.ID}`);
+			userProfile = response.data;
+			sessionStorage.setItem('userData', JSON.stringify(userProfile));
+		}
+		else
+		{
+			const response = await axios.get(`http://127.0.0.1:3001/users/${id}`);
+			userProfile = response.data;
+		}
+		setUserData(userProfile);
+	} catch (error) {
+		console.error("Error getting user infos: ", error);
+	}
+	}
   useEffect(() => {
 	function connect()
 	{
@@ -53,6 +75,9 @@ export default function App() {
 
 			setPChats(privateChats);
 			setGChats(groupChats);
+			if (timeoutIdConvs)
+				clearTimeout(timeoutIdConvs);
+			setTimeoutIdConvs( await setTimeout(async () => { fetchChats() }, 1000));
 		} catch (error) {
 			console.error("Error fetching chats:", error);
 		}
@@ -60,55 +85,102 @@ export default function App() {
 	connect();
 	fetchUserInfo();
     fetchChats();
-
-	async function fetchUserInfo(id = null) {
-		try {
-			let userProfile;
-			if (!id)
-			{
-				const y = JSON.parse(sessionStorage.getItem('userData'));
-				const response = await axios.get(`http://127.0.0.1:3001/users/${y.ID}`);
-				userProfile = response.data;
-				sessionStorage.setItem('userData', JSON.stringify(userProfile));
-			}
-			else
-			{
-				const response = await axios.get(`http://127.0.0.1:3001/users/${id}`);
-				userProfile = response.data;
-				sessionStorage.setItem('userData', JSON.stringify(userProfile));
-			}
-			setUserData(userProfile);
-		} catch (error) {
-			console.error("Error getting user infos: ", error);
-		}
-		}
 	}, []);
 	
   const userInfoComponents = <UserInfo name={userData.Pseudo} avatar={userData.Avatar} level={userData.Elo} winnb={userData.Wins} losenb={userData.Loses} />;
   
-  const pchatComponents = pchats.map(item => (
-    <PrivateChats key={item.ID} name={item.Name} value={item.ID} onOpenConversation={onOpenConversation} />
-  ));
+  let pchatComponents = [];
 
-  const gchatComponents = gchats.map(item => (
-    <GroupChats key={item.ID} name={item.Name} value={item.ID} onOpenConversation={onOpenConversation} />
-  ));
+	if (pchats)
+	{
+		pchatComponents = pchats.map(item => (
+			<PrivateChats key={item.ID} name={item.Name} value={item.ID} onOpenConversation={onOpenConversation} fetchUserInfo={fetchUserInfo} />
+		));
+	}	
+
+	let gchatComponents = [];
+
+	if (gchats)
+	{
+		gchatComponents = gchats.map(item => (
+			<GroupChats key={item.ID} name={item.Name} value={item.ID} onOpenConversation={onOpenConversation} fetchUserInfo={fetchUserInfo} />
+		));
+	}
 
   async function onOpenConversation(datas) {
 	showMessageCanvas();
+	console.log(datas);
 	let index = 0;
 	const datasUser = JSON.parse(sessionStorage.getItem('userData'));
-	const newMessages = datas.Messages.map((item) => (
-		<MessageCanvas key={index++} content={item.data} sent={(datasUser.ID === item.ID_user)? true: false} />
-	));
+	let newMessages = [];
+	
+	if (datas.Messages)
+	{
+		newMessages = datas.Messages.map((item, index) => {
+			const user = datas.Users.find((user) => user.ID === item.ID_user);
+			return (
+			  <MessageCanvas key={index} content={item.data} sent={datasUser.ID === item.ID_user} user={user} fetchUserInfo={fetchUserInfo}/>
+			);
+		});
+	}
 
 	  setMessages(	<div className="MessageCanvas">
 	  					<div className="MessageContainer">
 							{newMessages}
 	  					</div>
-          				<textarea className="Text-input" type="text" name="send-message" placeholder="Send message..." rows={1} />
+          				<div style={{ display: 'flex', alignItems: 'center' }}>
+							<textarea
+								id="inputText"
+								className="Text-input"
+								type="text"
+								name="send-message"
+								placeholder="Send message..."
+								rows={1}
+								style={{ width: '95%' }} // Ajout d'une marge à droite pour séparer les éléments
+								onKeyPress={(e) => {
+									if (e.key === 'Enter') {
+									  sendMessage(datas);
+									}
+								  }}
+							/>
+							<button
+								style={{
+									backgroundColor: '#7288da',
+									color: 'white',
+									border: 'none',
+									padding: '10px 20px',
+									borderRadius: '5px',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									cursor: 'pointer',
+								}}
+								onClick={() => {
+								sendMessage(datas);
+								}}
+							>
+								<span>&#8594;</span> {/* Arrow Right Unicode */}
+							</button>
+						</div>
         			</div>);
+			if (timeoutIdConv)
+				clearTimeout(timeoutIdConv);
+			setTimeoutIdConv( await setTimeout(async () => {
+				onOpenConversation((await axios.get(`http://127.0.0.1:3001/conv/${datas.ID}`)).data)
+			}, 1000));
   }
+
+	async function sendMessage(oldDatas) {
+		if (document.getElementById('inputText').value === '')
+			return;
+		const datas = JSON.parse(sessionStorage.getItem('userData'));
+		await axios.post(`http://127.0.0.1:3001/conv/${oldDatas.ID}/message`, {
+			ID_user: datas.ID,
+			data: document.getElementById('inputText').value,
+			Logged_at: Date.now()});
+		document.getElementById('inputText').value = '';
+		await onOpenConversation((await axios.get(`http://127.0.0.1:3001/conv/${oldDatas.ID}`)).data);
+  	}
 
   	// Fonction pour changer la vue actuelle en "game"
 	function showGameCanvas() {
@@ -119,6 +191,82 @@ export default function App() {
 	function showMessageCanvas() {
 		setCurrentView("messages");
 	}
+
+	function handleAddPerson() {
+		if (timeoutIdConv)
+			clearTimeout(timeoutIdConv);
+		let user = sessionStorage.getItem('userData');
+		user = JSON.parse(user);
+		const peopleOptions = user.Friends;
+		if (!peopleOptions)
+			return;
+
+		setCreateGroup(
+		<div className='EmptyCanvas'>
+			<div>
+			<label htmlFor="name">Nom:</label>
+			<input type="text" id="name" name="name" required/>
+			</div>
+			<div>
+			<label htmlFor="isPrivate">Privée:</label>
+			<input type="checkbox" id="isPrivate" name="isPrivate"/>
+			</div>
+			<div>
+			<label htmlFor="password">Mot de passe:</label>
+			<input type="password" id="password" name="password"/>
+			</div>
+			<div>
+			<label>Ajouter des gens:</label>
+			{peopleOptions.map((person, index) => (
+				<div key={index}>
+				<input
+					type="checkbox"
+					id={`person-${person.ID}`}
+					name={`person-${person.ID}`}
+					value={person.ID}
+				/>
+				<label htmlFor={`person-${person.ID}`}>{person.Pseudo}</label>
+				</div>
+			))}
+			</div>
+			<button type="button" onClick={handleFormSubmit}>Soumettre</button>
+		</div>
+		);
+		setCurrentView("addPerson");
+	}
+
+	async function handleFormSubmit() {
+		// Utilisez les variables groupName, isPrivate, password et selectedPeople pour traiter le formulaire
+		let groupName = document.getElementById("name").value;
+		let isPrivate = document.getElementById("isPrivate").checked;
+		let password = document.getElementById("password").value;
+		let selectedPeople = [];
+		let peopleOptions = JSON.parse(sessionStorage.getItem('userData')).Friends;
+		console.log("Nom:", groupName);
+		console.log("Privée:", isPrivate);
+		console.log("Mot de passe:", password);
+		console.log("Personnes sélectionnées:", peopleOptions);
+	
+		for (let i = 0; i < peopleOptions.length; i++)
+			if (document.getElementById(`person-${peopleOptions[i].ID}`).checked)
+				selectedPeople.push(peopleOptions[i].ID);
+
+		password = (!isPrivate) ? null: password;
+		isPrivate = (!isPrivate) ? 0: 1;
+		let out = await axios.post('http://127.0.0.1:3001/conv', {
+			name: groupName,
+			status: isPrivate,
+			password: password
+		});
+		out = out.data;
+		console.log(out);
+		for (let i = 0; i < selectedPeople.length; i++)
+			await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${selectedPeople[i]}`);
+		await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${JSON.parse(sessionStorage.getItem('userData')).ID}`);
+		await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/admins/${JSON.parse(sessionStorage.getItem('userData')).ID}`);
+		setCurrentView("messages");
+		onOpenConversation((await axios.get(`http://127.0.0.1:3001/conv/${out.ID}`)).data);
+}
 
 	return (
 		<div className="App">
@@ -137,13 +285,40 @@ export default function App() {
 				</div>
 				<div className="GroupChats">
 				<p>GROUP CHATS</p>
+				<button
+					style={{
+						backgroundColor: '#7288da',
+						color: 'white',
+						border: 'none',
+						padding: '10px 20px',
+						borderRadius: '5px',
+						display: 'inline-block',
+						cursor: 'pointer',
+					}}
+					onClick={handleAddPerson}
+				>
+				Creat new group
+				</button>
 				{gchatComponents}
 				</div>
 			</div>
 			{/* Conditionnellement afficher soit le GameCanvas, soit le MessageCanvas */}
-			{((currentView === "game") ? <GameCanvas /> : (currentView === "messages") ? messages:( <div className='EmptyCanvas'></div>))}
+			{((currentView === "game") ? <GameCanvas /> : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup : ( <div className='EmptyCanvas'></div>))}
 			{userInfoComponents}
 			</div>
 		</div>
 	);
 }
+
+
+//Il faut creer un timeoutid  remplacer timeoutidconv par celui que l'on veut
+/*
+const [timeoutId, setTimeoutId] = useState(null);
+
+
+if (timeoutIdConv)
+	clearTimeout(timeoutIdConv);
+setTimeoutIdConv( await setTimeout(async () => {
+onOpenConversation((await axios.get(`http://127.0.0.1:3001/conv/${datas.ID}`)).data)
+}, 1000));
+*/

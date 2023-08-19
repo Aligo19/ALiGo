@@ -35,7 +35,9 @@ export class UserService {
 
   async getUserById(id: number): Promise<User> {
         let out =  this.userRepository.findOne({
-            where:{ID: Equal(id)}
+            where:{ID: Equal(id)},
+            relations: ['Friends', 'Blocked']
+
         });
         if (out)
             return out;
@@ -44,7 +46,8 @@ export class UserService {
 
   async getUserByPseudo(pseudo: string): Promise<User> {
     let out = this.userRepository.findOne({
-        where:{Pseudo: Equal(pseudo)}
+        where:{Pseudo: Equal(pseudo)},
+        relations: ['Friends', 'Blocked']
     });
     if (out)
       return out;
@@ -53,7 +56,9 @@ export class UserService {
 
   async getUserBy19Id(id: string): Promise<User> {
     let out =  this.userRepository.findOne({
-        where:{ID_19: Equal(id)}
+        where:{ID_19: Equal(id)},
+        relations: ['Friends', 'Blocked']
+
     });
     if (out)
       return out;

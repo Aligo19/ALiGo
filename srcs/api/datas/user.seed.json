@@ -8,7 +8,8 @@
     "Global_skin": [1, 2, 3, 4],
     "Wins": 20,
     "Loses": 10,
-    "Last_connection": "2020-01-01 00:00:00"
+    "Last_connection": "2020-01-01 00:00:00",
+    "Friends": []
   },
   {
     "ID_19": "lbuccher",
@@ -19,7 +20,10 @@
     "Global_skin": [1, 2, 3],
     "Wins": 10,
     "Loses": 5,
-    "Last_connection": "2020-01-01 00:00:00"
+    "Last_connection": "2020-01-01 00:00:00",
+    "Friends": [
+      1
+    ]
   },
   {
     "ID_19": "acaillea",
@@ -30,7 +34,11 @@
     "Global_skin": [1, 3, 4],
     "Wins": 15,
     "Loses": 8,
-    "Last_connection": "2020-01-01 00:00:00"
+    "Last_connection": "2020-01-01 00:00:00",
+    "Friends": [
+      1,
+      2
+    ]
   },
   {
     "ID_19": "hcremers",
@@ -41,6 +49,11 @@
     "Global_skin": [3, 5],
     "Wins": 5,
     "Loses": 3,
-    "Last_connection": "2020-01-01 00:00:00"
+    "Last_connection": "2020-01-01 00:00:00",
+    "Friends": [
+      1,
+      2,
+      3
+    ]
   }
 ]
