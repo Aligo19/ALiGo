@@ -63,17 +63,18 @@ export default function App() {
 
 	async function fetchUserInfo(id = null) {
 		try {
+			let userProfile;
 			if (!id)
 			{
 				const y = JSON.parse(sessionStorage.getItem('userData'));
 				const response = await axios.get(`http://127.0.0.1:3001/users/${y.ID}`);
-				const userProfile = response.data;
+				userProfile = response.data;
 				sessionStorage.setItem('userData', JSON.stringify(userProfile));
 			}
 			else
 			{
 				const response = await axios.get(`http://127.0.0.1:3001/users/${id}`);
-				const userProfile = response.data;
+				userProfile = response.data;
 				sessionStorage.setItem('userData', JSON.stringify(userProfile));
 			}
 			setUserData(userProfile);
