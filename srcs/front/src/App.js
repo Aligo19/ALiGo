@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Assurez-vous que vous avez importé Axios
+import axios from 'axios';
 
 import Navbar from "./components/Navbar";
 import PrivateChats from "./components/Main/Groups/PrivateChats";
@@ -8,11 +8,12 @@ import MessageCanvas from "./components/Main/MessageCanvas";
 import UserInfo from "./components/Main/UserInfo";
 import GameCanvas from './components/Main/GameCanvas';
 
-function App() {
+export default function App() {
   const [gchats, setGChats] = useState([]);
   const [pchats, setPChats] = useState([]);
   const [messages, setMessages] = useState([]);
   const [currentView, setCurrentView] = useState("");
+  const [userData, setUserData] = useState([]);
 
   const id = 1;
 
@@ -57,11 +58,35 @@ function App() {
 		}
     }
 	connect();
+	fetchUserInfo();
     fetchChats();
-  }, []);
+
+	async function fetchUserInfo(id = null) {
+		try {
+			if (!id)
+			{
+				const y = JSON.parse(sessionStorage.getItem('userData'));
+				const response = await axios.get(`http://127.0.0.1:3001/users/${y.ID}`);
+				const userProfile = response.data;
+				sessionStorage.setItem('userData', JSON.stringify(userProfile));
+			}
+			else
+			{
+				const response = await axios.get(`http://127.0.0.1:3001/users/${id}`);
+				const userProfile = response.data;
+				sessionStorage.setItem('userData', JSON.stringify(userProfile));
+			}
+			setUserData(userProfile);
+		} catch (error) {
+			console.error("Error getting user infos: ", error);
+		}
+		}
+	}, []);
+	
+  const userInfoComponents = <UserInfo name={userData.Pseudo} avatar={userData.Avatar} level={userData.Elo} winnb={userData.Wins} losenb={userData.Loses} />;
   
   const pchatComponents = pchats.map(item => (
-    <PrivateChats key={item.ID} name={item.Name} value={item.ID}  />
+    <PrivateChats key={item.ID} name={item.Name} value={item.ID} onOpenConversation={onOpenConversation} />
   ));
 
   const gchatComponents = gchats.map(item => (
@@ -74,7 +99,8 @@ function App() {
 	const datasUser = JSON.parse(sessionStorage.getItem('userData'));
 	const newMessages = datas.Messages.map((item) => (
 		<MessageCanvas key={index++} content={item.data} sent={(datasUser.ID === item.ID_user)? true: false} />
-	  ));
+	));
+
 	  setMessages(	<div className="MessageCanvas">
 	  					<div className="MessageContainer">
 							{newMessages}
@@ -83,12 +109,12 @@ function App() {
         			</div>);
   }
 
-    // Fonction pour changer la vue actuelle en "game"
+  	// Fonction pour changer la vue actuelle en "game"
 	function showGameCanvas() {
 		setCurrentView("game");
 	}
 
-		// Fonction pour changer la vue actuelle en "messages"
+	// Fonction pour changer la vue actuelle en "messages"
 	function showMessageCanvas() {
 		setCurrentView("messages");
 	}
@@ -115,10 +141,8 @@ function App() {
 			</div>
 			{/* Conditionnellement afficher soit le GameCanvas, soit le MessageCanvas */}
 			{((currentView === "game") ? <GameCanvas /> : (currentView === "messages") ? messages:( <div className='EmptyCanvas'></div>))}
-			<UserInfo />
+			{userInfoComponents}
 			</div>
 		</div>
 	);
 }
-
-export default App;

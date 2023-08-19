@@ -1,7 +1,6 @@
-import React from 'react';
 import Navbar from './components/Navbar';
 
-function Login() {
+export default function Login() {
 	return (
 		<>
 			<Navbar />
@@ -17,5 +16,3 @@ function Login() {
 		</>
 	);
 };
-
-export default Login;

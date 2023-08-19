@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-function GroupChats(props) {
+export default function GroupChats(props) {
 
   async function openConversation(props) {
     try {
@@ -19,5 +19,3 @@ function GroupChats(props) {
     </div>
   );
 }
-
-export default GroupChats;

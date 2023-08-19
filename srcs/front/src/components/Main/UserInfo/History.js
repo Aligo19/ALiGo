@@ -1,4 +1,4 @@
-function History() {
+export default function History() {
 	return (
 		<div className="History">
 			<h3>Match history</h3>
@@ -6,5 +6,3 @@ function History() {
 		</div>
 	)
 }
-
-export default History

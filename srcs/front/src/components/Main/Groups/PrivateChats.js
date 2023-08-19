@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-function PrivateChats(props) {
+export default function PrivateChats(props) {
 	async function openConversation(props) {
 		console.log(props);
 		try {
@@ -24,5 +24,3 @@ function PrivateChats(props) {
 		</div>
 	);
 }
-
-export default PrivateChats

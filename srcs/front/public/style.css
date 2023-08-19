@@ -331,6 +331,12 @@ html {
 	text-align: center;
 }
 
+.Avatar {
+	height: 100%;
+	object-position: right 75%;
+	object-position: 100px 50px;
+}
+
 .History {
 	max-width: 100%;
 	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;

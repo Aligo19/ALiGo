@@ -1,6 +1,6 @@
 import aligo from "../img/logo_aligo.png"
 
-function Navbar() {
+export default function Navbar() {
 	return (
 		<div className="Navbar">
 			<img src={aligo} alt="logo aligo" className="logo" />
@@ -8,5 +8,3 @@ function Navbar() {
 		</div>
 	)
 }
-
-export default Navbar
