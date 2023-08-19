@@ -36,4 +36,7 @@ export class User extends BaseEntity{
 
   @Column({ type: 'integer' })
   Loses: number;
+
+  @Column({ type: 'timestamp' })
+  Last_connection: Date;
 }

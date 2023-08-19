@@ -84,6 +84,7 @@ export class UserController {
         throw new NotFoundException('User not found');
       logger = ["The request is ok", "Request: POST[ /users/:id/friends ]"];
       output = this.userService.addFriend(user, friend);
+      this.userService.updateDate(user);
     } catch (error) {
       logger = ["The request doesn't work", "Request: POST[ /users/:id/friends ]"];
       output = error;

@@ -70,6 +70,7 @@ export class MatchController {
     try {
         const gameLoading = await this.matchService.getMatchLoading();
         const user = await this.userService.getUserById(id);
+        this.userService.updateDate(user);
         if (gameLoading.length > 0) {
             const game = gameLoading[0]
             game.ID_user2 = user;
@@ -103,6 +104,8 @@ export class MatchController {
         let output, logger, match;
         try {
             match = await this.matchService.getMatchById(matchDatas.Id);
+            this.userService.updateUser(match.ID_user1);
+            this.userService.updateUser(match.ID_user2);
             if (match.Status != 1)
                 throw new NotFoundException('Match is finished or not start');
             match.Status = 2;

@@ -29,7 +29,7 @@ export class MatchService {
     match.Score_user1 = 0;
     match.Score_user2 = 0;
     match.Status = 0;
-
+    this.userService.updateDate(user1);
     return this.matchRepository.save(match);
   }
 

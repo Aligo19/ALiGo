@@ -14,6 +14,7 @@ export async function seedUsers() {
     user.Global_skin = field.Global_skin;
     user.Wins = field.Wins;
     user.Loses = field.Loses;
+    user.Last_connection = field.Last_connection;
     await user.save();
   }
 };

@@ -5,12 +5,14 @@ import { Equal, Repository } from 'typeorm';
 import { Conv } from './conv.entity';
 import { User } from '../user/user.entity';
 import { Message } from './message.objet';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class ConvService {
   constructor(
     @InjectRepository(Conv)
     private convRepository: Repository<Conv>,
+    private userService: UserService,
   ) {}
 
   async createConv(name: string, status: number, password?: string): Promise<Conv> {
@@ -149,6 +151,10 @@ export class ConvService {
   }
 
   async addMessageToConv(convId: number, message: Message): Promise<Conv> {
+    const user = await this.userService.getUserById(message.ID_user);
+    if (!user)
+      throw new Error('User not found');
+    this.userService.updateDate(user);
     const conv = await this.convRepository.findOne({
         where : {ID: Equal(convId)}
     });

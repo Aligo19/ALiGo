@@ -23,7 +23,13 @@ export class UserService {
     user.Global_skin = [];
     user.Wins = 0;
     user.Loses = 0;
+    user.Last_connection = new Date();
 
+    return this.userRepository.save(user);
+  }
+
+  async updateDate(user: User): Promise<User> {
+    user.Last_connection = new Date();
     return this.userRepository.save(user);
   }
 
