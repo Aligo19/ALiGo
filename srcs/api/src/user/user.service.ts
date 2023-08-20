@@ -14,6 +14,8 @@ export class UserService {
   async createUser(ID_19: string, Pseudo: string, Avatar: string): Promise<User> {
     if (await this.getUserBy19Id(ID_19))
         throw new Error('User already exist');
+    if (await this.getUserByPseudo(Pseudo))
+        throw new Error('Pseudo already exist');
     const user = new User();
     user.ID_19 = ID_19;
     user.Pseudo = Pseudo;
@@ -68,7 +70,12 @@ export class UserService {
   async addFriend(user: User, friend: User): Promise<User> {
     if (user.Friends.find(f => f.Pseudo === friend.Pseudo))
       throw new Error('User already friend');
+    if (user.Blocked.find(f => f.Pseudo === friend.Pseudo))
+      throw new Error('User blocked');
+    if (friend.Blocked.find(f => f.Pseudo === user.Pseudo))
+      throw new Error('User blocked');
     user.Friends = [...user.Friends, friend];
+    friend.Friends = [...friend.Friends, user];
     return this.userRepository.save(user);
   }
 
@@ -84,6 +91,10 @@ export class UserService {
     let tmp = await this.getUserById(user.ID);
     if (!tmp)
       throw new Error('User not found');
+    //verif if pseudo exist
+    tmp = await this.getUserByPseudo(user.Pseudo);
+    if (tmp && tmp.ID != user.ID)
+      throw new Error('Pseudo already exist');
     this.userRepository.save(user);
     return "User updated";
   }

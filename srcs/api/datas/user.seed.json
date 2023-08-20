@@ -36,7 +36,6 @@
     "Loses": 8,
     "Last_connection": "2020-01-01 00:00:00",
     "Friends": [
-      1,
       2
     ]
   },
@@ -51,8 +50,6 @@
     "Loses": 3,
     "Last_connection": "2020-01-01 00:00:00",
     "Friends": [
-      1,
-      2,
       3
     ]
   }

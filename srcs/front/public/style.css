@@ -15,7 +15,13 @@ html {
 	align-items: center;
 }
 
-.Navbar>h1 {
+.Navbar>button {
+	background-color: #2C2F33;
+	border: none;
+	color: #f0f3f4;
+}
+
+.Navbar>button>h1 {
 	margin: 0;
 	font-size: 22px;
 }

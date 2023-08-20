@@ -23,7 +23,10 @@ export class ConvService {
       conv.Password = password;
     else
       conv.Password = null;
-
+    conv.Admin = [];
+    conv.Users = [];
+    conv.Muted = [];
+    conv.Messages = [];
     return this.convRepository.save(conv);
   }
 
@@ -161,7 +164,10 @@ export class ConvService {
     if (!conv)
       throw new Error('Conversation not found');
 
-    conv.Messages = [...conv.Messages, message];
+    if (!conv.Messages)
+      conv.Messages = [message];
+    else
+      conv.Messages.push(message);
 
     return this.convRepository.save(conv);
   }

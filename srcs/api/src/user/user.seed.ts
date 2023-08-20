@@ -1,7 +1,7 @@
 // user.seed.ts
 import { User } from './user.entity';
 const fields = require('/app/datas/user.seed.json');
-
+const friends = require('/app/datas/friends.seed.json');
 export async function seedUsers() {
 
   for (const field of fields) {
@@ -15,11 +15,14 @@ export async function seedUsers() {
     user.Wins = field.Wins;
     user.Loses = field.Loses;
     user.Last_connection = field.Last_connection;
-    let friends = [];
-    for (const friend of field.Friends) {
-      friends.push(await User.findOne({ where: { ID: friend } }));
-    }
-    user.Friends = friends;
+    await user.save();
+  }
+
+  for (const friend of friends) {
+    let user = await User.findOne({ where: { ID: friend.ID } });
+    user.Friends = [];
+    for (const friendID of friend.Friends)
+      user.Friends.push(await User.findOne({ where: { ID: friendID } }));
     await user.save();
   }
 };

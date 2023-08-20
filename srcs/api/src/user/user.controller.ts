@@ -1,14 +1,15 @@
 // user.controller.ts
 import { Controller, Get, Post, Body, Param, ParseIntPipe, NotFoundException, Logger, Patch } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './create-user.dto'; // Replace this with your DTO if you have one
 import { User } from './user.entity';
 import { HttpService } from '@nestjs/axios';
 
 
+
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService, private readonly httpService: HttpService) {}
+  constructor(  private readonly userService: UserService, 
+                private readonly httpService: HttpService) {}
 
 /****************************************/
 /*                                      */
@@ -76,7 +77,13 @@ export class UserController {
             output =  await this.userService.getUserBy19Id(user.data["login"]);
             logger = ["The request is ok", "Request: GET[ /users/:code/login ]"];
             if (output == null)
-                output = await this.userService.createUser(user.data["login"], user.data["login"], user.data["image"]["link"]);
+            {
+                output = (await this.userService.createUser(user.data["login"], user.data["login"], user.data["image"]["link"]));
+                output = {
+                    "status": 1,
+                    "data": output
+                }
+            }
         } catch (error) {
             logger = ["The request doesn't work", "Request: GET[ /users/:code/login ]"];
             output = error;
