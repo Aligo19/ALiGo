@@ -66,7 +66,7 @@ export class UserService {
   }
 
   async addFriend(user: User, friend: User): Promise<User> {
-    if (user.Friends.includes(friend))
+    if (user.Friends.find(f => f.Pseudo === friend.Pseudo))
       throw new Error('User already friend');
     user.Friends = [...user.Friends, friend];
     return this.userRepository.save(user);

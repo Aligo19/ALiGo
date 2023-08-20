@@ -254,6 +254,62 @@ export default function App() {
 		onOpenConversation((await axios.get(`http://127.0.0.1:3001/conv/${out.ID}`)).data);
 }
 
+function handleAddFriend() {
+	if (timeoutIdConv)
+		clearTimeout(timeoutIdConv);
+	let user = sessionStorage.getItem('userData');
+	user = JSON.parse(user);
+	const peopleOptions = user.Friends;
+	if (!peopleOptions)
+		return;
+
+	setCreateGroup(
+	<div className='EmptyCanvas'>
+		<div>
+			<label htmlFor="name">Nom du chat:</label>
+			<input type="text" id="name" name="name" required/>
+		</div>
+		<div>
+			<label htmlFor="pseudo">Pseudo:</label>
+			<input type="text" id="pseudo" name="pseudo" required/>
+		</div>
+		<button type="button" onClick={handleFormSubmit2}>Soumettre</button>
+	</div>
+	);
+	setCurrentView("addPerson");
+}
+
+async function handleFormSubmit2() {
+	// Utilisez les variables groupName, isPrivate, password et selectedPeople pour traiter le formulaire
+	let groupName = document.getElementById("name").value;
+	let pseudo = document.getElementById("pseudo").value;
+	if (!groupName || !pseudo || groupName.length === 0 || pseudo.length === 0)
+		return;
+
+	let user = await axios.get(`http://127.0.0.1:3001/users/${pseudo}/pseudo`);
+	console.log(user);
+	if (!user || !user.data || user.status !== 200 || user.data.status)
+		return;
+	user = user.data;
+	let out = await axios.post('http://127.0.0.1:3001/conv', {
+		name: groupName,
+		status: 2,
+		password: null
+	});
+	console.log(out);
+	if (!out || !out.data || out.status < 200 || out.status >= 300 || out.data.status)
+		return;
+	out = out.data;
+	let tout = await axios.get(`http://127.0.0.1:3001/users/${JSON.parse(sessionStorage.getItem('userData')).ID}/friends/${user.Pseudo}/add`);
+	if (!tout || !tout.data || tout.status < 200 || tout.status >= 300 || tout.data.status)
+		return;
+	await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${user.ID}`);
+	await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${JSON.parse(sessionStorage.getItem('userData')).ID}`);
+	await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/admins/${JSON.parse(sessionStorage.getItem('userData')).ID}`);
+	setCurrentView("messages");
+	onOpenConversation((await axios.get(`http://127.0.0.1:3001/conv/${out.ID}`)).data);
+}
+
 	return (
 		<div className="App">
 			<Navbar />
@@ -267,6 +323,7 @@ export default function App() {
 				</div>
 				<div className="PrivateChats">
 				<p>PRIVATE CHATS</p>
+				<button className="CreateGroupChat-btn" onClick={handleAddFriend}>ADD FRIEND</button>
 				{pchatComponents}
 				</div>
 				<div className="GroupChats">

@@ -37,6 +37,23 @@ export class UserController {
         return JSON.stringify(output);
     }
 
+    //affiche le pseudo
+    @Get(':id/pseudo')
+    async getUserPseudoById(@Param('id') id: string) {
+        let output, logger;
+        try {
+            logger = ["The request is ok", "Request: GET[ /users/:id/pseudo ]"];
+            output = await this.userService.getUserByPseudo(id);
+            if (!output)
+                throw new NotFoundException('User not found' + id);
+        } catch (error) {
+            logger = ["The request doesn't work", "Request: GET[ /users/:id/pseudo ]"];
+            output = error;
+        }
+        Logger.log(logger[0], logger[1]);
+        return JSON.stringify(output);
+    }
+
     @Get(':code/login')
     async getUserByCode(@Param('code') code: string){
         let logger, output;
@@ -74,24 +91,47 @@ export class UserController {
  * @param friendId 
  * @returns 
  */
-  @Get(':id/friends/:friendName/add')
-  async addFriend(@Param('id', ParseIntPipe) id: number, @Param('friendName') friendName: string): Promise<String> {
-    let output, logger;
-    try {
-      const user = await this.userService.getUserById(id);
-      const friend = await this.userService.getUserByPseudo(friendName);
-      if (!user || !friend)
-        throw new NotFoundException('User not found');
-      logger = ["The request is ok", "Request: POST[ /users/:id/friends ]"];
-      output = this.userService.addFriend(user, friend);
-      this.userService.updateDate(user);
-    } catch (error) {
-      logger = ["The request doesn't work", "Request: POST[ /users/:id/friends ]"];
-      output = error;
+    @Get(':id/friends/:friendName/add')
+    async addFriend(@Param('id', ParseIntPipe) id: number, @Param('friendName') friendName: string): Promise<String> {
+        let output, logger;
+        try {
+            const user = await this.userService.getUserById(id);
+            const friend = await this.userService.getUserByPseudo(friendName);
+            if (!user || !friend)
+                throw new NotFoundException('User not found');
+            logger = ["The request is ok", "Request: GET[ /users/:id/friends/:friendName/add ]"];
+            if (user.Friends.find(f => f.Pseudo === friend.Pseudo))
+            {
+                logger = ["The request doesn't work", "Request: GET[ /users/:id/friends/:friendName/add ]"];
+                const out = {
+                        "message": "User cannot be friend with the same user twice",
+                        "status": 400,
+                        "error": "Bad Request"
+                }
+                return JSON.stringify(out);
+            }
+            if (user == friend)
+            {
+                logger = ["The request doesn't work", "Request: GET[ /users/:id/friends/:friendName/add ]"];
+                const out = {
+                        "message": "User cannot be friend with himself",
+                        "status": 400,
+                        "error": "Bad Request"
+                }
+                return JSON.stringify(out);
+
+            }
+            output = this.userService.addFriend(user, friend);
+            if (output == null)
+                throw new NotFoundException('Friend not found');
+            this.userService.updateDate(user);
+        } catch (error) {
+            logger = ["The request doesn't work", "Request: GET[ /users/:id/friends/:friendName/add ]"];
+            output = error;
+        }
+        Logger.log(logger[0], logger[1]);
+        return JSON.stringify(output);
     }
-    Logger.log(logger[0], logger[1]);
-    return JSON.stringify(output);
-  }
 
 /**
  * @description Block a user
