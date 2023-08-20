@@ -47,6 +47,7 @@ html {
 	padding: 20px;
 	margin: 11px 13px;
 	border-radius: 5px;
+	color: #1e2124;
 	background-color: #232323;
 	text-align: center;
 	display: grid;
@@ -62,7 +63,7 @@ html {
 	border-radius: 9px;
 	display: inline-block;
 	cursor: pointer;
-	color: black;
+	color: #1e2124;
 	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;
 	font-weight: 700;
 	font-size: 17px;
@@ -86,7 +87,7 @@ html {
 	border-radius: 9px;
 	display: inline-block;
 	cursor: pointer;
-	color: black;
+	color: #1e2124;
 	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;
 	font-weight: 700;
 	font-size: 17px;
@@ -110,7 +111,7 @@ html {
 	border-radius: 9px;
 	display: inline-block;
 	cursor: pointer;
-	color: black;
+	color: #282b30;;
 	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;
 	font-weight: 700;
 	font-size: 17px;
@@ -211,19 +212,6 @@ html {
 	top: 1px;
 }
 
-.Stats {
-	max-width: 100%;
-	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;
-	font-weight: 700;
-	font-size: 18px;
-	font-style: normal;
-	font-weight: 400;
-	padding: 10px;
-	margin: 11px 13px;
-	border-radius: 5px;
-	background-color: #232323;
-}
-
 .PrivateChats>p {
 	padding-top: 0;
 	margin-top: 0;
@@ -281,7 +269,6 @@ html {
 	background-color: #777;
 }
 
-
 .Message-received {
 	align-self: flex-start;
 	background-color: #7288da;
@@ -322,30 +309,125 @@ html {
 	resize: none;
 }
 
+.SendMessage-btn {
+	background-color: #7288da;
+	color: #99AAB5;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+.CreateGroupChat-btn {
+	background-color: #7288da;
+	color: #1e2124;
+	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;
+	font-weight: 600;
+	font-size: 12px;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 5px;
+	display: inline-block;
+	cursor: pointer;
+	line-height: 1;
+}
+
 .UserInfo {
-	flex: 1;
-	height: 100%;
+	flex : 1;
 	background-color: #2C2F33;
 	margin: 5px;
 	border-radius: 13px;
 	text-align: center;
+	width: 30vh;
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.UserInfo--title {
+	flex: 1;
+	text-align: center;
+    border: 2px solid #23272a;
+	border-radius: 8px;
+	border-width: 65% 65%;
+    padding: 10px;
+    margin: 10px 10px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .Avatar {
-	height: 100%;
-	object-position: right 75%;
-	object-position: 100px 50px;
+	width: 30%;
+	height: auto;    
+    border: 1px solid #7288da;
+    border-radius: 25px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.Stat {
+	flex: 1;
+	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;
+	font-size: 18px;
+	font-style: normal;
+	font-weight: 400;
+	margin-top: 6%;
+	margin-bottom: 6%;
+	border-radius: 5px;
+	background-color: #232323;
+	text-align: center;
+	max-height: 100%;
+    padding: 10px;
+    margin: 10px 10px;
+}
+
+.Stat--noMatch {
+	width: 90%;
+    border: 1px solid #7288da;
+	border-radius: 5px;
+	font-size: 100%;
+	text-align: center;
+	margin: 0 auto;
+	margin-top: -7%;
+	margin-bottom: 5%;
+	max-width: 100%;
+}
+
+.Stat--pie {
+	width: 110%;
+	height: auto;    
+	flex : 1;
+	margin-top: -10%;
+	margin-bottom: -10%;
 }
 
 .History {
 	max-width: 100%;
 	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;
-	font-size: 18px;
+	font-size: 17px;
 	font-style: normal;
 	font-weight: 400;
-	margin: 11px 13px;
 	border-radius: 5px;
 	background-color: #232323;
+    padding: 10px;
+    margin: 10px 10px;
+	margin-top: -3px;
+}
+
+.History-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+ }
+  
+.History-item {
+	text-align: left;
+	background-color: #23272a;
+	border: 1px solid #7288da;
+	border-radius: 5px;
+	padding: 10px;
+	margin-bottom: 5px;
+	font-size: 16px;
 }
 
 .login-container {

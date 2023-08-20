@@ -143,22 +143,8 @@ export default function App() {
 									}
 								  }}
 							/>
-							<button
-								style={{
-									backgroundColor: '#7288da',
-									color: 'white',
-									border: 'none',
-									padding: '10px 20px',
-									borderRadius: '5px',
-									display: 'flex',
-									alignItems: 'center',
-									justifyContent: 'center',
-									cursor: 'pointer',
-								}}
-								onClick={() => {
-								sendMessage(datas);
-								}}
-							>
+							<button className="SendMessage-btn" onClick={() => {
+								sendMessage(datas);}}>
 								<span>&#8594;</span> {/* Arrow Right Unicode */}
 							</button>
 						</div>
@@ -285,20 +271,7 @@ export default function App() {
 				</div>
 				<div className="GroupChats">
 				<p>GROUP CHATS</p>
-				<button
-					style={{
-						backgroundColor: '#7288da',
-						color: 'white',
-						border: 'none',
-						padding: '10px 20px',
-						borderRadius: '5px',
-						display: 'inline-block',
-						cursor: 'pointer',
-					}}
-					onClick={handleAddPerson}
-				>
-				Creat new group
-				</button>
+				<button className="CreateGroupChat-btn" onClick={handleAddPerson}>CREAT A NEW GROUP</button>
 				{gchatComponents}
 				</div>
 			</div>
