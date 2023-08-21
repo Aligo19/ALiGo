@@ -491,3 +491,20 @@ html {
 .login-subtitle:hover {
 	color: #d1e8f8;
 }
+
+.status-point {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	display: inline-block;
+	margin-left: 5px;
+	margin-bottom: 3px;
+}
+
+.online {
+	background-color: #4CAF50;
+}
+
+.offline {
+	background-color: #F44336;
+}

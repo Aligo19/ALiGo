@@ -18,6 +18,7 @@ export default function App() {
   const [userData, setUserData] = useState([]);
   const [timeoutIdConv, setTimeoutIdConv] = useState(null);
   const [timeoutIdConvs, setTimeoutIdConvs] = useState(null);
+  const [matchHisto, setMatchHisto] = useState([]);
 
   	async function fetchUserInfo(id = null) {
 		try {
@@ -25,7 +26,9 @@ export default function App() {
 			if (!id)
 			{
 				const y = JSON.parse(sessionStorage.getItem('userData'));
-				userProfile = (await axios.get(`http://127.0.0.1:3001/users/${y.ID}`)).data;
+				const userProfile = (await axios.get(`http://127.0.0.1:3001/users/${y.ID}`)).data;
+				if (!userProfile || !userProfile.data || userProfile.status < 200 || userProfile.status >= 300 || userProfile.data.status)
+					return ;
 				sessionStorage.setItem('userData', JSON.stringify(userProfile));
 			}
 			else
@@ -35,6 +38,19 @@ export default function App() {
 			console.error("Error getting user infos: ", error);
 		}
 	}
+
+	async function fetchMatchHisto() {
+		try {
+			const x = JSON.parse(sessionStorage.getItem('userData'));
+			const response = await axios.get(`http://127.0.0.1:3001/matches/${x.ID}/user`);
+			if (!response || !response.data || response.status < 200 || response.status >= 300 || response.data.status)
+				return ;
+			setMatchHisto(response.data);
+		} catch (error) {
+			console.error("Error getting match historique: ", error);
+		}
+	}
+
 	useEffect(() => {
 		function connect()
 		{
@@ -85,11 +101,14 @@ export default function App() {
 			}
 		}
 		connect();
-			fetchUserInfo();
-			fetchChats();
+		fetchUserInfo();
+		fetchChats();
+		fetchMatchHisto();
 	}, []);
 		
-	const userInfoComponents = <UserInfo name={userData.Pseudo} avatar={userData.Avatar} level={userData.Elo} winnb={userData.Wins} losenb={userData.Loses} />;
+	const userInfoComponents = <UserInfo 
+		name={userData.Pseudo} avatar={userData.Avatar} lstCo={userData.Last_connection} 
+		level={userData.Elo} winnb={userData.Wins} losenb={userData.Loses} histo={matchHisto} />;
 	
 	let pchatComponents = [],
 		gchatComponents = [];
