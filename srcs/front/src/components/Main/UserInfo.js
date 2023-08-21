@@ -3,9 +3,9 @@ import History from "./UserInfo/History"
 
 export default function UserInfo(props) {
 	const currentTime = new Date();
-	const lastConnectionTime = props.lstCo ? new Date(props.lstCo.lastConnection) : null;
+    const lastConnectionTime = new Date(Date.parse(props.lstCo));
 	const timeDifference = lastConnectionTime ? (currentTime - lastConnectionTime) / 1000 : null;
-	const isOnline = timeDifference !== null && timeDifference <= 30;
+	const isOnline = timeDifference !== null && timeDifference <= 600;
 	const statusPointClass = isOnline ? 'online' : 'offline';
 
 	return (

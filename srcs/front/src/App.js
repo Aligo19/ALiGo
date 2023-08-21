@@ -7,7 +7,7 @@ import GroupChats from "./components/Main/Groups/GroupChats";
 import MessageCanvas from "./components/Main/MessageCanvas";
 import UserInfo from "./components/Main/UserInfo";
 import GameCanvas from './components/Main/GameCanvas';
-import Login from './Login';
+import Login from './components/Main/Login';
 
 export default function App() {
   const [gchats, setGChats] = useState([]);
@@ -18,7 +18,28 @@ export default function App() {
   const [userData, setUserData] = useState([]);
   const [timeoutIdConv, setTimeoutIdConv] = useState(null);
   const [timeoutIdConvs, setTimeoutIdConvs] = useState(null);
+  const [timeoutIdUserInfos, setTimeouIdUserInfos] = useState(null);
   const [matchHisto, setMatchHisto] = useState([]);
+
+   async function update(newUser) {
+	let oldUser = JSON.parse(sessionStorage.getItem('userData'));
+		let output = await axios.patch('http://127.0.0.1:3001/users/' + oldUser.ID, newUser);
+		if (!output || !output.data || output.status < 200 || output.status >= 300 || output.data.status)
+		{
+			window.alert("Error while updating user");
+			return ;
+		}
+		sessionStorage.removeItem('status');
+		output = await axios.get('http://127.0.0.1:3001/users/' + oldUser.ID);
+		if (!output || !output.data || output.status < 200 || output.status >= 300 || output.data.status)
+		{
+			window.alert("Error while updating user");
+			return ;
+		}
+		output = output.data;
+		setUserData(output);
+		sessionStorage.setItem('userData', JSON.stringify(output));
+	  }
 
   	async function fetchUserInfo(id = null) {
 		try {
@@ -31,9 +52,13 @@ export default function App() {
 					return ;
 				userProfile = userProfile.data;
 				sessionStorage.setItem('userData', JSON.stringify(userProfile));
+				id = userProfile.ID;
 			}
 			else
 				userProfile = (await axios.get(`http://127.0.0.1:3001/users/${id}`)).data;
+			if (timeoutIdUserInfos)
+				clearTimeout(timeoutIdUserInfos);
+			setTimeouIdUserInfos(setTimeout(() => fetchUserInfo(id), 10000));
 			setUserData(userProfile);
 		} catch (error) {
 			console.error("Error getting user infos: ", error);
@@ -69,7 +94,7 @@ export default function App() {
 						console.log(response);
 						if (response.data)
 						{
-							sessionStorage.setItem('userStatus', 1);
+							sessionStorage.setItem('status', 1);
 							response = response.data;
 						}
 						sessionStorage.setItem('userData', JSON.stringify(response));
@@ -102,11 +127,17 @@ export default function App() {
 			}
 		}
 		connect();
+	console.log(sessionStorage.getItem('status'));
+
 		fetchUserInfo();
 		fetchChats();
 		fetchMatchHisto();
 	}, []);
 		
+
+	console.log(sessionStorage.getItem('status'));
+
+
 	const userInfoComponents = <UserInfo 
 		name={userData.Pseudo} avatar={userData.Avatar} lstCo={userData.Last_connection} 
 		level={userData.Elo} winnb={userData.Wins} losenb={userData.Loses} histo={matchHisto} />;
@@ -368,36 +399,44 @@ export default function App() {
 		onOpenConversation((await axios.get(`http://127.0.0.1:3001/conv/${out.ID}`)).data);
 	}
 
-	console.log("currentView: " + currentView);
-	if (sessionStorage.getItem('userStatus') === '1')
+
+	let content;
+	if (sessionStorage.getItem('status') )
 	{
-		return (<Login />);
+		const localUser = JSON.parse(sessionStorage.getItem('userData'));
+		content = <Login Pseudo={localUser.Pseudo} Avatar={localUser.Avatar} update={update} />;
+
 	}
+	else
+	{
+		content = <div className="Main">
+		<div className="Groups">
+			<div className="PlayButtons">
+				{/* Utilisation des fonctions pour changer la vue actuelle */}
+				<div className="Stream-btn" onClick={showGameCanvas}>WATCH MATCH</div>
+				<div className="Random-btn" onClick={showGameCanvas}>RANDOM PLAYER</div>
+				<div className="Friend-btn" onClick={showGameCanvas}>PLAY WITH FRIEND</div>
+			</div>
+			<div className="PrivateChats">
+				<p>PRIVATE CHATS</p>
+				<button className="CreateGroupChat-btn" onClick={handleAddFriend}>ADD FRIEND</button>
+				{pchatComponents}
+			</div>
+				<div className="GroupChats">
+				<p>GROUP CHATS</p>
+				<button className="CreateGroupChat-btn" onClick={handleAddPerson}>CREAT A NEW GROUP</button>
+				{gchatComponents}
+			</div>
+		</div>
+		{/* Conditionnellement afficher soit le GameCanvas, soit le MessageCanvas */}
+		{((currentView === "game") ? <GameCanvas /> : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup :(currentView === "login") ? <Login />: ( <div className='EmptyCanvas'></div>))}
+		{userInfoComponents}
+		</div>
+	}
+	console.log("currentView: " + currentView);
 	return (<div className="App">
 				<Navbar />
-				<div className="Main">
-				<div className="Groups">
-					<div className="PlayButtons">
-						{/* Utilisation des fonctions pour changer la vue actuelle */}
-						<div className="Stream-btn" onClick={showGameCanvas}>WATCH MATCH</div>
-						<div className="Random-btn" onClick={showGameCanvas}>RANDOM PLAYER</div>
-						<div className="Friend-btn" onClick={showGameCanvas}>PLAY WITH FRIEND</div>
-					</div>
-					<div className="PrivateChats">
-						<p>PRIVATE CHATS</p>
-						<button className="CreateGroupChat-btn" onClick={handleAddFriend}>ADD FRIEND</button>
-						{pchatComponents}
-					</div>
-						<div className="GroupChats">
-						<p>GROUP CHATS</p>
-						<button className="CreateGroupChat-btn" onClick={handleAddPerson}>CREAT A NEW GROUP</button>
-						{gchatComponents}
-					</div>
-				</div>
-				{/* Conditionnellement afficher soit le GameCanvas, soit le MessageCanvas */}
-				{((currentView === "game") ? <GameCanvas /> : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup :(currentView === "login") ? <Login />: ( <div className='EmptyCanvas'></div>))}
-				{userInfoComponents}
-				</div>
+				{content}
 			</div>);
 }
 

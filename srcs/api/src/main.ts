@@ -15,7 +15,7 @@ async function bootstrap() {
     // Configuration des options CORS
     const corsOptions: CorsOptions = {
       origin: 'http://127.0.0.1:3000', // L'URL de l'application React
-      methods: 'GET,POST',
+      methods: 'GET,POST,PATCH',
       optionsSuccessStatus: 204,
     };
   
