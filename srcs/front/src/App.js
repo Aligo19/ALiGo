@@ -26,9 +26,10 @@ export default function App() {
 			if (!id)
 			{
 				const y = JSON.parse(sessionStorage.getItem('userData'));
-				const userProfile = (await axios.get(`http://127.0.0.1:3001/users/${y.ID}`)).data;
+				userProfile = (await axios.get(`http://127.0.0.1:3001/users/${y.ID}`));
 				if (!userProfile || !userProfile.data || userProfile.status < 200 || userProfile.status >= 300 || userProfile.data.status)
 					return ;
+				userProfile = userProfile.data;
 				sessionStorage.setItem('userData', JSON.stringify(userProfile));
 			}
 			else
