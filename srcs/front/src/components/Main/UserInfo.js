@@ -21,6 +21,9 @@ export default function UserInfo(props) {
 	const timeDifference = lastConnectionTime ? (currentTime - lastConnectionTime) / 1000 : null;
 	const isOnline = timeDifference !== null && timeDifference <= 600;
 	const statusPointClass = isOnline ? 'online' : 'offline';
+	if (statusPointClass === 'online')
+		if (props.Game_status === true)
+			statusPointClass = 'ingame';
 
 	let button = '';
 	let friend = JSON.parse(sessionStorage.getItem('userData')).Friends;
