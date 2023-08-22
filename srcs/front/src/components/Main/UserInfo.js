@@ -6,13 +6,14 @@ export default function UserInfo(props) {
 
 	async function erase() {
 		try {
-			const response = await axios.get(`http://127.0.0.1:3001/users/${props.name}/pseudo`);
-			const reponse2 = await axios.get(`http://127.0.0.1:3001/users/${JSON.parse(sessionStorage.getItem('userData')).ID}/block/${props.name}/add`);
-			const reponse3 = await axios.get(`http://127.0.0.1:3001/conv/${JSON.parse(sessionStorage.getItem('userData')).ID}/erase/${props.name}`);
+			await axios.get(`http://127.0.0.1:3001/users/${props.name}/pseudo`);
+			await axios.get(`http://127.0.0.1:3001/users/${JSON.parse(sessionStorage.getItem('userData')).ID}/block/${props.name}/add`);
+			await axios.get(`http://127.0.0.1:3001/conv/${JSON.parse(sessionStorage.getItem('userData')).ID}/erase/${props.name}`);
 			sessionStorage.setItem('idUserInfos', JSON.parse(sessionStorage.getItem('userData')).ID);
 			window.location.reload();
 		}
-		catch (error) {
+		catch (error)
+		{
 			console.error('Error erasing user:', error);
 		}
 	}
@@ -26,6 +27,8 @@ export default function UserInfo(props) {
 			statusPointClass = 'ingame';
 
 	let button = '';
+	if (!JSON.parse(sessionStorage.getItem('userData')))
+		return (<div></div>)
 	let friend = JSON.parse(sessionStorage.getItem('userData')).Friends;
 	for (let i = 0; i < friend.length; i++)
 	{
@@ -36,9 +39,7 @@ export default function UserInfo(props) {
 		}
 	}
 	if (props.name != JSON.parse(sessionStorage.getItem('userData')).Pseudo && friend == null)
-	{
 		button = <button className="button" onClick={() => {erase()}}>Erase</button>
-	}
 
 	return (
 		<div className="UserInfo">

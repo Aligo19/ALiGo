@@ -184,6 +184,9 @@ export class UserController {
       const user = await this.userService.getUserById(id);
       if (!user)
         throw new NotFoundException('User not found');
+      if (updatedUserData.Pseudo)
+        if (await this.userService.getUserByPseudo(updatedUserData.Pseudo))
+          throw new Error('Pseudo already used');
       Object.assign(user, updatedUserData);
       logger = ["The request is ok", "Request: PATCH[ /users/id ]"];
       output =  updatedUserData;

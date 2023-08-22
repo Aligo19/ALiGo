@@ -8,7 +8,6 @@ export default function Stats(props) {
 		return (
 			<div className="Stat">
 			<h3>Lvl. {props.level} </h3>
-			<h4 className="Stat--noMatch">NO MATCHS YET</h4>
 			</div>
 		)
 	}
