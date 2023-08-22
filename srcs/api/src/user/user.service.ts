@@ -82,6 +82,7 @@ export class UserService {
       throw new Error('User blocked');
     user.Friends = [...user.Friends, friend];
     friend.Friends = [...friend.Friends, user];
+    friend.save();
     return this.userRepository.save(user);
   }
 
@@ -89,6 +90,15 @@ export class UserService {
     if (user.Blocked.includes(blockedUser))
       throw new Error('User already blocked');
     user.Blocked = [...user.Blocked, blockedUser];
+    return this.userRepository.save(user);
+  }
+
+  async removeFriend(user: User, friend: User): Promise<User> {
+    if (!user.Friends.find(f => f.Pseudo === friend.Pseudo))
+      throw new Error('User not friend');
+    user.Friends = user.Friends.filter(f => f.Pseudo !== friend.Pseudo);
+    friend.Friends = friend.Friends.filter(f => f.Pseudo !== user.Pseudo);
+    friend.save();
     return this.userRepository.save(user);
   }
 

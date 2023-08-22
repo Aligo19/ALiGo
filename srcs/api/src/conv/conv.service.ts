@@ -171,4 +171,17 @@ export class ConvService {
 
     return this.convRepository.save(conv);
   }
+
+  //le status de la conv doit etre 2 et doit contenir dans ses users idUser et idFriend
+  async removeConv(idUser: number, idFriend: number): Promise<Conv> {
+    const conv = await this.convRepository.find({
+        where : {Status: Equal(2)},
+        relations: ['Users']
+    });
+    let unic = conv.find((conv) => conv.Users.find((user) => user.ID === idUser) && conv.Users.find((user) => user.ID === idFriend));
+    if (!conv)
+      throw new Error('Conversation not found');
+
+    return this.convRepository.remove(unic);
+  }
 }

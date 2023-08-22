@@ -225,6 +225,21 @@ export class ConvController {
     Logger.log(logger[0], logger[1]);
     return JSON.stringify(output);
   }
+
+  @Get(':idUser/erase/:userFriend')
+  async eraseConv( @Param('idUser', ParseIntPipe) idUser: number, @Param('userFriend') userFriend: string) {
+    let output, logger;
+    try {
+      let idFriend = (await this.userService.getUserByPseudo(userFriend)).ID;
+      output = await this.convService.removeConv(idUser, idFriend);
+      logger = ["The request is ok", "Request: POST[ /conv/:idUser/erase/:userFriend ]"];
+    } catch (error) {
+      logger = ["The request doesn't work", "Request: POST[ /conv/:idUser/erase/:userFriend ]"];
+      output = error;
+    }
+    Logger.log(logger[0], logger[1]);
+    return JSON.stringify(output);
+  }
 }
 
 

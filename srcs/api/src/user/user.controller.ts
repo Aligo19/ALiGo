@@ -155,7 +155,7 @@ export class UserController {
       if (!user || !blockedUser)
         throw new NotFoundException('User not found');
       logger = ["The request is ok", "Request: POST[ /users/:id/block ]"];
-      output = await this.userService.blockUser(user, blockedUser);
+      output = await this.userService.removeFriend(user, blockedUser);
     } catch (error) {
       logger = ["The request doesn't work", "Request: POST[ /users/:id/block ]"];
       output = error;
