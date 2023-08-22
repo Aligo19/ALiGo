@@ -158,8 +158,6 @@ export default function App() {
 		console.log(password);
 		if (!password || datas.Password !== password)
 			return ;
-		if ()
-		 	return ;
 		onOpenConversation(datas, 1);
 	}
 
