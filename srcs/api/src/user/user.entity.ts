@@ -39,4 +39,10 @@ export class User extends BaseEntity{
 
   @Column({ type: 'timestamp' })
   Last_connection: Date;
+
+  //defautl value false
+  @Column({ type: 'boolean', default: false})
+  Game_status: boolean;
+
+
 }

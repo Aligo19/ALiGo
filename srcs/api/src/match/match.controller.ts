@@ -70,6 +70,7 @@ export class MatchController {
     try {
         const gameLoading = await this.matchService.getMatchLoading();
         const user = await this.userService.getUserById(id);
+        this.userService.updateGameStatus(user, true);
         this.userService.updateDate(user);
         if (gameLoading.length > 0) {
             const game = gameLoading[0]
@@ -104,6 +105,8 @@ export class MatchController {
         let output, logger, match;
         try {
             match = await this.matchService.getMatchById(matchDatas.Id);
+            this.userService.updateGameStatus(match.ID_user1, false);
+            this.userService.updateGameStatus(match.ID_user2, false);
             this.userService.updateUser(match.ID_user1);
             this.userService.updateUser(match.ID_user2);
             if (match.Status != 1)

@@ -26,7 +26,13 @@ export class UserService {
     user.Wins = 0;
     user.Loses = 0;
     user.Last_connection = new Date();
+    user.Game_status = false;
 
+    return this.userRepository.save(user);
+  }
+
+  async updateGameStatus(user: User, status: boolean): Promise<User> {
+    user.Game_status = status;
     return this.userRepository.save(user);
   }
 
