@@ -43,23 +43,17 @@ export default function App() {
 
   	async function fetchUserInfo(id = null) {
 		try {
-			let userProfile;
-			if (!id)
-			{
-				const y = JSON.parse(sessionStorage.getItem('userData'));
-				userProfile = (await axios.get(`http://127.0.0.1:3001/users/${y.ID}`));
-				if (!userProfile || !userProfile.data || userProfile.status < 200 || userProfile.status >= 300 || userProfile.data.status)
-					return ;
-				userProfile = userProfile.data;
+			let id = sessionStorage.getItem('idUserInfos');
+			let userProfile = (await axios.get(`http://127.0.0.1:3001/users/${id}`));
+			if (!userProfile || !userProfile.data || userProfile.status < 200 || userProfile.status >= 300 || userProfile.data.status)
+				return ;
+			userProfile = userProfile.data;
+			if (id === JSON.parse(sessionStorage.getItem('userData')).ID)
 				sessionStorage.setItem('userData', JSON.stringify(userProfile));
-				id = userProfile.ID;
-			}
-			else
-				userProfile = (await axios.get(`http://127.0.0.1:3001/users/${id}`)).data;
+			setUserData(userProfile);
 			if (timeoutIdUserInfos)
 				clearTimeout(timeoutIdUserInfos);
-			setTimeouIdUserInfos(setTimeout(() => fetchUserInfo(id), 1000));
-			setUserData(userProfile);
+			setTimeouIdUserInfos(setTimeout(() => fetchUserInfo(), 1000));
 		} catch (error) {
 			console.error("Error getting user infos: ", error);
 		}
@@ -97,6 +91,7 @@ export default function App() {
 							sessionStorage.setItem('status', 1);
 							response = response.data;
 						}
+						sessionStorage.setItem('idUserInfos', response.ID);
 						sessionStorage.setItem('userData', JSON.stringify(response));
 						window.location.replace('http://127.0.0.1:3000');
 					})

@@ -8,7 +8,7 @@ export default function GroupChats(props) {
       const response = await axios.get(`http://127.0.0.1:3001/conv/${props.value}`);
       const conversationDetails = response.data;
       props.onOpenConversation(conversationDetails);
-      props.fetchUserInfo();
+		  sessionStorage.setItem('idUserInfos', JSON.parse(sessionStorage.getItem('userData')).ID);
     } catch (error) {
       console.error('Error opening conversation:', error);
     }

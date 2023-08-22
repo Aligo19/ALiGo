@@ -1,7 +1,8 @@
 export default function MessageCanvas(props) {
 	function userInfoLoaded(id) 
 	{
-		props.fetchUserInfo(id);
+		sessionStorage.setItem('idUserInfos', id);
+
 	}
 
 	if (!props.sent)
