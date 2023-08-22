@@ -317,16 +317,16 @@ export default function App() {
 		if (!peopleOptions)
 			return;
 
-		setCreateGroup(	<div className='EmptyCanvas'>
-							<div>
-								<label htmlFor="name">Nom du chat:</label>
-								<input type="text" id="name" name="name" required/>
+		setCreateGroup(	<div className="addFriendForm">
+							<div className="addFriendForm-input-group" >
+								<label className="addFriendForm-custom-label" htmlFor="name">CHAT NAME</label>
+								<input className="addFriendForm-input" type="text" id="name" name="name" required/>
 							</div>
-							<div>
-								<label htmlFor="pseudo">Pseudo:</label>
-								<input type="text" id="pseudo" name="pseudo" required/>
+							<div className="addFriendForm-input-group" >
+								<label className="addFriendForm-custom-label" htmlFor="pseudo">PSEUDO</label>
+								<input className="addFriendForm-input" type="text" id="pseudo" name="pseudo" required/>
 							</div>
-							<button type="button" onClick={handleFormSubmit2}>Soumettre</button>
+							<button type="button" className="addFriendForm-button" onClick={handleFormSubmit2}>Confirm</button>
 						</div>);
 		setCurrentView("addPerson");
 	}

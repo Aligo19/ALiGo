@@ -79,7 +79,7 @@ html {
 }
 
 .Stream-btn:hover {
-	background-color: #7288daaf;
+	background-color: #5469d4;
 }
 
 .Stream-btn:active {
@@ -103,7 +103,7 @@ html {
 }
 
 .Random-btn:hover {
-	background-color: #7288daaf;
+	background-color: #5469d4;
 }
 
 .Random-btn:active {
@@ -127,7 +127,7 @@ html {
 }
 
 .Friend-btn:hover {
-	background-color: #7288daaf;
+	background-color: #5469d4;
 }
 
 .Friend-btn:active {
@@ -493,12 +493,14 @@ html {
 }
 
 .status-point {
-	width: 10px;
-	height: 10px;
+	width: 9px;
+	height: 9px;
 	border-radius: 50%;
+	border: #232323 4px solid;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 	display: inline-block;
 	margin-left: 5px;
-	margin-bottom: 3px;
+	margin-bottom: 2px;
 }
 
 .online {
@@ -508,3 +510,73 @@ html {
 .offline {
 	background-color: #F44336;
 }
+
+.addFriendForm {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	max-width: 100%;
+	max-height: 100%;
+	height: 60vh;
+	width: 46vw;
+	border-radius: 5px;
+	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;
+	padding: 10px;
+	margin-top: 33px;
+  }
+  
+.addFriendForm-input-group {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 24px;
+	max-width: 100%;
+	max-height: 100%;
+	width: 30vw;
+	height: 6vh;
+	background-color: #2C2F33;
+	border-radius: 5px;
+	transition: border-color 0.2s ease-in-out;
+}
+
+.addFriendForm-input-group:hover {
+	background-color: #5469d4;
+	box-shadow: #5469d4 1px 1px 1px 2px inset;
+}
+
+.addFriendForm-custom-label {
+	font-weight: bold;
+	flex-direction: column;
+	color: #99AAB5;
+	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;
+	text-align: center;
+}
+
+.addFriendForm-input {
+	border-radius: 5px;
+	width: 50%;
+	height: 30%;
+	font-weight: bold;
+	color: #99AAB5;
+    background: #23272A;
+	border: 1px #7288da solid; 
+	outline: none;
+}
+  
+.addFriendForm-button {
+	margin: 10px 10px;
+	padding: 10px 20px;
+	background-color: #7288da;
+	border: 2px solid #232323;
+	border-radius: 5px;
+	font-weight: bold;
+	color: #99AAB5;
+	cursor: pointer;
+	transition: background-color 0.2s ease-in-out;
+}
+  
+.addFriendForm-button:hover {
+	background-color: #5469d4;
+}
+

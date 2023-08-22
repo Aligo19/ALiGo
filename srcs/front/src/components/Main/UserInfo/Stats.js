@@ -1,10 +1,8 @@
 import Chart from 'react-google-charts';
 
 export default function Stats(props) {
-	// const wins  = props.winnb;
-	// const loses = props.losenb;
-	const wins  = 16;
-	const loses = 28;
+	const wins  = props.winnb;
+	const loses = props.losenb;
 	const isEmpty = wins === 0 && loses === 0;
 	if (isEmpty) {
 		return (
