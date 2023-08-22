@@ -99,7 +99,7 @@ export class UserController {
  * @returns 
  */
     @Get(':id/friends/:friendName/add')
-    async addFriend(@Param('id', ParseIntPipe) id: number, @Param('friendName') friendName: string): Promise<String> {
+    async addFriend(@Param('id', ParseIntPipe) id: number, @Param('friendName') friendName: string) {
         let output, logger;
         try {
             const user = await this.userService.getUserById(id);
@@ -128,16 +128,16 @@ export class UserController {
                 return JSON.stringify(out);
 
             }
-            output = this.userService.addFriend(user, friend);
+            output = await this.userService.addFriend(user, friend);
             if (output == null)
                 throw new NotFoundException('Friend not found');
-            this.userService.updateDate(user);
+            await this.userService.updateDate(user);
         } catch (error) {
             logger = ["The request doesn't work", "Request: GET[ /users/:id/friends/:friendName/add ]"];
             output = error;
         }
         Logger.log(logger[0], logger[1]);
-        return JSON.stringify(output);
+        return JSON.stringify(null);
     }
 
 /**

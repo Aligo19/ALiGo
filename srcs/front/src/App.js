@@ -41,14 +41,14 @@ export default function App() {
 		sessionStorage.setItem('userData', JSON.stringify(output));
 	  }
 
-  	async function fetchUserInfo(id = null) {
+  	async function fetchUserInfo() {
 		try {
 			let id = sessionStorage.getItem('idUserInfos');
 			let userProfile = (await axios.get(`http://127.0.0.1:3001/users/${id}`));
 			if (!userProfile || !userProfile.data || userProfile.status < 200 || userProfile.status >= 300 || userProfile.data.status)
 				return ;
 			userProfile = userProfile.data;
-			if (id === JSON.parse(sessionStorage.getItem('userData')).ID)
+			if (id == JSON.parse(sessionStorage.getItem('userData')).ID)
 				sessionStorage.setItem('userData', JSON.stringify(userProfile));
 			setUserData(userProfile);
 			if (timeoutIdUserInfos)
@@ -63,7 +63,7 @@ export default function App() {
 		try {
 			const x = JSON.parse(sessionStorage.getItem('userData'));
 			const response = await axios.get(`http://127.0.0.1:3001/matches/${x.ID}/user`);
-			if (!response || !response.data || response.status < 200 || response.status >= 300 || response.data.status)
+						if (!response || !response.data || response.status < 200 || response.status >= 300 || response.data.status)
 				return ;
 			setMatchHisto(response.data);
 		} catch (error) {
@@ -297,27 +297,8 @@ export default function App() {
 		setCurrentView("addPerson");
 	}
 
-	async function handleFormSubmit() {
-		if (timeoutIdConv)
-			clearTimeout(timeoutIdConv);
-		// Utilisez les variables groupName, isPrivate, password et selectedPeople pour traiter le formulaire
-		let groupName = document.getElementById("name").value,
-			isPrivate = document.getElementById("isPrivate").checked,
-			password = document.getElementById("password").value,
-			selectedPeople = [],
-			peopleOptions = JSON.parse(sessionStorage.getItem('userData')).Friends;
-		if (!peopleOptions || !groupName || groupName === '' || (isPrivate && password === '') || peopleOptions.length === 0)
-		{
-			window.alert("Veuillez remplir tous les champs");
-			return;
-		}
-	
-		for (let i = 0; i < peopleOptions.length; i++)
-			if (document.getElementById(`person-${peopleOptions[i].ID}`).checked)
-				selectedPeople.push(peopleOptions[i].ID);
-
-		password = (!isPrivate) ? null: password;
-		isPrivate = (!isPrivate) ? 0: 1;
+	async function connect(groupName, isPrivate, password)
+	{
 		let out = await axios.post('http://127.0.0.1:3001/conv', {
 			name: groupName,
 			status: isPrivate,
@@ -328,13 +309,75 @@ export default function App() {
 			window.alert("Erreur lors de la création du groupe");
 			return;
 		}
-		out = out.data;
+		return out.data;
+	}
+
+	async function handleFormSubmit() {
+		if (timeoutIdConv)
+			clearTimeout(timeoutIdConv);
+		let groupName = document.getElementById("name").value,
+			isPrivate,
+			password = null,
+			selectedPeople = [],
+			peopleOptions;
+		// Utilisez les variables groupName, isPrivate, password et selectedPeople pour traiter le formulaire
+		if (document.getElementById("isPrivate"))
+		{
+			isPrivate = document.getElementById("isPrivate").checked ;
+			password = document.getElementById("password").value;
+			peopleOptions = JSON.parse(sessionStorage.getItem('userData')).Friends;
+			if (!peopleOptions || !groupName || groupName === '' || (isPrivate && password === '') || peopleOptions.length === 0)
+			{
+				window.alert("Veuillez remplir tous les champs");
+				return;
+			}
+			for (let i = 0; i < peopleOptions.length; i++)
+				if (document.getElementById(`person-${peopleOptions[i].ID}`).checked)
+					selectedPeople.push(peopleOptions[i].ID);
+			
+			password = (!isPrivate) ? null: password;
+			isPrivate = (!isPrivate) ? 0: 1;	
+		}
+		else
+		{
+			isPrivate = 2;
+			let pseudo = document.getElementById("pseudo").value;
+			if (!groupName || !pseudo || groupName.length === 0 || pseudo.length === 0)
+			{
+				window.alert("Veuillez remplir tous les champs");
+				return;
+			}
+			let user = await axios.get(`http://127.0.0.1:3001/users/${pseudo}/pseudo`);
+			if (!user || !user.data || user.status !== 200 || user.data.status)
+			{
+				window.alert("User not found");
+				return;
+			}
+			user = user.data;
+			let me = JSON.parse(sessionStorage.getItem('userData'));
+			let tout = await axios.get(`http://127.0.0.1:3001/users/${me.ID}/friends/${user.Pseudo}/add`);
+
+			if (user.ID === me.ID)
+			{
+				window.alert("Vous ne pouvez pas vous ajouter vous même");
+				return;
+			}
+			console.log(me);
+			if (me.Friends.find((friend) => friend.ID === user.ID))
+			{
+				window.alert("Vous êtes déjà ami avec cette personne");
+				return;
+			}
+			selectedPeople.push(user.ID);
+		}
+		let out = await connect(groupName, isPrivate, password);
 		for (let i = 0; i < selectedPeople.length; i++)
 			await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${selectedPeople[i]}`);
 		await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${JSON.parse(sessionStorage.getItem('userData')).ID}`);
 		await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/admins/${JSON.parse(sessionStorage.getItem('userData')).ID}`);
 		setCurrentView("messages");
 		onOpenConversation((await axios.get(`http://127.0.0.1:3001/conv/${out.ID}`)).data);
+		
 	}
 
 	function handleAddFriend() {
@@ -354,79 +397,10 @@ export default function App() {
 								<label className="addFriendForm-custom-label" htmlFor="pseudo">PSEUDO</label>
 								<input className="addFriendForm-input" type="text" id="pseudo" name="pseudo" required/>
 							</div>
-							<button type="button" className="addFriendForm-button" onClick={handleFormSubmit2}>Confirm</button>
+							<button type="button" className="addFriendForm-button" onClick={handleFormSubmit}>Confirm</button>
 						</div>);
 		setCurrentView("addPerson");
 	}
-
-	async function handleFormSubmit2() {
-		if (timeoutIdConv)
-			clearTimeout(timeoutIdConv);
-		// Utilisez les variables groupName, isPrivate, password et selectedPeople pour traiter le formulaire
-		let groupName = document.getElementById("name").value;
-		let pseudo = document.getElementById("pseudo").value;
-		if (!groupName || !pseudo || groupName.length === 0 || pseudo.length === 0)
-		{
-			window.alert("Veuillez remplir tous les champs");
-			return;
-		}
-
-		let user = await axios.get(`http://127.0.0.1:3001/users/${pseudo}/pseudo`);
-		if (!user || !user.data || user.status !== 200 || user.data.status)
-		{
-			window.alert("User not found");
-			return;
-		}
-
-		user = user.data;
-
-		let tout = await axios.get(`http://127.0.0.1:3001/users/${JSON.parse(sessionStorage.getItem('userData')).ID}/friends/${user.Pseudo}/add`);
-		if (!tout || !tout.data || tout.status < 200 || tout.status >= 300 || tout.data.status)
-		{
-			window.alert("Add failed");
-			//Redirection vers la conv avec le user et le friend en commun et le status 2
-			let conv = await axios.get('http://127.0.0.1:3001/conv/' + JSON.parse(sessionStorage.getItem('userData')).ID + '/user');
-			if (!conv || !conv.data || conv.status < 200 || conv.status >= 300 || conv.data.status)
-			{
-				window.alert("Redirect failed");
-				return;
-			}
-			conv = conv.data;
-			for (let i = 0; i < conv.length; i++)
-			{
-				let find = await axios.get(`http://127.0.0.1:3001/conv/${conv[i].ID}`);
-				if (!find || !find.data || find.status < 200 || find.status >= 300 || find.data.status)
-					continue;
-				find = find.data;
-				if (find.Users.length !== 2 || find.Status !== 2)
-					continue;
-				if (find.Users[0].ID === user.ID || find.Users[1].ID === user.ID)
-				{
-					setCurrentView("messages");
-					onOpenConversation(find);
-					return;
-				}
-			}
-			return;
-		}
-		let out = await axios.post('http://127.0.0.1:3001/conv', {
-			name: groupName,
-			status: 2,
-			password: null
-		});
-		if (!out || !out.data || out.status < 200 || out.status >= 300 || out.data.status)
-		{
-			window.alert("Creation failed");
-			return;
-		}
-		out = out.data;
-		await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${user.ID}`);
-		await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${JSON.parse(sessionStorage.getItem('userData')).ID}`);
-		await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/admins/${JSON.parse(sessionStorage.getItem('userData')).ID}`);
-		setCurrentView("messages");
-		onOpenConversation((await axios.get(`http://127.0.0.1:3001/conv/${out.ID}`)).data);
-	}
-
 
 	let content;
 	if (sessionStorage.getItem('status') )
