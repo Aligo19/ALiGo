@@ -58,7 +58,7 @@ export default function App() {
 				userProfile = (await axios.get(`http://127.0.0.1:3001/users/${id}`)).data;
 			if (timeoutIdUserInfos)
 				clearTimeout(timeoutIdUserInfos);
-			setTimeouIdUserInfos(setTimeout(() => fetchUserInfo(id), 10000));
+			setTimeouIdUserInfos(setTimeout(() => fetchUserInfo(id), 1000));
 			setUserData(userProfile);
 		} catch (error) {
 			console.error("Error getting user infos: ", error);
@@ -127,16 +127,10 @@ export default function App() {
 			}
 		}
 		connect();
-	console.log(sessionStorage.getItem('status'));
-
 		fetchUserInfo();
 		fetchChats();
 		fetchMatchHisto();
 	}, []);
-		
-
-	console.log(sessionStorage.getItem('status'));
-
 
 	const userInfoComponents = <UserInfo 
 		name={userData.Pseudo} avatar={userData.Avatar} lstCo={userData.Last_connection} 
@@ -158,12 +152,55 @@ export default function App() {
 		));
 	}
 	
+	function onSubmitPassword(datas, password) {
+		if (timeoutIdConv)
+			clearTimeout(timeoutIdConv);
+		console.log(password);
+		if (!password || datas.Password !== password)
+			return ;
+		if ()
+		 	return ;
+		onOpenConversation(datas, 1);
+	}
 
-	async function onOpenConversation(datas) {
+	async function onOpenConversation(datas, password = null) {
 		showMessageCanvas();
 		const datasUser = JSON.parse(sessionStorage.getItem('userData'));
 		let newMessages = [];
 		
+		if (!password && datas.Status === 1  )
+		{
+			if (timeoutIdConv)
+				clearTimeout(timeoutIdConv);
+			setMessages(	<div className="MessageCanvas">
+								<div className="MessageContainer">
+									<div className="MessageCanvas-Title">
+										{datas.Name}
+									</div>
+								</div>
+									<input
+										id="password"
+										className="Text-input"
+										type="password"
+										name="password"
+										placeholder="Password"
+										style={{ width: '95%' }}
+										onKeyDown={(e) => {
+											if (e.key === 'Enter')
+												onSubmitPassword(datas, document.getElementById('password').value);
+										}}
+									/>
+									<button
+										className="Button"
+										style={{ width: '5%' }}
+										onClick={() => onSubmitPassword(datas, document.getElementById('password').value)}
+									>
+										Submit
+									</button>
+							</div>);
+			return ;
+		}
+
 		if (datas.Messages)
 		{
 			newMessages = datas.Messages.map((item, index) => {
@@ -202,7 +239,7 @@ export default function App() {
 		if (timeoutIdConv)
 			clearTimeout(timeoutIdConv);
 		setTimeoutIdConv( await setTimeout(async () => {
-			onOpenConversation((await axios.get(`http://127.0.0.1:3001/conv/${datas.ID}`)).data)
+			onOpenConversation((await axios.get(`http://127.0.0.1:3001/conv/${datas.ID}`)).data, 1)
 		}, 1000));
 	}
 
@@ -219,12 +256,10 @@ export default function App() {
 		document.getElementById('inputText').value = '';
 	}
 
-	// Fonction pour changer la vue actuelle en "game"
 	function showGameCanvas() {
 		setCurrentView("game");
 	}
 
-	// Fonction pour changer la vue actuelle en "messages"
 	function showMessageCanvas() {
 		setCurrentView("messages");
 	}
@@ -410,28 +445,28 @@ export default function App() {
 	else
 	{
 		content = <div className="Main">
-		<div className="Groups">
-			<div className="PlayButtons">
-				{/* Utilisation des fonctions pour changer la vue actuelle */}
-				<div className="Stream-btn" onClick={showGameCanvas}>WATCH MATCH</div>
-				<div className="Random-btn" onClick={showGameCanvas}>RANDOM PLAYER</div>
-				<div className="Friend-btn" onClick={showGameCanvas}>PLAY WITH FRIEND</div>
-			</div>
-			<div className="PrivateChats">
-				<p>PRIVATE CHATS</p>
-				<button className="CreateGroupChat-btn" onClick={handleAddFriend}>ADD FRIEND</button>
-				{pchatComponents}
-			</div>
-				<div className="GroupChats">
-				<p>GROUP CHATS</p>
-				<button className="CreateGroupChat-btn" onClick={handleAddPerson}>CREAT A NEW GROUP</button>
-				{gchatComponents}
-			</div>
-		</div>
-		{/* Conditionnellement afficher soit le GameCanvas, soit le MessageCanvas */}
-		{((currentView === "game") ? <GameCanvas /> : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup :(currentView === "login") ? <Login />: ( <div className='EmptyCanvas'></div>))}
-		{userInfoComponents}
-		</div>
+					<div className="Groups">
+						<div className="PlayButtons">
+							{/* Utilisation des fonctions pour changer la vue actuelle */}
+							<div className="Stream-btn" onClick={showGameCanvas}>WATCH MATCH</div>
+							<div className="Random-btn" onClick={showGameCanvas}>RANDOM PLAYER</div>
+							<div className="Friend-btn" onClick={showGameCanvas}>PLAY WITH FRIEND</div>
+						</div>
+						<div className="PrivateChats">
+							<p>PRIVATE CHATS</p>
+							<button className="CreateGroupChat-btn" onClick={handleAddFriend}>ADD FRIEND</button>
+							{pchatComponents}
+						</div>
+							<div className="GroupChats">
+							<p>GROUP CHATS</p>
+							<button className="CreateGroupChat-btn" onClick={handleAddPerson}>CREAT A NEW GROUP</button>
+							{gchatComponents}
+						</div>
+					</div>
+					{/* Conditionnellement afficher soit le GameCanvas, soit le MessageCanvas */}
+					{((currentView === "game") ? <GameCanvas /> : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup :(currentView === "login") ? <Login />: ( <div className='EmptyCanvas'></div>))}
+					{userInfoComponents}
+				</div>
 	}
 	console.log("currentView: " + currentView);
 	return (<div className="App">
