@@ -242,6 +242,16 @@ export default function App() {
 		if (document.getElementById('inputText').value === '')
 			return;
 		const datas = JSON.parse(sessionStorage.getItem('userData'));
+		if (oldDatas.Muted.find((user) => user.ID === datas.ID))
+		{
+			window.alert("Vous êtes mute");
+			return;
+		}
+		if (oldDatas.Blocked.find((user) => user.ID === datas.ID))
+		{
+			window.alert("Vous êtes bloqué");
+			return;
+		}
 		let out = await axios.post(`http://127.0.0.1:3001/conv/${oldDatas.ID}/message`, {
 			ID_user: datas.ID,
 			data: document.getElementById('inputText').value,
