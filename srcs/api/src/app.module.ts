@@ -11,6 +11,8 @@ import { UserModule } from './user/user.module';
 import { MatchModule } from './match/match.module';
 import { ConvModule } from './conv/conv.module';
 
+import { MulterModule } from '@nestjs/platform-express';
+
 dotenv.config(); // Load environment variables from .env file
 
 @Module({
@@ -26,7 +28,8 @@ dotenv.config(); // Load environment variables from .env file
       autoLoadEntities: true,
       synchronize: true,
     }),
-    UserModule, MatchModule, ConvModule
+    UserModule, MatchModule, ConvModule,
+    MulterModule.register({dest: './public/uploads',})
   ],
   controllers: [],
   providers: [
