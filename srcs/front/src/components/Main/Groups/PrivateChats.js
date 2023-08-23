@@ -5,11 +5,9 @@ export default function PrivateChats(props) {
 	async function openConversation(props) {
 		console.log(props);
 		try {
-		  const response = await axios.get(`http://127.0.0.1:3001/conv/${props.value}`);
-		  const conversationDetails = response.data;
-		  props.onOpenConversation(conversationDetails);
-
-		  sessionStorage.setItem('idUserInfos', JSON.parse(sessionStorage.getItem('userData')).ID);
+			sessionStorage.setItem('idConv', props.value);
+			sessionStorage.setItem('statusConv', 0);
+		  	sessionStorage.setItem('idUserInfos', JSON.parse(sessionStorage.getItem('userData')).ID);
 		} catch (error) {
 		  console.error('Error opening conversation:', error);
 		}

@@ -144,7 +144,7 @@ export class ConvController {
       logger = ["The request doesn't work", "Request: POST[ /conv/:id/admins ]"];
       output = error;
     }
-    Logger.log(logger[0], logger[1]);
+    Logger.log(logger[0], output);
     return JSON.stringify(output);
   }
 
@@ -166,7 +166,7 @@ export class ConvController {
       logger = ["The request doesn't work", "Request: POST[ /conv/:id/muteds ]"];
       output = error;
     }
-    Logger.log(logger[0], logger[1]);
+    Logger.log(logger[0], output);
     return JSON.stringify(output);
   }
 
@@ -208,7 +208,7 @@ export class ConvController {
       logger = ["The request doesn't work", "Request: POST[ /conv/:id/users/:idUser/remove ]"];
       output = error;
     }
-    Logger.log(logger[0], logger[1]);
+    Logger.log(logger[0], output.message);
     return JSON.stringify(output);
   }
   

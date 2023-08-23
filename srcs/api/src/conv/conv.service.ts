@@ -9,149 +9,172 @@ import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class ConvService {
-  constructor(
-    @InjectRepository(Conv)
-    private convRepository: Repository<Conv>,
-    private userService: UserService,
-  ) {}
+    constructor(
+        @InjectRepository(Conv)
+        private convRepository: Repository<Conv>,
+        private userService: UserService,
+    ) {}
 
-  async createConv(name: string, status: number, password?: string): Promise<Conv> {
-    const conv = new Conv();
-    conv.Name = name;
-    conv.Status = status;
-    if (status === 1)
-      conv.Password = password;
-    else
-      conv.Password = null;
-    conv.Admin = [];
-    conv.Users = [];
-    conv.Muted = [];
-    conv.Messages = [];
-    return this.convRepository.save(conv);
-  }
+    async createConv(name: string, status: number, password?: string): Promise<Conv> {
+        const conv = new Conv();
+        conv.Name = name;
+        conv.Status = status;
+        if (status === 1)
+        conv.Password = password;
+        else
+        conv.Password = null;
+        conv.Admin = [];
+        conv.Users = [];
+        conv.Muted = [];
+        conv.Messages = [];
+        return this.convRepository.save(conv);
+    }
 
-  async addUsersToConv(convId: number, users: User[]): Promise<Conv> {
-    const conv = await this.convRepository.findOne({
-        where : {ID: Equal(convId)}, 
-        relations: ['Users']
-    });
-    if (conv.Users.find((user) => user.ID === users[0].ID))
-      throw new Error('User already in conversation');
-    if (!conv) {
+    async addUsersToConv(convId: number, users: User[]): Promise<Conv> {
+        const conv = await this.convRepository.findOne({
+            where : {ID: Equal(convId)}, 
+            relations: ['Users']
+        });
+        if (!conv)
+                throw new Error('Conversation not found');
+        if (!conv.Users)
+            conv.Users = users;
+        else
+        {
+            if (conv.Users.find((user) => user.ID === users[0].ID))
+                throw new Error('User already in conversation');
+            conv.Users = [...conv.Users, ...users];
+        }
+
+        return this.convRepository.save(conv);
+    }
+
+    async addAdminsToConv(convId: number, admins: User[]): Promise<Conv> {
+        const conv = await this.convRepository.findOne({
+            where : {ID: Equal(convId)}, 
+            relations: ['Admin']
+        });
+        if (!conv)
+            throw new Error('Conversation not found');
+        if (!conv.Admin)
+            conv.Admin = admins;
+        else
+        {
+            if (conv.Admin.find((admin) => admin.ID === admins[0].ID))
+                throw new Error('User already in conversation');
+            if (conv.Users && !conv.Users.find((user) => user.ID === admins[0].ID))
+                throw new Error('User not found in conversation');
+            conv.Admin = [...conv.Admin, ...admins];
+        }
+
+        return this.convRepository.save(conv);
+    }
+
+    async addMutedsToConv(convId: number, muteds: User[]): Promise<Conv> {
+        const conv = await this.convRepository.findOne({
+            where : {ID: Equal(convId)}, 
+            relations: ['Muted']
+        });
+        if (!conv)
+            throw new Error('Conversation not found');
+        if (!conv.Muted)
+        {
+            conv.Muted = muteds;
+        }
+        else
+        {
+            if (conv.Muted.find((muted) => muted.ID === muteds[0].ID))
+                throw new Error('User already muted in conversation');
+            
+            if (conv.Users && !conv.Users.find((user) => user.ID === muteds[0].ID))
+                throw new Error('User not found in conversation');
+        
+            conv.Muted = [...conv.Muted, ...muteds];
+        }
+
+        return this.convRepository.save(conv);
+    } 
+
+    async getConvById(convId: number): Promise<Conv> {
+        return this.convRepository.findOne({
+            where : {ID: Equal(convId)}, 
+            relations: ['Admin', 'Users', 'Muted']
+        });
+    }
+
+    async getConversationsByUserId(userId: number): Promise<String[]> {
+        let allDatasConv =  await this.convRepository.createQueryBuilder('conv')
+        .leftJoinAndSelect('conv.Users', 'user')
+        .leftJoinAndSelect('conv.Admin', 'admin')
+        .leftJoinAndSelect('conv.Muted', 'muted')
+        .where('user.ID = :userId', { userId })
+        .orWhere('admin.ID = :userId', { userId })
+        .orWhere('muted.ID = :userId', { userId })
+        .getMany();
+        let returnValue = [];
+        for (let i = 0; i < allDatasConv.length; i++) {
+            let conv = allDatasConv[i];
+            let convData = {
+                            ID: conv.ID,
+                            Name: conv.Name,
+                            Status: conv.Status,
+                            Password: conv.Password,
+                        };
+            returnValue.push(convData);
+        }
+        return returnValue;
+    }
+
+    async removeUserFromConv(convId: number, userId: number): Promise<Conv> {
+        const conv = await this.convRepository.findOne({
+            where : {ID: Equal(convId)}, 
+            relations: ['Users']
+        });
+        if (!conv)
         throw new Error('Conversation not found');
+
+        if (conv.Users.length === 1)
+            return this.convRepository.remove(conv);
+        if (!conv.Users.find((user) => user.ID === userId))
+            throw new Error('User not found in conversation');
+        if (conv.Users && conv.Users.length > 1)
+            conv.Users = conv.Users.filter(user => user.ID !== userId);
+        if (conv.Admin && conv.Admin.length > 1)
+            conv.Admin = conv.Admin.filter(user => user.ID !== userId);
+        if (conv.Muted && conv.Muted.length)
+            conv.Muted = conv.Muted.filter(user => user.ID !== userId);
+        if(conv.Messages && conv.Messages.length)
+            conv.Messages = conv.Messages.filter(message => message.ID_user !== userId);
+        return this.convRepository.save(conv);
     }
 
-    conv.Users = [...conv.Users, ...users];
+    async removeAdminFromConv(convId: number, userId: number): Promise<Conv> {
+        const conv = await this.convRepository.findOne({
+            where : {ID: Equal(convId)}, 
+            relations: ['Admin']
+        });
+        if (!conv)
+            throw new Error('Conversation not found');
 
-    return this.convRepository.save(conv);
-  }
+        if (conv && conv.Admin && conv.Admin.length)
+            conv.Admin = conv.Admin.filter(user => user.ID !== userId);
 
-  async addAdminsToConv(convId: number, admins: User[]): Promise<Conv> {
-    const conv = await this.convRepository.findOne({
-        where : {ID: Equal(convId)}, 
-        relations: ['Admin']
-    });
-    if (conv.Admin.find((admin) => admin.ID === admins[0].ID))
-      throw new Error('User already in conversation');
-    if (!conv.Users.find((user) => user.ID === admins[0].ID))
-      throw new Error('User not found in conversation');
-    if (!conv) {
-        throw new Error('Conversation not found');
+        return this.convRepository.save(conv);
     }
 
-    conv.Admin = [...conv.Admin, ...admins];
+    async removeMutedFromConv(convId: number, userId: number): Promise<Conv> {
+        const conv = await this.convRepository.findOne({
+            where : {ID: Equal(convId)}, 
+            relations: ['Muted']
+        });
+        if (!conv)
+            throw new Error('Conversation not found');
 
-    return this.convRepository.save(conv);
-  }
+        if (conv && conv.Muted && conv.Muted.length)
+            conv.Muted = conv.Muted.filter(user => user.ID !== userId);
 
-   async addMutedsToConv(convId: number, muteds: User[]): Promise<Conv> {
-    const conv = await this.convRepository.findOne({
-        where : {ID: Equal(convId)}, 
-        relations: ['Muted']
-    });
-    if (conv.Muted.find((muted) => muted.ID === muteds[0].ID))
-      throw new Error('User already muted in conversation');
-    if (!conv) {
-      throw new Error('Conversation not found');
+        return this.convRepository.save(conv);
     }
-    if (!conv.Users.find((user) => user.ID === muteds[0].ID))
-      throw new Error('User not found in conversation');
-
-    conv.Muted = [...conv.Muted, ...muteds];
-
-    return this.convRepository.save(conv);
-  } 
-
-  async getConvById(convId: number): Promise<Conv> {
-    return this.convRepository.findOne({
-        where : {ID: Equal(convId)}, 
-        relations: ['Admin', 'Users', 'Muted']
-    });
-  }
-
-  async getConversationsByUserId(userId: number): Promise<String[]> {
-    let allDatasConv =  await this.convRepository.createQueryBuilder('conv')
-    .leftJoinAndSelect('conv.Users', 'user')
-    .leftJoinAndSelect('conv.Admin', 'admin')
-    .leftJoinAndSelect('conv.Muted', 'muted')
-    .where('user.ID = :userId', { userId })
-    .orWhere('admin.ID = :userId', { userId })
-    .orWhere('muted.ID = :userId', { userId })
-    .getMany();
-    let returnValue = [];
-    for (let i = 0; i < allDatasConv.length; i++) {
-      let conv = allDatasConv[i];
-      let convData = {
-        ID: conv.ID,
-        Name: conv.Name,
-        Status: conv.Status,
-        Password: conv.Password,
-      };
-      returnValue.push(convData);
-    }
-    return returnValue;
-  }
-
-  async removeUserFromConv(convId: number, userId: number): Promise<Conv> {
-    const conv = await this.convRepository.findOne({
-        where : {ID: Equal(convId)}, 
-        relations: ['Users']
-    });
-    if (!conv)
-      throw new Error('Conversation not found');
-
-    conv.Users = conv.Users.filter(user => user.ID !== userId);
-    conv.Admin = conv.Admin.filter(user => user.ID !== userId);
-    conv.Muted = conv.Muted.filter(user => user.ID !== userId);
-
-    return this.convRepository.save(conv);
-  }
-
-  async removeAdminFromConv(convId: number, userId: number): Promise<Conv> {
-    const conv = await this.convRepository.findOne({
-        where : {ID: Equal(convId)}, 
-        relations: ['Admin']
-    });
-    if (!conv)
-      throw new Error('Conversation not found');
-
-    conv.Admin = conv.Admin.filter(user => user.ID !== userId);
-
-    return this.convRepository.save(conv);
-  }
-
-  async removeMutedFromConv(convId: number, userId: number): Promise<Conv> {
-    const conv = await this.convRepository.findOne({
-        where : {ID: Equal(convId)}, 
-        relations: ['Muted']
-    });
-    if (!conv)
-      throw new Error('Conversation not found');
-
-    conv.Muted = conv.Muted.filter(user => user.ID !== userId);
-
-    return this.convRepository.save(conv);
-  }
 
   async addMessageToConv(convId: number, message: Message): Promise<Conv> {
     const user = await this.userService.getUserById(message.ID_user);

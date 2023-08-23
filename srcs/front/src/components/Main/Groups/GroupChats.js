@@ -3,20 +3,20 @@ import axios from 'axios';
 
 export default function GroupChats(props) {
 
-  async function openConversation(props) {
-    try {
-      const response = await axios.get(`http://127.0.0.1:3001/conv/${props.value}`);
-      const conversationDetails = response.data;
-      props.onOpenConversation(conversationDetails);
-		  sessionStorage.setItem('idUserInfos', JSON.parse(sessionStorage.getItem('userData')).ID);
-    } catch (error) {
-      console.error('Error opening conversation:', error);
-    }
-  }
+    async function openConversation(props) {
+        try {
 
-  return (
-    <div className="Group-btn" style={{ cursor: 'pointer' }} onClick={() => openConversation(props)}>
-      {props.name}
-    </div>
-  );
+        sessionStorage.setItem('idConv', props.value);
+        sessionStorage.setItem('statusConv', props.status);
+        sessionStorage.setItem('idUserInfos', JSON.parse(sessionStorage.getItem('userData')).ID);
+        } catch (error) {
+        console.error('Error opening conversation:', error);
+        }
+    }
+
+    return (
+        <div className="Group-btn" style={{ cursor: 'pointer' }} onClick={() => openConversation(props)}>
+        {props.name}
+        </div>
+    );
 }

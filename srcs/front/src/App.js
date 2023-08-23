@@ -9,17 +9,20 @@ import UserInfo from "./components/Main/UserInfo";
 import GameCanvas from './components/Main/GameCanvas';
 import Login from './components/Main/Login';
 
+const clock = 500;
+
 export default function App() {
-  const [gchats, setGChats] = useState([]);
-  const [pchats, setPChats] = useState([]);
-  const [messages, setMessages] = useState([]);
-  const [createGroup, setCreateGroup] = useState([]);
-  const [currentView, setCurrentView] = useState("");
-  const [userData, setUserData] = useState([]);
-  const [timeoutIdConv, setTimeoutIdConv] = useState(null);
-  const [timeoutIdConvs, setTimeoutIdConvs] = useState(null);
-  const [timeoutIdUserInfos, setTimeouIdUserInfos] = useState(null);
-  const [matchHisto, setMatchHisto] = useState([]);
+	const [gchats, setGChats] = useState([]);
+	const [pchats, setPChats] = useState([]);
+	const [messages, setMessages] = useState([]);
+	const [createGroup, setCreateGroup] = useState([]);
+	const [currentView, setCurrentView] = useState("");
+	const [userData, setUserData] = useState([]);
+	const [timeoutIdConv, setTimeoutIdConv] = useState(null);
+	const [timeoutIdConvs, setTimeoutIdConvs] = useState(null);
+	const [timeoutIdUserInfos, setTimeouIdUserInfos] = useState(null);
+	const [matchHisto, setMatchHisto] = useState([]);
+	const [gestion, setGestion] = useState([]);
 
    async function update(newUser) {
 	let oldUser = JSON.parse(sessionStorage.getItem('userData'));
@@ -53,7 +56,7 @@ export default function App() {
 			setUserData(userProfile);
 			if (timeoutIdUserInfos)
 				clearTimeout(timeoutIdUserInfos);
-			setTimeouIdUserInfos(setTimeout(() => fetchUserInfo(), 1000));
+			setTimeouIdUserInfos(setTimeout(() => fetchUserInfo(), clock));
 		} catch (error) {
 			console.error("Error getting user infos: ", error);
 		}
@@ -76,6 +79,8 @@ export default function App() {
 		{
 			if (!JSON.parse(sessionStorage.getItem('userData'))) 
 			{
+				sessionStorage.setItem('statusConv', 0);
+				sessionStorage.setItem('idConv', 0);
 				const code = new URLSearchParams(window.location.search).get('code');
 				if (!code)
 				{
@@ -84,8 +89,7 @@ export default function App() {
 				}
 				axios.get(`http://127.0.0.1:3001/users/${code}/login`)
 					.then(response => {
-						response = response.data
-						console.log(response);
+						response = response.data;
 						if (response.data)
 						{
 							sessionStorage.setItem('status', 1);
@@ -99,7 +103,6 @@ export default function App() {
 		}
 		async function fetchChats() {
 			try {
-
 				const response = await axios.get(`http://127.0.0.1:3001/conv/${JSON.parse(sessionStorage.getItem('userData')).ID}/user`);
 				const 	chats = response.data,
 						privateChats = [],
@@ -116,7 +119,7 @@ export default function App() {
 				setGChats(groupChats);
 				if (timeoutIdConvs)
 					clearTimeout(timeoutIdConvs);
-				setTimeoutIdConvs( await setTimeout(async () => { fetchChats() }, 1000));
+				setTimeoutIdConvs( await setTimeout(async () => { fetchChats() }, clock));
 			} catch (error) {
 				console.error("Error fetching chats:", error);
 			}
@@ -125,6 +128,7 @@ export default function App() {
 		fetchUserInfo();
 		fetchChats();
 		fetchMatchHisto();
+		onOpenConversation();
 	}, []);
 
 	const userInfoComponents = <UserInfo 
@@ -137,34 +141,128 @@ export default function App() {
 	if (pchats)
 	{
 		pchatComponents = pchats.map(item => (
-			<PrivateChats key={item.ID} name={item.Name} value={item.ID} onOpenConversation={onOpenConversation} fetchUserInfo={fetchUserInfo} />
+			<PrivateChats key={item.ID} name={item.Name} value={item.ID} fetchUserInfo={fetchUserInfo} />
 		));
 	}
 	if (gchats)
 	{
 		gchatComponents = gchats.map(item => (
-			<GroupChats key={item.ID} name={item.Name} value={item.ID} onOpenConversation={onOpenConversation} fetchUserInfo={fetchUserInfo} />
+			<GroupChats key={item.ID} name={item.Name} value={item.ID} status={item.Status} fetchUserInfo={fetchUserInfo} />
 		));
 	}
 	
 	function onSubmitPassword(datas, password) {
-		if (timeoutIdConv)
-			clearTimeout(timeoutIdConv);
-		console.log(password);
 		if (!password || datas.Password !== password)
 			return ;
-		onOpenConversation(datas, 1);
+		sessionStorage.setItem('statusConv', 0);
+		sessionStorage.setItem('idConv', datas.ID);
 	}
 
-	async function onOpenConversation(datas, password = null) {
-		showMessageCanvas();
-		const datasUser = JSON.parse(sessionStorage.getItem('userData'));
-		let newMessages = [];
-		
-		if (!password && datas.Status === 1  )
+	async function control(datasConv) {
+		sessionStorage.setItem('statusConv', 0);
+		sessionStorage.setItem('idConv', 0);
+		setCurrentView("gestion");
+		let user = '';
+		if (datasConv.Users)
+		{
+			user = datasConv.Users.map((user, index) => {
+				let buttonUser= '';
+				let buttonAdmin = '';
+				let buttonMuted = '';
+				let owner = '';
+				if (datasConv.Admin && datasConv.Admin.find((admin) => admin.ID === user.ID))
+				{
+					if (datasConv.Admin && datasConv.Admin[0].ID === user.ID && datasConv.Admin[0].ID !== JSON.parse(sessionStorage.getItem('userData')).ID)
+					{
+						buttonAdmin = '';
+					}
+					else
+					{
+						buttonAdmin = <button className="Button" onClick={async () => {
+							if (datasConv.Admin && datasConv.Admin.length === 1)
+								return ;
+							await axios.get(`http://127.0.0.1:3001/conv/${datasConv.ID}/admins/${user.ID}/remove`);
+							window.alert("User demoted");
+							sessionStorage.setItem('idConv', datasConv.ID);
+							window.location.reload();
+						}}>Demote</button>;
+					}
+				}
+
+				else
+					buttonAdmin = <button className="Button" onClick={async () => {
+						await axios.get(`http://127.0.0.1:3001/conv/${datasConv.ID}/admins/${user.ID}`);
+						window.alert("User promoted");
+						sessionStorage.setItem('idConv', datasConv.ID);
+						window.location.reload();
+					}}>Promote</button>;
+				if (datasConv.Muted && datasConv.Muted.find((muted) => muted.ID === user.ID))
+					buttonMuted = <button className="Button" onClick={async () => {
+						await axios.get(`http://127.0.0.1:3001/conv/${datasConv.ID}/muteds/${user.ID}/remove`);
+						window.alert("User unmuted");
+						sessionStorage.setItem('idConv', datasConv.ID);
+						window.location.reload();
+					}}>Unmute</button>;
+				else
+					buttonMuted = <button className="Button" onClick={async () => {
+						await axios.get(`http://127.0.0.1:3001/conv/${datasConv.ID}/muteds/${user.ID}`);
+						window.alert("User muted");
+						sessionStorage.setItem('idConv', datasConv.ID);
+						window.location.reload();
+					}}>Mute</button>;
+				buttonUser = <button className="Button" onClick={async () => {
+					await axios.get(`http://127.0.0.1:3001/conv/${datasConv.ID}/users/${user.ID}/remove`);
+					window.alert("User removed");
+					window.location.reload();
+				}}>Remove</button>;
+				if (datasConv.Admin && datasConv.length && datasConv.Admin[0].ID === user.ID)
+					owner = "Owner";
+				
+				return (
+					<div key={index}>
+						{user.Pseudo + " " + owner}
+						{buttonUser}
+						{buttonAdmin}
+						{buttonMuted}
+					</div>
+				);
+		})
+		}
+		setGestion(	<div className="MessageCanvas">
+						<div className="MessageContainer">
+							<div className="MessageCanvas-Title">
+								{datasConv.Name}
+							</div>
+						</div>
+						{user}
+						<button className="Button" onClick={async () => {
+							sessionStorage.setItem('statusConv', 0);
+							sessionStorage.setItem('idConv', datasConv.ID);
+						}}>Back</button>
+					</div>);
+	}
+
+	async function onOpenConversation() {
+		let id = sessionStorage.getItem('idConv');
+		if (id == undefined)
+			id = 0;
+		if (id == 0)
 		{
 			if (timeoutIdConv)
 				clearTimeout(timeoutIdConv);
+			setTimeoutIdConv( await setTimeout(async () => {
+				onOpenConversation();
+			}, clock));
+			return ;
+		}
+		showMessageCanvas();
+		let datas = await axios.get(`http://127.0.0.1:3001/conv/${id}`);
+		datas = datas.data;
+		const datasUser = JSON.parse(sessionStorage.getItem('userData'));
+		let newMessages = [];
+		
+		if (sessionStorage.getItem('statusConv') == 1)
+		{
 			setMessages(	<div className="MessageCanvas">
 								<div className="MessageContainer">
 									<div className="MessageCanvas-Title">
@@ -191,6 +289,11 @@ export default function App() {
 										Submit
 									</button>
 							</div>);
+			if (timeoutIdConv)
+				clearTimeout(timeoutIdConv);
+			setTimeoutIdConv( await setTimeout(async () => {
+				onOpenConversation();
+			}, clock));
 			return ;
 		}
 
@@ -204,7 +307,16 @@ export default function App() {
 			});
 		}
 
+		let button = '';
+		if (datas.Status !== 2 /*&& datas.Admins && datas.Admins.find((user) => user.ID === datasUser.ID)*/)
+		{
+			button = <button className="Back-btn" onClick={() => {control(datas)}}>
+						gestion
+					</button>;
+		}
+
 		setMessages(	<div className="MessageCanvas">
+							{button}
 							<div className="MessageContainer">
 								{newMessages}
 							</div>
@@ -232,13 +344,11 @@ export default function App() {
 		if (timeoutIdConv)
 			clearTimeout(timeoutIdConv);
 		setTimeoutIdConv( await setTimeout(async () => {
-			onOpenConversation((await axios.get(`http://127.0.0.1:3001/conv/${datas.ID}`)).data, 1)
-		}, 1000));
+			onOpenConversation();
+		}, clock));
 	}
 
 	async function sendMessage(oldDatas) {
-		if (timeoutIdConv)
-			clearTimeout(timeoutIdConv);
 		if (document.getElementById('inputText').value === '')
 			return;
 		const datas = JSON.parse(sessionStorage.getItem('userData'));
@@ -247,7 +357,7 @@ export default function App() {
 			window.alert("Vous êtes mute");
 			return;
 		}
-		if (oldDatas.Blocked.find((user) => user.ID === datas.ID))
+		if (oldDatas.Blocked && oldDatas.Blocked.find((user) => user.ID === datas.ID))
 		{
 			window.alert("Vous êtes bloqué");
 			return;
@@ -268,8 +378,8 @@ export default function App() {
 	}
 
 	function handleAddPerson() {
-		if (timeoutIdConv)
-			clearTimeout(timeoutIdConv);
+		sessionStorage.setItem('statusConv', 0);
+		sessionStorage.setItem('idConv', 0);
 		let user = JSON.parse(sessionStorage.getItem('userData'));
 		const peopleOptions = user.Friends;
 		if (!peopleOptions)
@@ -322,8 +432,8 @@ export default function App() {
 	}
 
 	async function handleFormSubmit() {
-		if (timeoutIdConv)
-			clearTimeout(timeoutIdConv);
+		sessionStorage.setItem('statusConv', 0);
+		sessionStorage.setItem('idConv', 0);
 		let groupName = document.getElementById("name").value,
 			isPrivate,
 			password = null,
@@ -385,13 +495,13 @@ export default function App() {
 		await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${JSON.parse(sessionStorage.getItem('userData')).ID}`);
 		await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/admins/${JSON.parse(sessionStorage.getItem('userData')).ID}`);
 		setCurrentView("messages");
-		onOpenConversation((await axios.get(`http://127.0.0.1:3001/conv/${out.ID}`)).data);
-		
+		sessionStorage.setItem('statusConv', 0);
+		sessionStorage.setItem('idConv', out.ID);
 	}
 
 	function handleAddFriend() {
-		if (timeoutIdConv)
-			clearTimeout(timeoutIdConv);
+		sessionStorage.setItem('statusConv', 0);
+		sessionStorage.setItem('idConv', 0);
 		let user = JSON.parse(sessionStorage.getItem('userData'));
 		const peopleOptions = user.Friends;
 		if (!peopleOptions)
@@ -445,7 +555,7 @@ export default function App() {
 						</div>
 					</div>
 					{/* Conditionnellement afficher soit le GameCanvas, soit le MessageCanvas */}
-					{((currentView === "game") ? <GameCanvas /> : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup :(currentView === "login") ? <Login />: ( <div className='EmptyCanvas'></div>))}
+					{((currentView === "game") ? <GameCanvas /> : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup :(currentView === "login") ? <Login />:(currentView === "gestion") ? gestion : ( <div className='EmptyCanvas'></div>))}
 					{userInfoComponents}
 				</div>
 	}
@@ -466,5 +576,5 @@ if (timeoutIdConv)
 	clearTimeout(timeoutIdConv);
 setTimeoutIdConv( await setTimeout(async () => {
 onOpenConversation((await axios.get(`http://127.0.0.1:3001/conv/${datas.ID}`)).data)
-}, 1000));
+}, clock));
 */
