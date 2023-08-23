@@ -52,6 +52,11 @@ export class UserService {
         return null;
   }
 
+  async updateAvatar(user: User, avatar: string): Promise<User> {
+    user.Avatar = avatar;
+    return this.userRepository.save(user);
+  }
+
   async getUserByPseudo(pseudo: string): Promise<User> {
     let out = this.userRepository.findOne({
         where:{Pseudo: Equal(pseudo)},

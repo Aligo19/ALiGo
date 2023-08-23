@@ -3,25 +3,43 @@ import axios from 'axios';
 
 export default function Login(props) {
   const [user, setUser] = useState({
-                            Pseudo : props.Pseudo,
-                            Avatar : props.Avatar,
-                            update: props.update
-                          });
+    Pseudo : props.Pseudo,
+    Avatar : props.Avatar,
+    update: props.update
+  });
+  
+  
+  function update() {user.update(user);  console.log("update");}
 
-  function update() {user.update(user); console.log("update");}
+    const [file, setFile] = useState(null);
 
-  const fileData = new fileData();
-  async function AvatarUpload() {
-      fileData.append('file', user.Avatar);
-    
-    try {
-      const response = await axios.post('http://127.0.0.1:3001/users/'+ props.Pseudo, fileData, {
-      headers: {'Content-Type': 'multipart/file-data',},});
-      console.log('Server response:', response.data);
-    } catch (error) {
-      console.error('Error uploading file:', error);
-    }
+  function handleFileChange(event) {
+    setFile(event.target.files[0]);
+  };
+  async function update() {
+    await user.update(user); 
+    await AvatarUpload();
   }
+
+  async function AvatarUpload () {
+  
+      const formData = new FormData();
+      formData.append('file', file);
+      console.log(file);
+      console.log(formData);
+      try {
+        await axios.post('http://127.0.0.1:3001/users/'+ props.Pseudo, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        let user = await axios.get(`http://127.0.0.1:3001/users/${props.Pseudo}/pseudo`);
+        user = user.data;
+        sessionStorage.setItem('userData', JSON.stringify(user));
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+    };
 
   return (
       <div className="login-container">
@@ -36,9 +54,9 @@ export default function Login(props) {
                    />
                 <label htmlFor="ing">Avatar</label>
                 <input className="login-content-input" id="ing" name="ing" type="file" placeholder="Avatar"
-                    onChange={(e) => setUser(prevUser => ({ ...prevUser, Avatar: e.target.value }))} />
+                    onChange={handleFileChange} />
                 <img className="login-content-img" src={user.Avatar} alt="logo" />
-                <button className="login-content-btn" onClick={() => {update(); AvatarUpload();}}>Submit</button>
+                <button className="login-content-btn" onClick={() => { update(); }}>Submit</button>
             </div>
           </div>
         </div>

@@ -29,7 +29,7 @@ dotenv.config(); // Load environment variables from .env file
       synchronize: true,
     }),
     UserModule, MatchModule, ConvModule,
-    MulterModule.register({dest: './public/uploads',})
+    MulterModule.register({dest: './public/img',})
   ],
   controllers: [],
   providers: [

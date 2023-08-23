@@ -3,14 +3,11 @@ import { Controller, Get, Post, Body, Param, ParseIntPipe, NotFoundException, Lo
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { HttpService } from '@nestjs/axios';
-
 import { UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { promises as fsPromises } from 'fs';// npm intsall fs
 import * as path from 'path';
 import { Client } from 'pg';
-
-
 
 @Controller('users')
 export class UserController {
@@ -30,32 +27,30 @@ export class UserController {
  */
     @Post(':id')
     @UseInterceptors(FileInterceptor('file'))
-    async uploadFile(@UploadedFile() file, @Param('id') userId: string) {
-      try {
+    async uploadFile(@UploadedFile() file, @Param('id') userId: string) 
+    {
+      let output, logger;
+      try
+      {
         /* Security check */
         if (!file || !file.originalname) {
           return { message: 'No file provided' };
         }
         /* Path and download the file */
         const uniqueFileName = `${userId}-${file.originalname}`;
-        const filePath = path.join(__dirname, '..', '..', 'public', 'uploads', uniqueFileName);
+        let filePath = path.join(__dirname, '..', '..','public','imgs', uniqueFileName);
         await fsPromises.writeFile(filePath, file.buffer);
+        filePath = path.join('http://127.0.0.1:3001/app/public/imgs', uniqueFileName);
   
-        /* Database connection */
-        const client = new Client();
-        try {
-          await client.connect();
-          const query = 'UPDATE users SET avatar_path = $1 WHERE id = $2';
-          await client.query(query, [uniqueFileName, userId]);
-          await client.end();
-          return { message: 'File uploaded successfully', filePath };
-        } catch (error) {
-          console.error('Error connecting to the database', error);
-        }
+          let user = await this.userService.getUserByPseudo(userId);
+          output =  await this.userService.updateAvatar(user, filePath);
+          logger = ["The request is ok", "Request: POST[ /users/:id ]"];
       } catch (error) {
-        console.error('Error uploading file:', error);
-        return { message: 'Error uploading file' };
+        logger = ["The request doesn't work", error];
+        output = error;
       }
+      Logger.log(logger[0], logger[1]);
+      return JSON.stringify(output);
     }
 
 

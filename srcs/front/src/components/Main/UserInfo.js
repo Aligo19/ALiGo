@@ -10,6 +10,7 @@ export default function UserInfo(props) {
 			await axios.get(`http://127.0.0.1:3001/users/${JSON.parse(sessionStorage.getItem('userData')).ID}/block/${props.name}/add`);
 			await axios.get(`http://127.0.0.1:3001/conv/${JSON.parse(sessionStorage.getItem('userData')).ID}/erase/${props.name}`);
 			sessionStorage.setItem('idUserInfos', JSON.parse(sessionStorage.getItem('userData')).ID);
+			sessionStorage.setItem('idConv', 0);
 			window.location.reload();
 		}
 		catch (error)
