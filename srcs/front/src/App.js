@@ -39,7 +39,7 @@ export default function App() {
 		output = output.data;
 		setUserData(output);
 		sessionStorage.setItem('userData', JSON.stringify(output));
-	  }
+	}
 
   	async function fetchUserInfo() {
 		try {
@@ -275,34 +275,33 @@ export default function App() {
 		if (!peopleOptions)
 			return;
 
-		setCreateGroup(	<div className='EmptyCanvas'>
-							<div>
-								<label htmlFor="name">Nom:</label>
-								<input type="text" id="name" name="name" required/>
+		setCreateGroup(	<div className='addGroupConvForm'>
+							<div className="addGroupConvForm-input-group">
+								<label className="addGroupConvForm-custom-label" htmlFor="name">CHAT NAME :</label>
+								<input className="addGroupConvForm-input" type="text" id="name" name="name" required/>
 							</div>
-							<div>
-								<label htmlFor="isPrivate">Privée:</label>
-								<input type="checkbox" id="isPrivate" name="isPrivate"/>
+							<div className="addGroupConvForm-input-group">
+								<label className="addGroupConvForm-custom-label" htmlFor="isPrivate">PRIVATE ?</label>
+								<input className="addGroupConvForm-input" type="checkbox" id="isPrivate" name="isPrivate"/>
 							</div>
-							<div>
-								<label htmlFor="password">Mot de passe:</label>
-								<input type="password" id="password" name="password"/>
+							<div className="addGroupConvForm-input-group">
+								<label className="addGroupConvForm-custom-label" htmlFor="password">PASSWORD :</label>
+								<input className="addGroupConvForm-input" type="password" id="password" name="password"/>
 							</div>
-							<div>
-								<label>Ajouter des gens:</label>
-								{peopleOptions.map((person, index) => (
+							<div className="addGroupConvForm-input-group-list">
+								<label className="addGroupConvForm-custom-label">ADD FRIENDS :</label>{peopleOptions.map((person, index) => (
 									<div key={index}>
-									<input
+									<input className="addGroupConvForm-checkBox"
 										type="checkbox"
 										id={`person-${person.ID}`}
 										name={`person-${person.ID}`}
 										value={person.ID}
 									/>
-									<label htmlFor={`person-${person.ID}`}>{person.Pseudo}</label>
+									<label className="addGroupConvForm-custom-label" htmlFor={`person-${person.ID}`}>{person.Pseudo}</label>
 									</div>
 								))}
 							</div>
-							<button type="button" onClick={handleFormSubmit}>Soumettre</button>
+							<button className="addGroupConvForm-button" type="button" onClick={handleFormSubmit}>Submit</button>
 						</div>);
 		setCurrentView("addPerson");
 	}
@@ -416,7 +415,12 @@ export default function App() {
 	if (sessionStorage.getItem('status') )
 	{
 		const localUser = JSON.parse(sessionStorage.getItem('userData'));
-		content = <Login Pseudo={localUser.Pseudo} Avatar={localUser.Avatar} update={update} />;
+		// if (!localUser.Avatar)
+		// 	localUser.Avatar = "./img/logo_aligo.png"; // nope
+		content = <Login 
+		Pseudo={localUser.Pseudo} 
+		Avatar={localUser.Avatar} 
+		update={update} />;
 
 	}
 	else
