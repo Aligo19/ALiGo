@@ -40,7 +40,7 @@ export class UserController {
         const uniqueFileName = `${userId}-${file.originalname}`;
         let filePath = path.join(__dirname, '..', '..','public','imgs', uniqueFileName);
         await fsPromises.writeFile(filePath, file.buffer);
-        filePath = path.join('http://127.0.0.1:3001/app/public/imgs', uniqueFileName);
+        filePath = path.join('files', uniqueFileName);
   
           let user = await this.userService.getUserByPseudo(userId);
           output =  await this.userService.updateAvatar(user, filePath);

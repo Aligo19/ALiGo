@@ -48,7 +48,7 @@ export default function UserInfo(props) {
 				<div className={`status-point ${statusPointClass}`}></div>
 				{button}
 			</h2>
-			<img src={`${props.avatar}`} alt={"avatar"} className="Avatar" />
+			<img src={`http://127.0.0.1:3001/${props.avatar}`} alt={"avatar"} className="Avatar" />
 			<Stats level={props.level} winnb={props.winnb} losenb={props.losenb} />
 			<History histo={props.matchHisto} />
 		</div>

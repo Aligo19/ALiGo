@@ -12,6 +12,7 @@ import { MatchModule } from './match/match.module';
 import { ConvModule } from './conv/conv.module';
 
 import { MulterModule } from '@nestjs/platform-express';
+import { FilesController } from './pic/pic.controller';
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -31,7 +32,7 @@ dotenv.config(); // Load environment variables from .env file
     UserModule, MatchModule, ConvModule,
     MulterModule.register({dest: './public/img',})
   ],
-  controllers: [],
+  controllers: [FilesController],
   providers: [
     {
       provide: APP_PIPE,
