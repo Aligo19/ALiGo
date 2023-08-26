@@ -178,49 +178,49 @@ export default function App() {
 					}
 					else
 					{
-						buttonAdmin = <button className="Button" onClick={async () => {
+						buttonAdmin = <button className="ConvSettingsContent-btn" onClick={async () => {
 							if (datasConv.Admin && datasConv.Admin.length === 1)
 								return ;
 							await axios.get(`http://127.0.0.1:3001/conv/${datasConv.ID}/admins/${user.ID}/remove`);
 							window.alert("User demoted");
 							sessionStorage.setItem('idConv', datasConv.ID);
 							window.location.reload();
-						}}>Demote</button>;
+						}}>DEMOTE</button>;
 					}
 				}
 
 				else
-					buttonAdmin = <button className="Button" onClick={async () => {
+					buttonAdmin = <button className="ConvSettingsContent-btn" onClick={async () => {
 						await axios.get(`http://127.0.0.1:3001/conv/${datasConv.ID}/admins/${user.ID}`);
 						window.alert("User promoted");
 						sessionStorage.setItem('idConv', datasConv.ID);
 						window.location.reload();
-					}}>Promote</button>;
+					}}>PROMOTE</button>;
 				if (datasConv.Muted && datasConv.Muted.find((muted) => muted.ID === user.ID))
-					buttonMuted = <button className="Button" onClick={async () => {
+					buttonMuted = <button className="ConvSettingsContent-btn" onClick={async () => {
 						await axios.get(`http://127.0.0.1:3001/conv/${datasConv.ID}/muteds/${user.ID}/remove`);
 						window.alert("User unmuted");
 						sessionStorage.setItem('idConv', datasConv.ID);
 						window.location.reload();
-					}}>Unmute</button>;
+					}}>UNMUTE</button>;
 				else
-					buttonMuted = <button className="Button" onClick={async () => {
+					buttonMuted = <button className="ConvSettingsContent-btn" onClick={async () => {
 						await axios.get(`http://127.0.0.1:3001/conv/${datasConv.ID}/muteds/${user.ID}`);
 						window.alert("User muted");
 						sessionStorage.setItem('idConv', datasConv.ID);
 						window.location.reload();
-					}}>Mute</button>;
-				buttonUser = <button className="Button" onClick={async () => {
+					}}>MUTE</button>;
+				buttonUser = <button className="ConvSettingsContent-btn" onClick={async () => {
 					await axios.get(`http://127.0.0.1:3001/conv/${datasConv.ID}/users/${user.ID}/remove`);
 					window.alert("User removed");
 					window.location.reload();
-				}}>Remove</button>;
+				}}>REMOVE</button>;
 				if (datasConv.Admin && datasConv.length && datasConv.Admin[0].ID === user.ID)
 					owner = "Owner";
 				
 				return (
-					<div key={index}>
-						{user.Pseudo + " " + owner}
+					<div key={index} className="ConvSettingsContent">
+						<div className="ConvSettingsContent-name">{user.Pseudo + " " + owner}</div>
 						{buttonUser}
 						{buttonAdmin}
 						{buttonMuted}
@@ -230,12 +230,12 @@ export default function App() {
 		}
 		setGestion(	<div className="MessageCanvas">
 						<div className="MessageContainer">
-							<div className="MessageCanvas-Title">
-								{datasConv.Name}
+							<div className="ConvSettings-title">
+								{datasConv.Name} chat settings
 							</div>
 						</div>
-						{user}
-						<button className="Button" onClick={async () => {
+						<div align-content="stretch">{user}</div>
+						<button className="ConvSettingsBack-btn" onClick={async () => {
 							sessionStorage.setItem('statusConv', 0);
 							sessionStorage.setItem('idConv', datasConv.ID);
 						}}>Back</button>
@@ -265,7 +265,7 @@ export default function App() {
 		{
 			setMessages(	<div className="MessageCanvas">
 								<div className="MessageContainer">
-									<div className="MessageCanvas-Title">
+									<div className="ConvSettings-title">
 										{datas.Name}
 									</div>
 								</div>
@@ -282,8 +282,7 @@ export default function App() {
 										}}
 									/>
 									<button
-										className="Button"
-										style={{ width: '5%' }}
+										className="ConvSettings-btn"
 										onClick={() => onSubmitPassword(datas, document.getElementById('password').value)}
 									>
 										Submit
@@ -310,13 +309,12 @@ export default function App() {
 		let button = '';
 		if (datas.Status !== 2 /*&& datas.Admins && datas.Admins.find((user) => user.ID === datasUser.ID)*/)
 		{
-			button = <button className="Back-btn" onClick={() => {control(datas)}}>
-						gestion
+			button = <button className="ConvSettings-btn" onClick={() => {control(datas)}}>
+						Settings
 					</button>;
 		}
 
 		setMessages(	<div className="MessageCanvas">
-							{button}
 							<div className="MessageContainer">
 								{newMessages}
 							</div>
@@ -331,15 +329,16 @@ export default function App() {
 									style={{ width: '95%' }} // Ajout d'une marge à droite pour séparer les éléments
 									onKeyPress={(e) => {
 										if (e.key === 'Enter') {
-										sendMessage(datas);
+											sendMessage(datas);
 										}
 									}}
-								/>
+									/>
 								<button className="SendMessage-btn" onClick={() => {
 									sendMessage(datas);}}>
 									<span>&#8594;</span> {/* Arrow Right Unicode */}
 								</button>
 							</div>
+								{button}
 						</div>);
 		if (timeoutIdConv)
 			clearTimeout(timeoutIdConv);
@@ -556,6 +555,7 @@ export default function App() {
 					</div>
 					{/* Conditionnellement afficher soit le GameCanvas, soit le MessageCanvas */}
 					{((currentView === "game") ? <GameCanvas /> : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup :(currentView === "login") ? <Login />:(currentView === "gestion") ? gestion : ( <div className='EmptyCanvas'></div>))}
+					{/* User Infos */}
 					{userInfoComponents}
 				</div>
 	}

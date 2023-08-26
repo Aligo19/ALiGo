@@ -190,11 +190,13 @@ html {
 	display: flex;
 	background-color: #2C2F33;
 	padding: 3px 8px;
-	margin: 4px;
+	margin-top: 5px;
+	margin-bottom: 5px;
 	border-radius: 7px;
 	justify-content: space-between;
 	align-items: center;
 	align-content: stretch;
+	max-width: 100%;
 }
 
 .Play-btn {
@@ -246,6 +248,7 @@ html {
 	align-items: stretch;
 	align-content: stretch;
 	max-height: 100%;
+	margin-bottom: 2px;
 }
 
 .MessageContainer {
@@ -309,11 +312,9 @@ html {
 	padding: 4px 8px;
 	background-color: #2C2F33;
 	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;
-	border: none;
+	border: 5px;
 	outline: none;
 	border-radius: 10px;
-	margin-bottom: 0;
-	margin-top: 10px;
 	font-size: large;
 	color: #99AAB5;
 	overflow-y: auto;
@@ -323,13 +324,100 @@ html {
 .SendMessage-btn {
 	background-color: #7288da;
 	color: #99AAB5;
-	border: none;
+	border: 5px;
 	padding: 10px 20px;
 	border-radius: 5px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
+}
+
+.ConvSettings-btn {
+	background-color: #7288da;
+	color: #1e2124;
+	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;
+	font-size: large;
+	border: none;
+	margin: 5px;
+	margin-left: 1px;
+	padding: 7px 8px;
+	border-radius: 6px;
+	display: inline-block;
+	cursor: pointer;
+	line-height: 1;
+	flex-direction: column;
+	align-items: left;
+	max-width: 13%;
+	transition: background-color 0.2s ease-in-out;
+}
+
+.ConvSettings-btn:hover {
+	background-color: #5469d4;
+}
+
+.ConvSettings-title {
+	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;
+	font-size: 28px;
+	font-weight: 700;
+	letter-spacing: 2.4px;
+	color: #99AAB5;
+	height: 10%;
+	margin-top: 2%;
+	margin-bottom: 2%;
+	margin-left: auto;
+	margin-right: auto;
+	align-items: center;
+}
+
+.ConvSettingsContent {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-items: stretch;
+	align-content: stretch;
+	max-height: 100%;
+	margin: 1%;
+}
+
+.ConvSettingsContent-name {
+	margin-top: 2.5%;
+}
+
+.ConvSettingsContent-btn {
+	border-radius: 5px;
+	width: 30%;
+	font-weight: bold;
+	color: #99AAB5;
+    background: #23272A;
+	border: 1px #7288da solid; 
+	outline: none;
+	margin: 1.5%;
+	transition: background-color 0.2s ease-in-out;
+	padding: 1.5%;
+}
+
+.ConvSettingsContent-btn:hover {
+	background-color: #5469d4;
+}
+
+.ConvSettingsBack-btn  {
+	margin: 5%;
+	margin-left: 36%;
+	padding: 12px;
+	background-color: #7288da;
+	border: 2px solid #232323;
+	border-radius: 5px;
+	font-weight: bold;
+	color: #99AAB5;
+	cursor: pointer;
+	max-width: 25%;
+	transition: background-color 0.2s ease-in-out;
+}
+
+.ConvSettingsBack-btn:hover {
+	background-color: #5469d4;
 }
 
 .CreateGroupChat-btn {
@@ -344,6 +432,8 @@ html {
 	display: inline-block;
 	cursor: pointer;
 	line-height: 1;
+	margin-top: 5px;
+	margin-bottom: 5px;
 }
 
 .UserInfo {
@@ -399,7 +489,6 @@ html {
 	font-size: 100%;
 	text-align: center;
 	margin: 0 auto;
-	margin-top: -7%;
 	margin-bottom: 5%;
 	max-width: 100%;
 }
@@ -690,7 +779,7 @@ html {
 	max-width: 100%;
 	max-height: 100%;
 	width: 30vw;
-	height: 8vh;
+	height: 10vh;
 	background-color: #2C2F33;
 	border-radius: 5px;
 	transition: border-color 0.2s ease-in-out;
@@ -703,6 +792,7 @@ html {
 
 .addGroupConvForm-custom-label {
 	margin: 1%;
+	margin-bottom: 0.3%;
 	font-weight: bold;
 	color: #99AAB5;
 	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;
@@ -717,7 +807,7 @@ html {
 	max-width: 100%;
 	max-height: 100%;
 	width: 30vw;
-	height: 10%vh;
+	height: 15vh;
 	background-color: #2C2F33;
 	border-radius: 5px;
 	transition: border-color 0.2s ease-in-out;
@@ -729,7 +819,7 @@ html {
 }
 
 .addGroupConvForm-input {
-	margin: -1;
+	margin: 1%;
 	border-radius: 8px;
 	width: 50%;
 	height: 30%;
@@ -750,7 +840,6 @@ html {
 	font-weight: bold;
 	color: #99AAB5;
 	cursor: pointer;
-	transition: background-color 0.2s ease-in-out;
 }
 
 .addGroupConvForm-checkBox {
