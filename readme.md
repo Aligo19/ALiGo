@@ -2,41 +2,41 @@
 
 - Mettre toutes les variables importantes dans des fichiers env !
 
-# Liste des commandes du Makefile avec effets
+# List of Makefile commands and effects
 
-| Commande make | Action | Etat |
+| make command | Action | Status |
 | ------ | ------ | ------ |
-| make | Genere le docker et l'execute| Cache |
-| make build | Genere le docker | Cache |
-| make up | Execute le docker | Cache |
-| make down | Eteint le docker | Visible |
-| make pause | Met le docker en pause | Visible |
-| make unpause | Reactive le docker | Visible |
-| make clean | Efface les dockers | |Visible 
-| make fclean | Efface les volumes des dockers, les reseauz et les images| Visible |
+| make | Generate container and execute it | Cache |
+| make build | Generate container | Cache |
+| make up | Execute container | Cache |
+| make down | Shut off the container | Visible |
+| make pause | Pause the container | Visible |
+| make unpause | Reactivate the container | Visible |
+| make clean | Erase the containers | Visible 
+| make fclean | Erase docker volumes, networks and images | Visible |
 
-ATTENTION !!! j'ai oublie de specifier le makefile utilise sudo donc le mot de passe est demande a chaque fois.
+ATTENTION!!! The Makefile uses sudo, so you will have to enter your password
 
-# Pour react
+# About React
 
-Pour acceder au site c'est [ici](http://127.0.0.1:3000), loggez vous avec vos id 19 ca sera gere !
+The website is accessible [here](http://127.0.0.1:3000), you just have to use your 42 credentials!
 
-Une doc sommaire est reprise dans le [readme](./srcs/front/README.md#architecture) du front.
+A brief documentation can be found in the front-end [readme](./srcs/front/README.md#architecture).
 
 Ne pas hesiter a l'agrementer (Lisa il y a une ligne pour toi pour implenter le jeu dans le front)
 
-# Pour l'API
+# About the API
 
-Un [readme](./srcs/api/README.md#routes-pour-lapi) reprend toute la doc necessaire pour comprendre la matiere.
+A [readme](./srcs/api/README.md#routes-pour-lapi) provides all the information needed to understand the subject.
 
-Un [fichier sh](./srcs/api/ready.sh) est present egalement, il est execute pour faire en sorte que l'API ne demarre qu'une fois la DB entierement setup.
+An [sh script file](./srcs/api/ready.sh) is also provided, it prevents the API from starting until the DB has been fully set up.
 
-Pour Essayer de faire des requetes sans passer par du code, je vous conseille [Postman](https://www.postman.com/)
+[Postman](https://www.postman.com/) is recommendend to make requests without using any code.
 
-# Pour la DB
+# About the DB
 
-Un rapide descriptif est repris dans le [readme](./srcs/api/README.md#details-sur-la-db) de l'API, egalement pour la visualiser sans faire de requetes.
+A brief description is included in the API [readme](./srcs/api/README.md#details-sur-la-db), you can also visualize it without making any request.
 
-Il suffit de demarrer le docker et en suite de mettre dans l'URL [http://127.0.0.1:8081](http://127.0.0.1:8081).
+You just have to start the container and use the URL [http://127.0.0.1:8081](http://127.0.0.1:8081).
 
-Mettez 'postgres' dans tous les inputs et changez le type pour 'PostgreSQL' (ATTENTION: le log se coupe a chaque restart du docker).
+Put 'postgres' in all fields and change the type to 'PostgreSQL' (WARNING: the login will break every time you restart the docker).

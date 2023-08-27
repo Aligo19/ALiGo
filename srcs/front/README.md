@@ -1,16 +1,16 @@
 ## Architecture
 ```
-/public                         => All files used by user
+/public                         => Files used by the user
 
-/src                            => All the react code
-    /components                 => All balise made by us
-        /Main                   => All canvas and utils
-            /Groups             => La partie de gauche, liste des groupes
-            /UserInfo           => La partie de droite, liste des donnees de l'utilisateur
-    /img                        => All image
+/src                            => React code
+    /components                 => Custom tags
+        /Main                   => Canvas and utils
+            /Groups             => The left tab, the group list
+            /UserInfo           => The right tab, the user info
+    /img                        => Images
 ```
 
-La partie game n'est pas definie en dehors du fichier GameCanvas.js
+The game part isn't defined outside of the GameCanvas.js file
 
 Lisa amuse toi avec ton dossier Game dans le Main
 

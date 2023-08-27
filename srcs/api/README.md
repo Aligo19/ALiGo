@@ -1,14 +1,14 @@
 
-Si des erreurs surviennent ou des manques de comprehension merci de bien fermer les yeux et faire genre ca marche
+Pour toute erreur ou manque de comprehension, merci de bien vouloir fermer les yeux et faire genre ça marche
 
 # Api Request
 
-    Principal lien :
+    Main link :
         http://localhost:3001
 
 ## Users
 
-### Connecter un joueur
+### Log a player in
 
 ```http
   GET /users/${code}/login
@@ -16,10 +16,10 @@ Si des erreurs surviennent ou des manques de comprehension merci de bien fermer 
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| code | int | Valeur de obtenue en se connectant via OAuth de 42 dans l'url sous le variable "code" voir le readme dedie (si j'en fais un je mettrais le lien ici sinon il y a une doc) |
+| code | int | Returned value when connecting through 42's OAuth, under the "code" variable in the URL, see dedicated readme |
 
 #### Return:
-Renvoit un JSON avec toutes les donnees liees au profil de l'utilisateur voir [details](#json-user-1)
+Returns an object ([details](#json-user-1)) with all the user data.
 
 ```JSON
 {
@@ -36,7 +36,7 @@ Renvoit un JSON avec toutes les donnees liees au profil de l'utilisateur voir [d
 ```
 
 
-### Mettre a jour les infos d un joueur
+### Update user info
 
 ```http
   PATCH /users/${id}
@@ -44,10 +44,10 @@ Renvoit un JSON avec toutes les donnees liees au profil de l'utilisateur voir [d
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'utilisateur |
+| id | int | User id |
 
 #### Input:
-Donner le JSON ([details](#json-user-1)) avec toutes les donnees modifiees du profil de l'utilisateur.
+Input the object ([details](#json-user-1)) after modifying the data with the one from the user's profile.
 
 ```JSON
 {
@@ -69,10 +69,10 @@ Donner le JSON ([details](#json-user-1)) avec toutes les donnees modifiees du pr
 ```
 
 #### Return:
-Si le JSON ([Details](#json-user-1)) renvoye est identique a celui envoye ca signifie que la requete c'est convenablement executee, si pas une erreur est survenue.
+If the returned object ([details](#json-user-1)) is identical to the one sent, the request went correctly, if not, an error occured.
 
 
-### Avoir toutes les infos d'un joueur
+### Get all player info
 
 ```http
   GET /users/${id}
@@ -80,10 +80,10 @@ Si le JSON ([Details](#json-user-1)) renvoye est identique a celui envoye ca sig
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'utilisateur |
+| id | int | User id |
 
 #### Return:
-Renvoit un JSON ([Details](#json-user-1)) avec toutes les donnees liees au profil de l'utilisateur.
+Returns an object ([details](#json-user-1)) with all the user data.
 
 ```JSON
 {
@@ -104,7 +104,7 @@ Renvoit un JSON ([Details](#json-user-1)) avec toutes les donnees liees au profi
 }
 ```
 
-### Ajouter un ami
+### Add a friend
 
 ```http
   GET /users/${id}/friends/${friendName}/add
@@ -112,14 +112,14 @@ Renvoit un JSON ([Details](#json-user-1)) avec toutes les donnees liees au profi
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'utilisateur |
-| friendName | string | Nom de l'utilisateur qu'on veut ajouter |
+| id | int | User id |
+| friendName | string | Name of the user to be added |
 
 #### Return:
-Si rien n'est renvoye la requete a marche sinon une erreur est survenue
+If nothing is returned, the request was successful, otherwise an error occurred.
 
 
-### Bloquer un utilisateur
+### Block user
 
 ```http
   GET /users/${id}/block/${blockName}/add
@@ -127,11 +127,11 @@ Si rien n'est renvoye la requete a marche sinon une erreur est survenue
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'utilisateur |
-| blockName | string | Nom de l'utilisateur qu'on veut bloquer |
+| id | int | User id |
+| blockName | string | Name of the user to be blocked |
 
 #### Return:
-Si rien n'est renvoye la requete a marche sinon une erreur est survenue
+If nothing is returned, the request was successful, otherwise an error occurred.
 
 ### TODO
 
@@ -141,7 +141,7 @@ Pouvoir retirer un user des amis et des blocks
 
 ## Match
 
-### Avoir toutes les infos d'un match
+### Get all match info
 
 ```http
   GET /matches/${id}
@@ -149,10 +149,10 @@ Pouvoir retirer un user des amis et des blocks
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'id du match |
+| id | int | Match id |
 
 #### Return:
-Renvoit un JSON ([Details](#json-match-1)) avec toutes les donnees liees a un match.
+Returns an object ([Details](#json-match-1)) with all the match data.
 
 ```JSON
 {
@@ -194,7 +194,7 @@ Renvoit un JSON ([Details](#json-match-1)) avec toutes les donnees liees a un ma
 }
 ```
 
-### Avoir toutes les infos des matchs d'un utilisateur
+### Get all match info for a user
 
 ```http
   GET /matches/${idUser}/user
@@ -202,10 +202,11 @@ Renvoit un JSON ([Details](#json-match-1)) avec toutes les donnees liees a un ma
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'id de l'utilisateur |
+| id | int | User id |
 
 #### Return:
-Renvoit une liste de JSON. Chaque element est un match avec un JSON  ([Details](#json-match-1))
+Returns an array of objects. Each element contains the data from one match. ([Details](#json-match-1))
+
 
 ```JSON
 [
@@ -286,7 +287,7 @@ Renvoit une liste de JSON. Chaque element est un match avec un JSON  ([Details](
 ]
 ```
 
-### Lancer une recherche pour une game
+### Start looking for a game
 
 ```http
   GET /matches/${id}/search
@@ -294,13 +295,13 @@ Renvoit une liste de JSON. Chaque element est un match avec un JSON  ([Details](
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'id de l'utilisateur qui cherche une game |
+| id | int | Id of the user looking for a game |
 
 #### Return:
-Renvoit un JSON ([Details](#json-match-1)) avec toutes les donnees liees a un match.
-Deux cas de figure possible
-1. le status est 0 alors la game vient d'etre cree et en attente du joueur 2
-2. le status est 1 alors la game a ses deux joueurs et la partie peut commencer
+Returns an object ([details](#json-match-1)) with all the match data.
+Two possible scenarios:
+1. the status is 0, then the game has just been created an Player 1 is waiting for Player 2
+2. the status is 1, then both players are connected and the game can start
 
 ```JSON
 {
@@ -328,7 +329,7 @@ Deux cas de figure possible
 }
 ```
 
-### Finir une game
+### End a game
 
 ```http
   POST /matches/end
@@ -339,7 +340,7 @@ Deux cas de figure possible
 | - | - | - |
 
 #### Input:
-Recoit un JSON avec l'id et les scores, cela mettra les donnes des joueurs sur la DB a jour automatiquement
+an object with the match id and score, the players' data will automatically be updated in the DB.
 
 ```JSON
 {
@@ -351,8 +352,8 @@ Recoit un JSON avec l'id et les scores, cela mettra les donnes des joueurs sur l
 
 
 #### Return:
-Renvoit un JSON ([Details](#json-match-1)) avec toutes les donnees liees a un match.
-Si ce n'est pas le cas alors la requete est corrompue
+Returns an object ([details](#json-match-1)) with all the match data.
+If not, the request has been corrupted
 ```JSON
 {
     "ID": 33,
@@ -394,9 +395,9 @@ Si ce n'est pas le cas alors la requete est corrompue
 ```
 -----------
 
-## Conv
+## Chat
 
-### Toutes les donnees d'une conv
+### All the data from a conversation
 
 ```http
   GET /conv/${id}
@@ -404,11 +405,11 @@ Si ce n'est pas le cas alors la requete est corrompue
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'identifiant de la conversation |
+| id | int | Conversation id |
 
 #### Return;
 
-Renvoi un JSON ([Details](#json-conv-1))avec toutes les donnees liee a une conv, les messages, les utilisateurs, les admins, les muteds,... 
+Returns an object ([details](#json-conv-1)) with all the conversation data (messages, users, admins, muted users...).
 
 ```JSON
 {
@@ -489,7 +490,7 @@ Renvoi un JSON ([Details](#json-conv-1))avec toutes les donnees liee a une conv,
 ```
 
 
-### Toutes les conv pour un utilisateur
+### Get all conversations for a user
 
 ```http
   GET /conv/${id}/user
@@ -497,11 +498,11 @@ Renvoi un JSON ([Details](#json-conv-1))avec toutes les donnees liee a une conv,
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'identifiant de l'utilisateur |
+| id | int | User id |
 
-#### Return 
+#### Return:
 
-Renvoit un JSON contenant les infos basiques de toutes les convs voir [details](#json-conv-2)
+Returns an object ([details](#json-conv-2)) with basic info about all the conversations.
  
 ```JSON
 [
@@ -520,7 +521,7 @@ Renvoit un JSON contenant les infos basiques de toutes les convs voir [details](
 ]
 ```
 
-### Banni un utilisateur d'une conv
+### Ban a user from a conversation
 
 ```http
   GET /conv/:id/banned/:bannedId
@@ -528,10 +529,10 @@ Renvoit un JSON contenant les infos basiques de toutes les convs voir [details](
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'identifiant de l'utilisateur |
+| id | int | Id of the user to block |
 
 
-### Ajoute un utilisateur a une conv
+### Add a user to a conversation
 
 ```http
   GET /conv/:id/users/:idUser
@@ -539,13 +540,12 @@ Renvoit un JSON contenant les infos basiques de toutes les convs voir [details](
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'identifiant de l'utilisateur |
+| id | int | Id of the user to add |
 
 #### Return:
-Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
+Returns an object ([details](#json-conv-1)) with the updated data
 
-
-### Ajoute un utilisateur en tant qu'admin
+### Make a user an admin
 
 ```http
   GET /conv/:id/admins/:idAdmin
@@ -553,13 +553,13 @@ Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'identifiant de l'utilisateur |
+| id | int | Id of the user to be made admin |
 
 #### Return:
-Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
+Returns an object ([details](#json-conv-1)) with the updated data
 
 
-### Ajoute un utilisateur en tant que mute
+### Mute a user
 
 ```http
   GET /conv/:id/muteds/:idMuted
@@ -567,13 +567,13 @@ Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'identifiant de l'utilisateur |
+| id | int | Id of the user to mute |
 
 #### Return:
-Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
+Returns an object ([details](#json-conv-1)) with the updated data
 
 
-### Retire un utilisateur a une conv
+### Remove a user from a chat
 
 ```http
   GET /conv/:id/users/:idUser/remove
@@ -581,13 +581,13 @@ Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'identifiant de l'utilisateur |
+| id | int | Id of the user to remove |
 
 #### Return:
-Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
+Returns an object ([details](#json-conv-1)) with the updated data
 
 
-### Retire un utilisateur en tant qu'admin
+### Remove a user's admin status
 
 ```http
   GET /conv/:id/admins/:idAdmin/remove
@@ -595,13 +595,13 @@ Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'identifiant de l'utilisateur |
+| id | int | User id |
 
 #### Return:
-Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
+Returns an object ([details](#json-conv-1)) with the updated data
 
 
-### Retire un utilisateur en tant que mute
+### Unmute a user
 
 ```http
   GET /conv/:id/muteds/:idMuted/remove
@@ -609,12 +609,12 @@ Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'identifiant de l'utilisateur |
+| id | int | User id |
 
 #### Return:
-Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
+Returns an object ([details](#json-conv-1)) with the updated data
 
-### Ajoute un message dans une conv
+### Send a message to a conversation
 
 ```http
   POST /conv/:id/message
@@ -622,14 +622,14 @@ Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| id | int | Valeur de l'identifiant de l'utilisateur |
+| id | int | User id |
 
 #### Return:
-Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
+Returns an object ([details](#json-conv-1)) with the updated data
 
 -----------
 
-# Details sur les JSON
+# Details about the objects
 
 ## JSON User 1
 ```JSON
@@ -650,15 +650,15 @@ Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
     "Loses": 10
 }
 ```
-- ID renvoi vers l'id dans la db, ce sera cet id qui sera utilise pour les requetes API (Sauf si precisions dans une requete specifque)
-- ID_19 renvoi vers le pseudo de 19, non utile en l'occurence
-- Pseudo, tout est dans le nom
-- Avatar, l'url vers l'image du joueur
-- Elo equivaut au niveau du joueur, remplacant de la monnaie
-- Actual_skin est la couleur actuelle de la barre de pong
-- Global_skin est la liste de toutes les couleurs de la barre du joueur
-- Wins est le total de victoires
-- Loses est le total... bah de defaites
+- ID refers to the id in the DB, which will be used for API requests (unless specified in a specific request).
+- ID_19 refers to 19 nickname, useless in this case
+- Pseudo, speaks for itself
+- Avatar: the url to the player's image
+- Elo is the player's level, replacing coins
+- Actual_skin is the current color of the pong bar
+- Global_skin is the list of all the player's bar colors
+- Wins is the total number of wins
+- Loses is the total of... well, defeats
 
 ## JSON Match 1
 
@@ -701,13 +701,12 @@ Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
     }
 }
 ```
-- ID renvoi vers l'id du match
-- Score_user1, les points marque par le joueur 1
-- Score_user2, les points marque par le joueur 2
-- Status; 0 vaut en recherche, 1 vaut en cours, 2 vaut fini
-- ID_user1 donne toutes les infos du joueur 1 voir [Details](#json-user-1)
-- ID_user2 donne toutes les infos du joueur 2 voir [Details](#json-user-1)
-
+- ID refers to the match id
+- Score_user1: points scored by player 1
+- Score_user2: points scored by player 2
+- Status: 0 is searching, 1 is in progress, 2 is finished
+- ID_user1 gives all info on player 1, see [details](#json-user-1)
+- ID_user2 gives all info on player 2, see [details](#json-user-1)
 
 ## JSON Conv 1
 
@@ -739,15 +738,15 @@ Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
     "Muted": [...]
 }
 ```
-- ID vaut l'identifiant de la conv
-- Name est le nom de la conversation
-- Status permet de savoir de qu'elle type de conv il s'agit
-  - 0 = conv de groupe public
-  - 1 = conv de groupe avec mot de passe
-  - 2 = conv duo
-- Password, utile si on a un status 1
-- Messages est une liste de tous les messages
-- Admins, Users et Muted sont des listes contenant de utilisateurs voir [details](#json-user-1)
+- ID is the conversation id
+- Name is the name of the conversation
+- Status lets you know what type of conversation it is
+	- 0 = public group chat
+	- 1 = group chat with password
+	- 2 = dialog
+- Password, useful if status is 1
+- Messages is a list of all messages
+- Admins, Users and Muted are lists containing users see [details](#json-user-1)
 
 ## JSON Conv 2
 
@@ -768,15 +767,14 @@ Renvoi un JSON avec les donnees mise a jour voir [Details](#json-conv-1)
 ]
 ```
 
-Listes composee de :
-- ID de la conv
-- Nom de la conv
-- Status de la conv
-  - 0 = conv de groupe public
-  - 1 = conv de groupe avec mot de passe
-  - 2 = conv duo
-- Password, utile si on a un status 1
-
+Objects made of:
+- Conversation ID
+- Conversation name
+- Conversation status
+	- 0 = public group chat
+	- 1 = group chat with password
+	- 2 = dialog
+- Password, useful if status is 1
 
 ## Pour Lisa
 
