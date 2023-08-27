@@ -11,6 +11,12 @@ import Login from './components/Main/Login';
 
 const clock = 500;
 
+// try {
+// 	output = await axios.patch('http://127.0.0.1:3001/users/' + oldUser.ID, newUser);
+// } catch (error) {
+// 	window.location.replace('http://127.0.0.1:3000/error.html');
+// }
+
 export default function App() {
 	const [gchats, setGChats] = useState([]);
 	const [pchats, setPChats] = useState([]);
@@ -268,8 +274,20 @@ export default function App() {
 			return ;
 		}
 		showMessageCanvas();
-		let datas = await axios.get(`http://127.0.0.1:3001/conv/${id}`);
-		datas = datas.data;
+		let datas = null;
+		try {
+			datas = await axios.get(`http://127.0.0.1:3001/conv/${id}`);
+			datas = datas.data;
+		}
+		catch (error)
+		{
+			if (timeoutIdConv)
+				clearTimeout(timeoutIdConv);
+			setTimeoutIdConv( await setTimeout(async () => {
+				onOpenConversation();
+			}, clock));
+			return ;
+		}
 		const datasUser = JSON.parse(sessionStorage.getItem('userData'));
 		let newMessages = [];
 		
