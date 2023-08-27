@@ -440,6 +440,7 @@ html {
 	flex : 1;
 	background-color: #2C2F33;
 	margin: 5px;
+	margin-bottom: -5px;
 	border-radius: 13px;
 	text-align: center;
 	width: 30vh;
@@ -455,7 +456,24 @@ html {
 	border-width: 65% 65%;
     padding: 10px;
     margin: 10px 10px;
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+	flex-direction: row;
+	justify-content: center;
+}
+
+.status-point {
+	width: 9px;
+	height: 9px;
+	border-radius: 50%;
+	border: #232323 3px solid;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+	display: inline-block;
+	margin-left: 3%;
+	margin-bottom: -1.5px;
+}
+
+.erase-btn:hover {
+	background-color: #99AAB5;
 }
 
 .Avatar {
@@ -528,6 +546,23 @@ html {
 	padding: 10px;
 	margin-bottom: 5px;
 	font-size: 16px;
+}
+
+.erase-btn {
+	margin: 5%;
+	padding: 2px;
+	border: 2px solid #232323;
+	border-radius: 5px;
+	font-weight: bold;
+	font-size: large;
+	color: #232323;
+	cursor: pointer;
+	max-width: 90%;
+	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;
+	transition: background-color 0.2s ease-in-out;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+	background-color: #2C2F33;
+    overflow-wrap: break-word;
 }
 
 .login-container {
@@ -662,17 +697,6 @@ html {
   
 .login-content-btn:hover {
 	background-color: #5469d4;
-}
-
-.status-point {
-	width: 9px;
-	height: 9px;
-	border-radius: 50%;
-	border: #232323 4px solid;
-    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-	display: inline-block;
-	margin-left: 5px;
-	margin-bottom: 2px;
 }
 
 .online {

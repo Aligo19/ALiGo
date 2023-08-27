@@ -40,17 +40,17 @@ export default function UserInfo(props) {
 		}
 	}
 	if (props.name != JSON.parse(sessionStorage.getItem('userData')).Pseudo && friend == null)
-		button = <button className="button" onClick={() => {erase()}}>Erase</button>
+		button = <button className="erase-btn" onClick={() => {erase()}}>Delete friend</button>
 
 	return (
 		<div className="UserInfo">
 			<h2 className="UserInfo--title">{props.name} 
 				<div className={`status-point ${statusPointClass}`}></div>
-				{button}
 			</h2>
 			<img src={`http://127.0.0.1:3001/${props.avatar}`} alt={"avatar"} className="Avatar" />
 			<Stats level={props.level} winnb={props.winnb} losenb={props.losenb} />
 			<History histo={props.matchHisto} />
+			{button}
 		</div>
 	)
 }
