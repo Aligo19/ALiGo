@@ -27,9 +27,35 @@ export class UserService {
     user.Loses = 0;
     user.Last_connection = new Date();
     user.Game_status = false;
+    user.password = 0;
+    user.email = '';
 
     return this.userRepository.save(user);
   }
+
+  async getPassword(user: number): Promise<number> {
+    let tmp = await this.getUserById(user);
+    if (!tmp)
+      throw new Error('User not found');
+    return tmp.password;
+  }
+
+  async removePassword(user: number): Promise<User> {
+    let tmp = await this.getUserById(user);
+    if (!tmp)
+      throw new Error('User not found');
+    tmp.password = 0;
+    return this.userRepository.save(tmp);
+  }
+
+  async passwordReset(user: string, password: number): Promise<User> {
+    let tmp = await this.getUserByPseudo(user);
+    if (!tmp)
+      throw new Error('User not found');
+    tmp.password = password;
+    return this.userRepository.save(tmp);
+  }
+
 
   async updateGameStatus(user: User, status: boolean): Promise<User> {
     user.Game_status = status;

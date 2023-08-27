@@ -16,6 +16,8 @@ export async function seedUsers() {
     user.Loses = field.Loses;
     user.Last_connection = field.Last_connection;
     user.Game_status = false;
+    user.password = 0;
+    user.email = '';
     await user.save();
   }
 

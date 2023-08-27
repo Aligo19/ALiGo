@@ -7,7 +7,6 @@ import { UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { promises as fsPromises } from 'fs';// npm intsall fs
 import * as path from 'path';
-import { Client } from 'pg';
 
 @Controller('users')
 export class UserController {
@@ -97,11 +96,36 @@ export class UserController {
         Logger.log(logger[0], logger[1]);
         return JSON.stringify(output);
     }
+    @Get(':id/password/:password')
+    async getUserPasswordById(@Param('id') id: number, @Param('password') password: number) {
+        let output, logger;
+        try {
+            logger = ["The request is ok", "Request: GET[ /users/:id/password/:password ]"];
+            output = await this.userService.getPassword(id);
+            if (output != password)
+                throw new NotFoundException('User not found' + id);
+            if (!output)
+                throw new NotFoundException('User not found' + id);
+            output = await this.userService.getUserById(id);
+            output = await this.userService.removePassword(id);
+            logger[1] = output.ID;
+        } catch (error) {
+            logger = ["The request doesn't work", "Request: GET[ /users/:id/password/:password ]"];
+            output = error;
+        }
+        Logger.log(logger[0], logger[1]);
+        return JSON.stringify(output);
+    }
 
     @Get(':code/login')
     async getUserByCode(@Param('code') code: string){
         let logger, output;
         try {
+            // await this.mailController.sendMail({
+            //   to: 'hugoorickx@gmail.com',
+            //   subject: 'subject',
+            //   template: 'template' + '/html',
+            // });
             const response = await this.httpService.axiosRef
             .post(
             'https://api.intra.42.fr/oauth/token',
@@ -227,14 +251,16 @@ export class UserController {
       const user = await this.userService.getUserById(id);
       if (!user)
         throw new NotFoundException('User not found');
-      if (updatedUserData.Pseudo)
-        if (await this.userService.getUserByPseudo(updatedUserData.Pseudo))
-          throw new Error('Pseudo already used');
       Object.assign(user, updatedUserData);
-      logger = ["The request is ok", "Request: PATCH[ /users/id ]"];
+      if (updatedUserData.email)
+      {
+        logger = ["The request is ok", updatedUserData.email];
+        user.email = updatedUserData.email;
+      }
       output =  updatedUserData;
+      this.userService.updateUser(user);
     } catch (error) {
-      logger = ["The request doesn't work", "Request: PATCH[ /users/id ]"];
+      logger = ["The request doesn't work", error.message];
       output = error;
     }
     Logger.log(logger[0], logger[1]);

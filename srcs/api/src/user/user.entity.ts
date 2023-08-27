@@ -44,5 +44,10 @@ export class User extends BaseEntity{
   @Column({ type: 'boolean', default: false})
   Game_status: boolean;
 
+  @Column({ type: 'integer' })
+  password: number;
+
+  @Column()
+  email: string;
 
 }

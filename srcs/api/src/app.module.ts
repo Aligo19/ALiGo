@@ -14,10 +14,29 @@ import { ConvModule } from './conv/conv.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { FilesController } from './pic/pic.controller';
 
+import { MailerModule } from '@nestjs-modules/mailer';
+import { MailController } from './mail/mail.controller';
+
 dotenv.config(); // Load environment variables from .env file
 
 @Module({
   imports: [
+    MailerModule.forRootAsync({
+      useFactory: () => ({
+        transport: {
+          host: 'smtp.hostinger.com',
+          port: 587,
+          secure: false,
+          auth: {
+            user: 'pong@hugoorickx.be',
+            pass: 'Aligo1203!',
+          },
+        },
+        defaults: {
+          from: '"No Reply" <pong@hugoorickx.be>',
+        }
+      }),
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.POSTGRES_HOST,
@@ -29,10 +48,10 @@ dotenv.config(); // Load environment variables from .env file
       autoLoadEntities: true,
       synchronize: true,
     }),
-    UserModule, MatchModule, ConvModule,
+    UserModule, MatchModule, ConvModule,  MailerModule,
     MulterModule.register({dest: './public/img',})
   ],
-  controllers: [FilesController],
+  controllers: [FilesController, MailController],
   providers: [
     {
       provide: APP_PIPE,

@@ -24,8 +24,8 @@ export default function App() {
 	const [matchHisto, setMatchHisto] = useState([]);
 	const [gestion, setGestion] = useState([]);
 
-   async function update(newUser) {
-	let oldUser = JSON.parse(sessionStorage.getItem('userData'));
+	async function update(newUser) {
+		let oldUser = JSON.parse(sessionStorage.getItem('userData'));
 		let output = await axios.patch('http://127.0.0.1:3001/users/' + oldUser.ID, newUser);
 		if (!output || !output.data || output.status < 200 || output.status >= 300 || output.data.status)
 		{
@@ -75,7 +75,7 @@ export default function App() {
 	}
 
 	useEffect(() => {
-		function connect()
+		async function connect()
 		{
 			if (!JSON.parse(sessionStorage.getItem('userData'))) 
 			{
@@ -87,18 +87,29 @@ export default function App() {
 					window.location.replace('https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-3877a3e700b6b8841a31f110495b6d430ce41dc60be48f28aeca81423a03577b&redirect_uri=http%3A%2F%2F127.0.0.1%3A3000&response_type=code');
 					return;
 				}
-				axios.get(`http://127.0.0.1:3001/users/${code}/login`)
-					.then(response => {
-						response = response.data;
-						if (response.data)
-						{
-							sessionStorage.setItem('status', 1);
-							response = response.data;
-						}
-						sessionStorage.setItem('idUserInfos', response.ID);
-						sessionStorage.setItem('userData', JSON.stringify(response));
-						window.location.replace('http://127.0.0.1:3000');
+				let response = await axios.get(`http://127.0.0.1:3001/users/${code}/login`);
+				response = response.data;
+				if (response.data)
+				{
+					sessionStorage.setItem('status', 1);
+					response = response.data;
+				}
+				sessionStorage.setItem('idUserInfos', response.ID);
+				
+				if (response.email && response.email.length > 0 && sessionStorage.getItem('status') != 2)
+				{
+					sessionStorage.setItem('status', 2);
+					axios.post(`http://127.0.0.1:3001/mail/welcome`, {
+						email: response.email,
+						pseudo: response.Pseudo
 					})
+					sessionStorage.setItem('userData', JSON.stringify({
+						data: "bouh"
+					}));
+				}
+				else if (sessionStorage.getItem('status') != 2)
+					sessionStorage.setItem('userData', JSON.stringify(response));
+				window.location.replace('http://127.0.0.1:3000');
 			}
 		}
 		async function fetchChats() {
@@ -124,6 +135,7 @@ export default function App() {
 				console.error("Error fetching chats:", error);
 			}
 		}
+
 		connect();
 		fetchUserInfo();
 		fetchChats();
@@ -498,6 +510,18 @@ export default function App() {
 		sessionStorage.setItem('idConv', out.ID);
 	}
 
+	async function pwdMail(){
+		let out = await axios.get(`http://127.0.0.1:3001/users/${(sessionStorage.getItem('idUserInfos'))}/password/${document.getElementById('password').value}`);
+		if (!out || !out.data || out.status < 200 || out.status >= 300 || out.data.status)
+		{
+			window.alert("Mauvais mot de passe");
+			return;
+		}
+		out = out.data;
+		sessionStorage.setItem('userData', JSON.stringify(out));
+		sessionStorage.setItem('status', 0);
+	}
+
 	function handleAddFriend() {
 		sessionStorage.setItem('statusConv', 0);
 		sessionStorage.setItem('idConv', 0);
@@ -521,16 +545,36 @@ export default function App() {
 	}
 
 	let content;
-	if (sessionStorage.getItem('status') )
+	if (sessionStorage.getItem('status') == 1)
 	{
 		const localUser = JSON.parse(sessionStorage.getItem('userData'));
-		// if (!localUser.Avatar)
-		// 	localUser.Avatar = "./img/logo_aligo.png"; // nope
 		content = <Login 
 		Pseudo={localUser.Pseudo} 
 		Avatar={localUser.Avatar} 
 		update={update} />;
 
+	}
+	else if (sessionStorage.getItem('status') == 2)
+	{
+		content = <div>
+					<div>
+						<h1>Mot de passe fourni par mail</h1>
+						<input
+							id="password"
+							className="Text-input"
+							type="password"
+							name="password"
+							placeholder="Password"
+							style={{ width: '95%' }}
+							onKeyDown={(e) => {
+								if (e.key === 'Enter')
+								{
+									pwdMail();
+								}
+							}}
+						/>
+					</div>
+				</div>
 	}
 	else
 	{

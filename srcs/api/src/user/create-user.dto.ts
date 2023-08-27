@@ -29,4 +29,7 @@ export class CreateUserDto {
 
   @IsInt()
   Loses: number;
+
+  @IsString()
+  email: string;
 }
