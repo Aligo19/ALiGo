@@ -448,17 +448,33 @@ html {
 	max-height: 100%;
 }
 
-.UserInfo--title {
+.UserInfoProfile {
 	flex: 1;
 	text-align: center;
-    border: 2px solid #23272a;
+	border: 2px solid #23272a;
 	border-radius: 8px;
-	border-width: 65% 65%;
-    padding: 10px;
-    margin: 10px 10px;
-    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-	flex-direction: row;
-	justify-content: center;
+	padding: 10px;
+	margin: 6px 6px;
+	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+	display: flex;
+}
+
+.UserInfo--title {
+	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;
+	font-size: 24px;
+	font-weight: 700;
+	letter-spacing: 2.4px;
+	color: #99AAB5;
+	height: 10%;
+	margin: 2%;
+}
+
+.UserInfo--smiley {
+	width: 9px;
+	height: 9px;
+	display: inline-block;
+	margin-right: 4%;
+	margin-top: 1%;
 }
 
 .status-point {
@@ -472,8 +488,16 @@ html {
 	margin-bottom: -1.5px;
 }
 
-.erase-btn:hover {
-	background-color: #99AAB5;
+.online {
+	background-color: #4CAF50;
+}
+
+.offline {
+	background-color: #F44336;
+}
+
+.ingame {
+	background-color: #ff7207;
 }
 
 .Avatar {
@@ -563,6 +587,15 @@ html {
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 	background-color: #2C2F33;
     overflow-wrap: break-word;
+}
+
+.erase-btn:hover {
+	background-color: #99AAB5;
+}
+
+.erase-btn:active {
+	position: relative;
+	top: 1px;
 }
 
 .login-container {
@@ -697,18 +730,6 @@ html {
   
 .login-content-btn:hover {
 	background-color: #5469d4;
-}
-
-.online {
-	background-color: #4CAF50;
-}
-
-.offline {
-	background-color: #F44336;
-}
-
-.ingame {
-	background-color: #ff7207;
 }
 
 .addFriendForm {

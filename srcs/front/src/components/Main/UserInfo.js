@@ -27,26 +27,41 @@ export default function UserInfo(props) {
 		if (props.Game_status === true)
 			statusPointClass = 'ingame';
 
-	let button = '';
 	if (!JSON.parse(sessionStorage.getItem('userData')))
 		return (<div></div>)
-	let friend = JSON.parse(sessionStorage.getItem('userData')).Friends;
-	for (let i = 0; i < friend.length; i++)
+	let button = '';
+	let isFriend = '';
+	if (props.name === JSON.parse(sessionStorage.getItem('userData')).Pseudo)
 	{
-		if (friend[i].Pseudo === props.name)
-		{
-			friend = null;
-			break;
-		}
+		button = <button className="erase-btn" onClick={() => {window.location.href = `/components/Login`}}>Settings</button>
+		isFriend = <span></span>
 	}
-	if (props.name != JSON.parse(sessionStorage.getItem('userData')).Pseudo && friend == null)
-		button = <button className="erase-btn" onClick={() => {erase()}}>Delete friend</button>
-
+	else
+	{
+		let friend = JSON.parse(sessionStorage.getItem('userData')).Friends;
+		for (let i = 0; i < friend.length; i++)
+		{
+			if (friend[i].Pseudo === props.name)
+			{
+				friend = null;
+				break;
+			}
+		}
+		if (friend == null)
+		{
+			button = <button className="erase-btn" onClick={() => {erase()}}>Delete friend</button>
+			isFriend = <p className="UserInfo--smiley">&#10084;</p>
+		}
+		else
+			isFriend = <p>&#x2716;</p>
+	}
 	return (
 		<div className="UserInfo">
-			<h2 className="UserInfo--title">{props.name} 
+			<div className="UserInfoProfile">
+				{isFriend}
+				<h2 className="UserInfo--title">{props.name}</h2>
 				<div className={`status-point ${statusPointClass}`}></div>
-			</h2>
+			</div>
 			<img src={`http://127.0.0.1:3001/${props.avatar}`} alt={"avatar"} className="Avatar" />
 			<Stats level={props.level} winnb={props.winnb} losenb={props.losenb} />
 			<History histo={props.matchHisto} />
