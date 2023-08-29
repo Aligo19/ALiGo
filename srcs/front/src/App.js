@@ -6,8 +6,9 @@ import PrivateChats from "./components/Main/Groups/PrivateChats";
 import GroupChats from "./components/Main/Groups/GroupChats";
 import MessageCanvas from "./components/Main/MessageCanvas";
 import UserInfo from "./components/Main/UserInfo";
-import GameCanvas from './components/Main/GameCanvas';
+import GameCanvas from './components/Main/Game/GameCanvas';
 import Login from './components/Main/Login';
+import Game from './components/Main/Game';
 
 const clock = 500;
 
@@ -400,6 +401,7 @@ export default function App() {
 
 	function showGameCanvas() {
 		setCurrentView("game");
+		<Game />;
 	}
 
 	function showMessageCanvas() {

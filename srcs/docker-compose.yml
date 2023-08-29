@@ -45,5 +45,12 @@ services:
         - private
       depends_on:
         - api
+    server:
+      build: server/
+      restart: always
+      ports:
+        - '3002:3002'
+      network:
+        - private
 networks:
   private:
