@@ -1,5 +1,3 @@
-// modifier fetchUserInfo : const userprofile + protection await
-
 export default function History(props) {
 	if (!props.histo || props.histo.length === 0) {
 		return (
@@ -11,15 +9,7 @@ export default function History(props) {
 	let matchs = [];	
 	let res, userVs, frst, scd, str;
 	const x = JSON.parse(sessionStorage.getItem('userData'));
-	let tempo = [    {
-		"ID_user1": "LaLisa",
-		"ID_user2": "acaillea",
-		"Score_user1": 5,
-		"Score_user2": 1,
-		"Status": 2
-	  }];
-	// tempo = props.histo;
-	tempo.map(item => {
+	props.histo.map(item => {
 		if (x.ID === item.ID_user1)
 		{
 			userVs = item.ID_user2;
