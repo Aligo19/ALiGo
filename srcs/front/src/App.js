@@ -24,6 +24,7 @@ export default function App() {
 	const [createGroup, setCreateGroup] = useState([]);
 	const [currentView, setCurrentView] = useState("");
 	const [userData, setUserData] = useState([]);
+	const [game, setGame] = useState([]);
 	const [timeoutIdConv, setTimeoutIdConv] = useState(null);
 	const [timeoutIdConvs, setTimeoutIdConvs] = useState(null);
 	const [timeoutIdUserInfos, setTimeouIdUserInfos] = useState(null);
@@ -401,6 +402,10 @@ export default function App() {
 	function showGameCanvas() {
 		if (timeoutIdConv)
 				clearTimeout(timeoutIdConv);
+		if (timeoutIdConvs)
+				clearTimeout(timeoutIdConvs);
+		if (timeoutIdUserInfos)
+				clearTimeout(timeoutIdUserInfos);
 		setCurrentView("game");
 	}
 
@@ -564,6 +569,15 @@ export default function App() {
 		setCurrentView("addPerson");
 	}
 
+	if (currentView === "game")
+	{
+		if (timeoutIdConv)
+			clearTimeout(timeoutIdConv);
+		if (timeoutIdConvs)
+			clearTimeout(timeoutIdConvs);
+		if (timeoutIdUserInfos)
+			clearTimeout(timeoutIdUserInfos);
+	}
 	let content;
 	if (sessionStorage.getItem('status') == 1)
 	{
