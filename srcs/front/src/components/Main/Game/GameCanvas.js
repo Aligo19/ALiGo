@@ -1,9 +1,10 @@
 import { def } from "./Constants";
+import { useEffect, useRef } from 'react';
 
-export default function GameCanvas({ me, opponent, ball, ...props}) {
-	sessionStorage.setItem('id_conv', 0);
-	const ref=useRef();
-	
+
+export default function Canvas({ me, opponent, ball, ...props}) {
+	const ref=useRef(null);
+
 	const drawBackground = (context) => {
 		context.clearRect(0, 0, def.WIN_W, def.WIN_H);
 		context.fillStyle = 'black';

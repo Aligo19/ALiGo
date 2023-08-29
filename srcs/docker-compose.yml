@@ -50,7 +50,7 @@ services:
       restart: always
       ports:
         - '3002:3002'
-      network:
+      networks:
         - private
 networks:
   private:

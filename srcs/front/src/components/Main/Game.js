@@ -1,42 +1,45 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client'
-import GameCanvas from './Game/GameCanvas';
 import { def } from "./Game/Constants";
+import Canvas from './Game/GameCanvas';
 
-const socket = io.connect("http://127.0.0.1:3002");
-
-const ball = {
-    x: 20, 
-    y: 20, 
-    posX: def.WIN_W/2 - 10, 
-    posY: def.WIN_H/2 - 10, 
-    velX: 1, 
-    velY: 1, 
-    speed: 3
-};
-
-let me = {
-    x: def.PL_W, 
-    y: def.PL_H, 
-    posX: 20,
-    posY: def.WIN_H/2 - 10,
-    speed: 5, 
-    // meScore: 0, 
-    // oppScore: 0
-};
-
-let opponent = {
-    x: def.PL_W, 
-    y: def.PL_H, 
-    posX: 20,
-    posY: def.WIN_H/2 - 10,
-    speed: 5, 
-    meScore: 0, 
-    oppScore: 0
-};
 
 
 export default function Game() { 
+	sessionStorage.setItem('idConv', 0);
+
+    const socket = io.connect("http://127.0.0.1:3002");
+	const ref=useRef();
+    
+    const ball = {
+        x: 20, 
+        y: 20, 
+        posX: def.WIN_W/2 - 10, 
+        posY: def.WIN_H/2 - 10, 
+        velX: 1, 
+        velY: 1, 
+        speed: 3
+    };
+    
+    let me = {
+        x: def.PL_W, 
+        y: def.PL_H, 
+        posX: 20,
+        posY: def.WIN_H/2 - 10,
+        speed: 5, 
+        // meScore: 0, 
+        // oppScore: 0
+    };
+    
+    let opponent = {
+        x: def.PL_W, 
+        y: def.PL_H, 
+        posX: 20,
+        posY: def.WIN_H/2 - 10,
+        speed: 5, 
+        meScore: 0, 
+        oppScore: 0
+    };
     const [players, setPlayers] = useState({});
     
     //je peux passer la nouvelle position en parametre et puis l envoyer en param de socket emit
@@ -233,8 +236,7 @@ export default function Game() {
     }, [ ]);
     
     return (
-        <div className="GameCanvas">
-        <GameCanvas 
+        <Canvas 
             width="800"
             height="600"
             myId={socket.id}
@@ -242,6 +244,5 @@ export default function Game() {
             opponent={opponent}
             ball={ball}
             />
-        </div>
     );
 }

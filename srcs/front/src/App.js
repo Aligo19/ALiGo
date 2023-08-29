@@ -6,7 +6,6 @@ import PrivateChats from "./components/Main/Groups/PrivateChats";
 import GroupChats from "./components/Main/Groups/GroupChats";
 import MessageCanvas from "./components/Main/MessageCanvas";
 import UserInfo from "./components/Main/UserInfo";
-import GameCanvas from './components/Main/Game/GameCanvas';
 import Login from './components/Main/Login';
 import Game from './components/Main/Game';
 
@@ -400,8 +399,9 @@ export default function App() {
 	}
 
 	function showGameCanvas() {
+		if (timeoutIdConv)
+				clearTimeout(timeoutIdConv);
 		setCurrentView("game");
-		<Game />;
 	}
 
 	function showMessageCanvas() {
@@ -618,7 +618,7 @@ export default function App() {
 						</div>
 					</div>
 					{/* Conditionnellement afficher soit le GameCanvas, soit le MessageCanvas */}
-					{((currentView === "game") ? <GameCanvas /> : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup :(currentView === "login") ? <Login />:(currentView === "gestion") ? gestion : ( <div className='EmptyCanvas'></div>))}
+					{((currentView === "game") ? <Game /> : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup :(currentView === "login") ? <Login />:(currentView === "gestion") ? gestion : ( <div className='EmptyCanvas'></div>))}
 					{/* User Infos */}
 					{userInfoComponents}
 				</div>
