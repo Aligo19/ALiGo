@@ -33,7 +33,7 @@ export default function UserInfo(props) {
 	let isFriend = '';
 	if (props.name === JSON.parse(sessionStorage.getItem('userData')).Pseudo)
 	{
-		button = <button className="erase-btn" onClick={() => {window.location.href = `/components/Login`}}>Settings</button>
+		button = <button className="erase-btn" onClick={() => sessionStorage.setItem('status', 1)}>Settings</button>
 		isFriend = <span></span>
 	}
 	else
