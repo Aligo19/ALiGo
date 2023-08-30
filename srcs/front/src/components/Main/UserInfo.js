@@ -55,6 +55,11 @@ export default function UserInfo(props) {
 		else
 			isFriend = <p>&#x2716;</p>
 	}
+
+	let pic = '';
+	if (props.avatar)
+		pic = ((props.avatar).includes('http')) ? props.avatar : `http://127.0.0.1:3001/${props.avatar}` ;
+
 	return (
 		<div className="UserInfo">
 			<div className="UserInfoProfile">
@@ -62,9 +67,9 @@ export default function UserInfo(props) {
 				<h2 className="UserInfo--title">{props.name}</h2>
 				<div className={`status-point ${statusPointClass}`}></div>
 			</div>
-			<img src={`http://127.0.0.1:3001/${props.avatar}`} alt={"avatar"} className="Avatar" />
+			<img src={pic} alt={"avatar"} className="Avatar" />
 			<Stats level={props.level} winnb={props.winnb} losenb={props.losenb} />
-			<History histo={props.matchHisto} />
+			<History histo={props.histo} />
 			{button}
 		</div>
 	)

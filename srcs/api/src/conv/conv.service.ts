@@ -6,6 +6,8 @@ import { Conv } from './conv.entity';
 import { User } from '../user/user.entity';
 import { Message } from './message.objet';
 import { UserService } from 'src/user/user.service';
+import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class ConvService {
@@ -19,16 +21,35 @@ export class ConvService {
         const conv = new Conv();
         conv.Name = name;
         conv.Status = status;
-        if (status === 1)
-        conv.Password = password;
-        else
-        conv.Password = null;
+    
+        if (status === 1 && password) {
+          const hashedPassword = await this.hashPassword(password);
+          conv.Password = hashedPassword;
+        } else {
+          conv.Password = null;
+        }
+    
         conv.Admin = [];
         conv.Users = [];
         conv.Muted = [];
         conv.Messages = [];
+    
         return this.convRepository.save(conv);
-    }
+      }
+    
+      async hashPassword(password: string): Promise<string> {
+        const saltRounds = 10;
+        return bcrypt.hash(password, saltRounds);
+      }
+
+      async checkPwd(id: number, pwd: string) {
+        let conv = await this.convRepository.findOne({
+            where : {ID: Equal(id)}
+        });
+
+        return bcrypt.compare(pwd, conv.Password);
+
+      }
 
     async addUsersToConv(convId: number, users: User[]): Promise<Conv> {
         const conv = await this.convRepository.findOne({

@@ -24,16 +24,16 @@ dotenv.config(); // Load environment variables from .env file
     MailerModule.forRootAsync({
       useFactory: () => ({
         transport: {
-          host: 'smtp.hostinger.com',
-          port: 587,
+          host: process.env.EMAIL_HOST,
+          port: parseInt(process.env.EMAIL_PORT, 10),
           secure: false,
           auth: {
-            user: 'pong@hugoorickx.be',
-            pass: 'Aligo1203!',
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PWD,
           },
         },
         defaults: {
-          from: '"No Reply" <pong@hugoorickx.be>',
+          from: `"No Reply" <${process.env.EMAIL_USER}>`,
         }
       }),
     }),

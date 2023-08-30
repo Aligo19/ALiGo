@@ -24,7 +24,6 @@ export default function App() {
 	const [createGroup, setCreateGroup] = useState([]);
 	const [currentView, setCurrentView] = useState("");
 	const [userData, setUserData] = useState([]);
-	const [game, setGame] = useState([]);
 	const [timeoutIdConv, setTimeoutIdConv] = useState(null);
 	const [timeoutIdConvs, setTimeoutIdConvs] = useState(null);
 	const [timeoutIdUserInfos, setTimeouIdUserInfos] = useState(null);
@@ -61,6 +60,7 @@ export default function App() {
 			if (id == JSON.parse(sessionStorage.getItem('userData')).ID)
 				sessionStorage.setItem('userData', JSON.stringify(userProfile));
 			setUserData(userProfile);
+			fetchMatchHisto();
 			if (timeoutIdUserInfos)
 				clearTimeout(timeoutIdUserInfos);
 			setTimeouIdUserInfos(setTimeout(() => fetchUserInfo(), clock));
@@ -73,7 +73,7 @@ export default function App() {
 		try {
 			const x = JSON.parse(sessionStorage.getItem('userData'));
 			const response = await axios.get(`http://127.0.0.1:3001/matches/${x.ID}/user`);
-						if (!response || !response.data || response.status < 200 || response.status >= 300 || response.data.status)
+			if (!response || !response.data || response.status < 200 || response.status >= 300 || response.data.status)
 				return ;
 			setMatchHisto(response.data);
 		} catch (error) {
@@ -146,7 +146,6 @@ export default function App() {
 		connect();
 		fetchUserInfo();
 		fetchChats();
-		fetchMatchHisto();
 		onOpenConversation();
 	}, []);
 
@@ -170,8 +169,9 @@ export default function App() {
 		));
 	}
 	
-	function onSubmitPassword(datas, password) {
-		if (!password || datas.Password !== password)
+	async function onSubmitPassword(datas, password) {
+		let status = await axios.get(`http://127.0.0.1:3001/conv/${datas.ID}/pwd/${password}`)
+		if (!password || !datas || !status.data)
 			return ;
 		sessionStorage.setItem('statusConv', 0);
 		sessionStorage.setItem('idConv', datas.ID);
@@ -637,7 +637,6 @@ export default function App() {
 					{userInfoComponents}
 				</div>
 	}
-	console.log("currentView: " + currentView);
 	return (<div className="App">
 				<Navbar />
 				{content}

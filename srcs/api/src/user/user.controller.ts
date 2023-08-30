@@ -7,6 +7,7 @@ import { UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { promises as fsPromises } from 'fs';// npm intsall fs
 import * as path from 'path';
+import * as dotenv from 'dotenv'; // Import dotenv package
 
 @Controller('users')
 export class UserController {
@@ -131,8 +132,8 @@ export class UserController {
             'https://api.intra.42.fr/oauth/token',
                 {
                     grant_type: 'authorization_code',
-                    client_id: 'u-s4t2ud-3877a3e700b6b8841a31f110495b6d430ce41dc60be48f28aeca81423a03577b',
-                    client_secret: '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',
+                    client_id: process.env.CLIENT_ID,
+                    client_secret: process.env.CLIENT_SECRET,
                     code: code,
                     redirect_uri: 'http://127.0.0.1:3000',
                 },
@@ -252,15 +253,18 @@ export class UserController {
       if (!user)
         throw new NotFoundException('User not found');
       Object.assign(user, updatedUserData);
-      if (updatedUserData.email)
+      if (updatedUserData.email.length > 0)
       {
-        logger = ["The request is ok", updatedUserData.email];
         user.email = updatedUserData.email;
       }
+      else
+        user.email = '';
+    
+      logger = ["The request is ok", "PATCH [/users/:id]"];
       output =  updatedUserData;
       this.userService.updateUser(user);
     } catch (error) {
-      logger = ["The request doesn't work", error.message];
+      logger = ["The request doesn't work", "PATCH [/users/:id]"];
       output = error;
     }
     Logger.log(logger[0], logger[1]);

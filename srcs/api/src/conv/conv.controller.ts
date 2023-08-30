@@ -35,7 +35,7 @@ export class ConvController {
     Logger.log(logger[0], logger[1]);
     return JSON.stringify(output);
   }
-
+  
 /**
  * @description Get all convs with user id
  * @param id 
@@ -75,6 +75,12 @@ export class ConvController {
     Logger.log(logger[0], logger[1]);
     return JSON.stringify(output);
   }
+
+  @Get(':id/pwd/:pwd')
+  async checkPwd( @Param('id', ParseIntPipe) id: number, @Param('pwd') pwd: string ) {
+    return this.convService.checkPwd(id, pwd);
+  }
+
 
 /****************************************/
 /*                                      */
