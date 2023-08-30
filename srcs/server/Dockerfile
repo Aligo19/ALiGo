@@ -11,4 +11,4 @@ COPY . .
 RUN npm install
 
 # Commande pour démarrer le serveur
-CMD ["node", "index.js"]
+CMD ["npm", "start"]

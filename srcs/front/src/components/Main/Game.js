@@ -8,7 +8,9 @@ import Canvas from './Game/GameCanvas';
 export default function Game() { 
 	sessionStorage.setItem('idConv', 0);
 
-    const socket = io.connect("http://127.0.0.1:3002");
+    //le soucis vient de l url qui n est pas bon et donc ne sait pas se connecter
+    //utiliser une var d environnemen? `${process.env.REACT_APP_BACKEND_SOCKET}`
+    const socket = io("http://127.0.0.1:3002");
 	const ref=useRef();
     
     const ball = {
@@ -27,8 +29,8 @@ export default function Game() {
         posX: 20,
         posY: def.WIN_H/2 - 10,
         speed: 5, 
-        // meScore: 0, 
-        // oppScore: 0
+        meScore: 0, 
+        oppScore: 0
     };
     
     let opponent = {
@@ -88,23 +90,19 @@ export default function Game() {
 
         if (ball.posX + ball.x >= def.WIN_W - 15) {
             if (me.isLeft) {
-                //me.score += 1;
                 me.meScore ++;
             } 
             else {
                 me.oppScore ++;
-                //opponent.score += 1;
             }
             resetBall();
         }
         else if (ball.posX <= 15) {
             if (me.isLeft) {
                 me.oppScore ++;
-                //opponent.score += 1;
             } 
             else {
                 me.meScore ++;
-                //me.score += 1;
             }
             resetBall();
         }
@@ -140,11 +138,15 @@ export default function Game() {
         
         //a mettre dans l interval comme si on send update de la ball au joueur tout les x secondes
         sendBallPosition();
+        
+        requestAnimationFrame(updateBallPosition);
     };
 
     useEffect(() => {
 
+        //passe dans ce socket encore et encore
         socket.on('updatePlayers', (backendPlayers) => {
+            console.log("connection socket ID: " + socket.id);
             // Créer une copie mise à jour des joueurs
             const updatedPlayers = { ...players };
 
@@ -153,7 +155,7 @@ export default function Game() {
             for (const id in backendPlayers) {
                 const backendPlayer = backendPlayers[id];
                 if (!updatedPlayers[id])
-                {      
+                {
                     if (socket.id === id) {
                         me.posX= backendPlayer.x;
                         me.id= id;
@@ -206,13 +208,18 @@ export default function Game() {
         });
 
         //voir si je peux utiliser intervalle pour le deplacement de la ball
-        
-        const interval = setInterval(() => {
-            if (me.isLeft) {
-                updateBallPosition();
-            }
+        console.log(me);
+        console.log("is left" + me.isLeft);
+        // const interval = setInterval(() => {
+        //     if (me.isLeft) {
+        //         updateBallPosition();
+        //     }
 
-        }, 1000/60);
+        // }, 1000/60);
+
+        if (me.isLeft) {
+            updateBallPosition(); // Démarrer la mise à jour de la position de la balle
+        }
         
         //ecoute des input 
         document.addEventListener('keydown', handleKeyDown);
@@ -230,7 +237,7 @@ export default function Game() {
             socket.off('receive_ball_pos');
             socket.off('receive_score');
 
-            clearInterval(interval);
+            // clearInterval(interval);
         };
 
     }, [ ]);
