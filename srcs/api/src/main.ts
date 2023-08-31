@@ -14,11 +14,11 @@ async function bootstrap() {
   await seedConvs();
     // Configuration des options CORS
     const corsOptions: CorsOptions = {
-      origin: 'http://127.0.0.1:3000', // L'URL de l'application React
+      origin: ['http://127.0.0.1:3000', 'http://127.0.0.1:3002'], // L'URL de l'application React
       methods: 'GET,POST,PATCH',
       optionsSuccessStatus: 204,
     };
-  
+    
     app.enableCors(corsOptions);
   await app.listen(3001);
 }
