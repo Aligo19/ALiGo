@@ -237,6 +237,7 @@ html {
 	font-size: 20px;
 }
 
+
 .MessageCanvas,
 .EmptyCanvas {
 	flex: 2;
@@ -948,7 +949,6 @@ html {
 	align-items: top;
 	align-content: stretch;
 	max-height: 100%;
-	margin-bottom: 2px;
 }
 
 .streamForm {

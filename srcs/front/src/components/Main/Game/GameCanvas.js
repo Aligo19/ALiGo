@@ -70,8 +70,8 @@ export default function Canvas({ me, opponent, ball, ...props}) {
 	// 	canvas.width = newWidth;
 	// 	canvas.height = newHeight;
 
-	// 	console.log("client canva w: " + canvas.clientWidth);
-	// 	console.log("client canva h: " + canvas.clientHeight);
+		// console.log("client canva w: " + canvas.clientWidth);
+		// console.log("client canva h: " + canvas.clientHeight);
 	// 	console.log("canva w: " + canvas.width);
 	// 	console.log("canva h: " + canvas.height);
 	// 	console.log("sizeScreen w: " + sizeScreen.width);
@@ -91,8 +91,9 @@ export default function Canvas({ me, opponent, ball, ...props}) {
 	},  [] );
 	return (
 		//modifier width et height avec les nouvelle propriete de update screen pour la mise a jouer du canva
+		////width={props.width} height={props.height}
 		<div className="GameCanvas">
-			<canvas ref={ref}  width={props.width} height={props.height} />
+			<canvas ref={ref}   /> 
 		</div>
 	)
 }
