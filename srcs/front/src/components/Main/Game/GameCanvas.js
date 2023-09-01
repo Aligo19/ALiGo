@@ -93,7 +93,7 @@ export default function Canvas({ me, opponent, ball, ...props}) {
 		//modifier width et height avec les nouvelle propriete de update screen pour la mise a jouer du canva
 		////width={props.width} height={props.height}
 		<div className="GameCanvas">
-			<canvas ref={ref}   /> 
+			<canvas ref={ref} width={props.width} height={props.height}  /> 
 		</div>
 	)
 }

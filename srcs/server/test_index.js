@@ -21,39 +21,43 @@ const io  = new Server(server, {
 
 const players = {  };
 const gameStarted = false;
+let matches = {};
 
 io.on("connection", async (socket) => {
 
     //a la connexion emit un event 
-    socket.emit('setupGame');
+    socket.emit("setupGame", socket.id);
 
-    //si besoin emit 1x pour setup la game  et pour le socket setu game
     // socket.once(eventName, listener)
     // Adds a one-time listener function for the event named eventName
+    //utilisée pour écouter un événement une seule fois.
 
     //a voir si ca fonctionne du fait qu'on set pas de game avant?
-    socket.on("setup_game", (objMatch) => {
+    socket.once("setup_game", (objMatch) => {
+        matches = objMatch;
+        //console.log(matches);
+        console.log(objMatch);
         if (objMatch.ID_user2 === null) {
-            players[objMatch.ID] = {
-                [socket.id]: {
-                    x: 20,
-                    isLeft: true
-                }
+            console.log("ici");
+            players[socket.id] = {      //[objMatch.ID_user1.ID] = {
+                x: 20,
+                isLeft: true
             };
+            console.log(players);
+            console.log(players[socket.id]);
             //pas sur car le obj playe peu changer et ne plus avoir les datas dont j ai besoin a voir
-            //socket.join(objMatch.ID);
-            io.to(objMatch.ID).emit('updatePlayers', players);
-        } else {
-            players[objMatch.ID] = {
-                [socket.id]: {
-                    x: 760,
-                    isLeft: false
-                }
+            socket.join(matches.ID);
+            io.to(matches.ID).emit('updatePlayers', players);
+        } else if (objMatch.ID_user2) {
+            console.log(players);
+            players[socket.id] = {
+                x: 760,
+                isLeft: false
             };
             //voir si pas de soucis du fait que je set pas de room avant et etre sur que les data sont tjr au bon endroit apres le socket join
             //pas sur car le obj playe peu changer et ne plus avoir les datas dont j ai besoin a voir
-            //socket.join(objMatch.ID);
-            io.to(objMatch.ID).emit('updatePlayers', players);
+            socket.join(matches.ID);
+            io.to(matches.ID).emit('updatePlayers', players);
         }
     });
    
@@ -70,23 +74,23 @@ io.on("connection", async (socket) => {
 
     socket.on("send_position", (data) => {
         // Diffusez la nouvelle position à tous les autres joueurs sauf l'expéditeur
-        socket.to(objMatch.ID).emit('receive_position', data);
+        socket.to(matches.ID).emit('receive_position', data);
     });
     
     socket.on("send_ball_pos", (data) => {
         //envoi au joueur inviter la pos de la ball
-        socket.to(objMatch.ID).emit('receive_ball_pos', data);
+        socket.to(matches.ID).emit('receive_ball_pos', data);
     });
     
     socket.on("send_score", (data) => {
         //envoi au joueur inviter la pos de la ball
-        socket.to(objMatch.ID).emit('receive_score', data);
+        socket.to(matches.ID).emit('receive_score', data);
     });
     
     socket.on('disconnect', (reason) => {
         console.log(reason);
         delete players[socket.id];
-        io.in(objMatch.ID).emit('updatePlayers', players);
+        io.in(matches.ID).emit('updatePlayers', players);
     });
 });
 

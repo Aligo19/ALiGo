@@ -168,15 +168,16 @@ export default function Game() {
     useEffect(() => {
         //console.log("win win X: " + sizeScreen.width + "win hei Y: " + sizeScreen.height);
 
-        socket.on('setupGame', async () => {
+        socket.on('setupGame', async (id) => {
             try {
+                console.log("player ID: " + id);
                 const playerData = JSON.parse(sessionStorage.getItem('userData'));
                 //console.log(playerData);
                 const gameID = playerData.ID;
                 //le gameId est a 2 donc erreur de requete
                 //console.log(gameID);
-                const jsonMatch = await axios.get(`http://127.0.0.1:3002/matches/${gameID}/search`);
-                const objMatch = JSON.parse(jsonMatch.data);
+                const jsonMatch = await axios.get(`http://127.0.0.1:3001/matches/${gameID}/search`);
+                const objMatch = jsonMatch.data;
                 //console.log(objMatch); 
                 socket.emit('setup_game', objMatch);
                 //setupPlayer(objMatch);              
@@ -188,8 +189,8 @@ export default function Game() {
         //passe dans ce socket encore et encore pq??
         socket.on('updatePlayers', (backendPlayers) => {
             //verifier si les data setup au premier socket donc avant le socket.mit  du serveur sont tjr bonne
-            console.log(backendPlayers);
-            console.log("connection socket ID: " + socket.id);
+            // console.log(backendPlayers);
+            // console.log("connection socket ID: " + socket.id);
             // Créer une copie mise à jour des joueurs
             const updatedPlayers = { ...players };
 
@@ -199,7 +200,7 @@ export default function Game() {
                 const backendPlayer = backendPlayers[id];
                 if (!updatedPlayers[id])
                 {
-                    console.log("id loop:" + id);
+                    //console.log("id loop:" + id);
                     const player = {
                         posX: backendPlayer.x,
                         posY: def.WIN_H / 2 - 10,
@@ -213,11 +214,13 @@ export default function Game() {
                     updatedPlayers[id] = player;
 
                     if (socket.id === id) {
+                        //console.log(me);
+
                         me = player;
-                        console.log("me socketID is ID: " + socket.id);
                     } else {
+                        //console.log(me);
+
                         opponent = player;
-                        console.log("me socketID is not ID (socket): " + socket.id + " socketID is not ID(ID): " + id);
                     }
                 }
             }
@@ -228,8 +231,8 @@ export default function Game() {
                     delete updatedPlayers[id];
                 }
             }
-            console.log("players in client updated Players");
-            console.log(updatedPlayers);
+            //console.log("players in client updated Players");
+            //console.log(updatedPlayers);
             setPlayers(updatedPlayers);
         });
         
