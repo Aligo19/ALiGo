@@ -531,43 +531,46 @@ export default function App() {
 		else
 		{
 			isPrivate = 2;
-			let pseudo = document.getElementById("pseudo").value;
-			if (!groupName || !pseudo || groupName.length === 0 || pseudo.length === 0)
-			{
-				window.alert("Veuillez remplir tous les champs");
-				return;
+			try {
+				let pseudo = document.getElementById("pseudo").value;
+				if (!groupName || !pseudo || groupName.length === 0 || pseudo.length === 0)
+				{
+					window.alert("Veuillez remplir tous les champs");
+					return;
+				}
+				let user = await axios.get(`http://127.0.0.1:3001/users/${pseudo}/pseudo`);
+				if (!user || !user.data || user.status !== 200 || user.data.status)
+				{
+					window.alert("User not found");
+					return;
+				}
+				user = user.data;
+				let me = JSON.parse(sessionStorage.getItem('userData'));
+				let tout = await axios.get(`http://127.0.0.1:3001/users/${me.ID}/friends/${user.Pseudo}/add`);
+	
+				if (user.ID === me.ID)
+				{
+					window.alert("Vous ne pouvez pas vous ajouter vous même");
+					return;
+				}
+				if (me.Friends.find((friend) => friend.ID === user.ID))
+				{
+					window.alert("Vous êtes déjà ami avec cette personne");
+					return;
+				}
+				selectedPeople.push(user.ID);
+				let out = await connect(groupName, isPrivate, password);
+				for (let i = 0; i < selectedPeople.length; i++)
+					await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${selectedPeople[i]}`);
+				await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${JSON.parse(sessionStorage.getItem('userData')).ID}`);
+				await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/admins/${JSON.parse(sessionStorage.getItem('userData')).ID}`);
+				setCurrentView("messages");
+				sessionStorage.setItem('statusConv', 0);
+				sessionStorage.setItem('idConv', out.ID);
+			} catch (error) {
+				console.log("error");
 			}
-			let user = await axios.get(`http://127.0.0.1:3001/users/${pseudo}/pseudo`);
-			if (!user || !user.data || user.status !== 200 || user.data.status)
-			{
-				window.alert("User not found");
-				return;
-			}
-			user = user.data;
-			let me = JSON.parse(sessionStorage.getItem('userData'));
-			let tout = await axios.get(`http://127.0.0.1:3001/users/${me.ID}/friends/${user.Pseudo}/add`);
-
-			if (user.ID === me.ID)
-			{
-				window.alert("Vous ne pouvez pas vous ajouter vous même");
-				return;
-			}
-			console.log(me);
-			if (me.Friends.find((friend) => friend.ID === user.ID))
-			{
-				window.alert("Vous êtes déjà ami avec cette personne");
-				return;
-			}
-			selectedPeople.push(user.ID);
 		}
-		let out = await connect(groupName, isPrivate, password);
-		for (let i = 0; i < selectedPeople.length; i++)
-			await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${selectedPeople[i]}`);
-		await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${JSON.parse(sessionStorage.getItem('userData')).ID}`);
-		await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/admins/${JSON.parse(sessionStorage.getItem('userData')).ID}`);
-		setCurrentView("messages");
-		sessionStorage.setItem('statusConv', 0);
-		sessionStorage.setItem('idConv', out.ID);
 	}
 
 	async function pwdMail(){
