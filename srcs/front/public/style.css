@@ -237,7 +237,6 @@ html {
 	font-size: 20px;
 }
 
-.GameCanvas,
 .MessageCanvas,
 .EmptyCanvas {
 	flex: 2;
@@ -939,4 +938,31 @@ html {
 	border: 3px solid #7288da;
 	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 	margin-top: 1%;
+}
+
+.GameCanvas {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	justify-content: center;
+	align-items: top;
+	align-content: stretch;
+	max-height: 100%;
+	margin-bottom: 2px;
+}
+
+.streamForm {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	background: #23272A;
+	align-items: right;
+	max-width: 100%;
+	max-height: 100%;
+	height: 60vh;
+	width: 46vw;
+	border-radius: 5px;
+	font-family: "Hind Vadodara", Verdana, Geneva, Tahoma, sans-serif;
+	padding: 10px;
+	margin-top: 33px;
 }
