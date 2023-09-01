@@ -72,13 +72,10 @@ export class MatchController {
         const user = await this.userService.getUserById(id);
         this.userService.updateGameStatus(user, true);
         this.userService.updateDate(user);
-        let matches = await this.matchService.getMatchByIdUser(user.ID);
-        let out = matches.map((item) => {
-          if (item.Status === 0 )
-            return 1;
-        })
-        if (out.length > 0)
-          return;
+        let matches = await this.matchService.getMatchByIdUserDebug(user.ID);
+        Logger.log(matches)
+        if (matches && matches.length > 0)
+            return JSON.stringify(matches[0]);
         if (gameLoading.length > 0) {
             const game = gameLoading[0]
             game.ID_user2 = user;
