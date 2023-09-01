@@ -3,7 +3,8 @@ import { useEffect, useRef } from 'react';
 
 
 export default function Canvas({ me, opponent, ball, ...props}) {
-	const ref=useRef(null);
+	const ref = useRef(null);
+	let canvas = ref.current;
 
 	const drawBackground = (context) => {
 		context.clearRect(0, 0, def.WIN_W, def.WIN_H);
@@ -12,7 +13,7 @@ export default function Canvas({ me, opponent, ball, ...props}) {
 	
 		//ligne du centre
 		context.fillStyle = "white";
-		context.fillRect(def.WIN_W/2, 0, 4, def.WIN_H);
+		context.fillRect(def.WIN_W/2 - 2, 0, 4, def.WIN_H);
 	};
 	
 	const drawPlayer = (context, player) => {
@@ -31,7 +32,7 @@ export default function Canvas({ me, opponent, ball, ...props}) {
 			context.fillText(player.oppScore, def.WIN_W / 2 - (2*def.PL_W), 50, 100);
 			context.fillText(player.meScore, def.WIN_W / 2 + (2*def.PL_W), 50, 100);
 		}
-	}
+	};
 	
 	//undefined meme apres instansiation voir ce que je fais mal
 	const drawBall = (context) => {
@@ -43,9 +44,10 @@ export default function Canvas({ me, opponent, ball, ...props}) {
 	};
 	
 	const drawAll = () => {
-		const canvas = ref.current;
-		const context = canvas.getContext('2d');
 		
+		canvas = ref.current;
+		const context = canvas.getContext('2d');
+
 		drawBackground(context);
 		drawPlayer(context, me);
 		drawPlayer(context, opponent);
@@ -54,17 +56,41 @@ export default function Canvas({ me, opponent, ball, ...props}) {
 		  
 		requestAnimationFrame(drawAll);
 	};
+
+	// const handleResize = () => {
+	// 	const newWidth = canvas.clientWidth;
+  	// 	const newHeight = canvas.clientHeight;
+
+	// 	updateScreen({
+	// 		...sizeScreen,
+	// 		width: newWidth,
+	// 		height: newHeight
+	// 	});
+
+	// 	canvas.width = newWidth;
+	// 	canvas.height = newHeight;
+
+	// 	console.log("client canva w: " + canvas.clientWidth);
+	// 	console.log("client canva h: " + canvas.clientHeight);
+	// 	console.log("canva w: " + canvas.width);
+	// 	console.log("canva h: " + canvas.height);
+	// 	console.log("sizeScreen w: " + sizeScreen.width);
+	// 	console.log("sizeScreen h: " + sizeScreen.height);
+	// };
 	
 	useEffect(() => {
 		//dessiner tous les elements q utiliser dqns lq boucleaui servira d anim
 		//drawAll();
 		const animationFrameId = requestAnimationFrame(drawAll);
+		//window.addEventListener('resize', handleResize);
+		
 		return () => {
 			cancelAnimationFrame(animationFrameId);
 		};
 	
 	},  [] );
 	return (
+		//modifier width et height avec les nouvelle propriete de update screen pour la mise a jouer du canva
 		<div className="GameCanvas">
 			<canvas ref={ref}  width={props.width} height={props.height} />
 		</div>
