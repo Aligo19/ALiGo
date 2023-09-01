@@ -91,7 +91,7 @@ export default function App() {
 				const code = new URLSearchParams(window.location.search).get('code');
 				if (!code)
 				{
-					window.location.replace('https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-3877a3e700b6b8841a31f110495b6d430ce41dc60be48f28aeca81423a03577b&redirect_uri=http%3A%2F%2F127.0.0.1%3A3000&response_type=code');
+					window.location.replace('https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2af-c8d7a0565d4286d9500ef0d06a006e7c508dda519e50f426fb0f8d607172c430&redirect_uri=http%3A%2F%2F127.0.0.1%3A3000&response_type=code');
 					return;
 				}
 				let response = await axios.get(`http://127.0.0.1:3001/users/${code}/login`);
