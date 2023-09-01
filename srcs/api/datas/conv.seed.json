@@ -142,61 +142,6 @@
           "Logged_at": "2023-07-28T14:40:00"
         }
       ]
-    },
-    {
-      "Name": "Aligo mais chute",
-      "ID_users":["AlanCazam",
-                  "Philippeu",
-                  "LeGodurix",
-                  "LaLisa"],
-      "Status": 1,
-      "Messages": [
-        {
-          "ID_user": 3,
-          "data": "Salut tout le monde, comment ca va ? on est secret",
-          "Logged_at": "2023-07-28T14:00:00"
-        },
-        {
-          "ID_user": 4,
-          "data": "Ca va bien, et toi ?",
-          "Logged_at": "2023-07-28T14:05:00"
-        },
-        {
-          "ID_user": 1,
-          "data": "Ca va bien aussi !",
-          "Logged_at": "2023-07-28T14:10:00"
-        },
-        {
-          "ID_user": 2,
-          "data": "Ca va bien aussi !",
-          "Logged_at": "2023-07-28T14:15:00"
-        },
-        {
-          "ID_user": 3,
-          "data": "Super !",
-          "Logged_at": "2023-07-28T14:20:00"
-        },
-        {
-          "ID_user": 4,
-          "data": "Oui, c'est cool !",
-          "Logged_at": "2023-07-28T14:25:00"
-        },
-        {
-          "ID_user": 1,
-          "data": "Oui, c'est cool !",
-          "Logged_at": "2023-07-28T14:30:00"
-        },
-        {
-          "ID_user": 2,
-          "data": "Oui, c'est cool !",
-          "Logged_at": "2023-07-28T14:35:00"
-        },
-        {
-          "ID_user": 3,
-          "data": "Oui, c'est cool !",
-          "Logged_at": "2023-07-28T14:40:00"
-        }
-      ]
     }
   ]
   
