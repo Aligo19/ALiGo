@@ -247,6 +247,20 @@ export default function App() {
 				);
 		})
 		}
+		let addUserInput = (
+			<div>
+				<div className="ConvSettings-title">ADD USER</div>
+			 	<input className="addGroupConvForm-input" type="text" placeholder="User pseudo" id="addUserId" />
+			  	<button className="ConvSettingsContent-btn" onClick={() => {
+				const userIdToAdd = document.getElementById("addUserId").value;
+				if(userIdToAdd) {
+					addUserToConversation(datasConv.ID, userIdToAdd);
+				} else {
+					window.alert("Please enter a user ID");
+				}
+			  }}></button>
+			</div>);
+	
 		setGestion(	<div className="MessageCanvas">
 						<div className="MessageContainer">
 							<div className="ConvSettings-title">
@@ -254,11 +268,25 @@ export default function App() {
 							</div>
 						</div>
 						<div align-content="stretch">{user}</div>
+						{addUserInput}
 						<button className="ConvSettingsBack-btn" onClick={async () => {
 							sessionStorage.setItem('statusConv', 0);
 							sessionStorage.setItem('idConv', datasConv.ID);
 						}}>Back</button>
 					</div>);
+	}
+
+	async function addUserToConversation(conversationId, userId) {
+		try {
+			console.log(`await axios.get(http://127.0.0.1:3001/conv/${conversationId}/users/${userId}`);
+			await axios.get(`http://127.0.0.1:3001/conv/${conversationId}/users/${userId}`);
+			window.alert("User added to the conversation");
+		  	sessionStorage.setItem('idConv', conversationId);
+		  	window.location.reload();
+		} catch (error) {
+		  	console.error("Error adding user to the conversation: ", error);
+		  	window.alert("Failed to add user");
+		}
 	}
 
 	async function onOpenConversation() {
