@@ -372,6 +372,13 @@ export default function App() {
 						Settings
 					</button>;
 		}
+		else
+        {
+            datas.Users.map((item) => {
+                if (item.ID !== (JSON.parse(sessionStorage.getItem("userData"))).ID)
+                    sessionStorage.setItem('idUserInfos', item.ID);
+            });
+        }
 
 		setMessages(	<div className="MessageCanvas">
 							<div className="MessageContainer">
