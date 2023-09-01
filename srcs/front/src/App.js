@@ -278,8 +278,8 @@ export default function App() {
 
 	async function addUserToConversation(conversationId, userId) {
 		try {
-			console.log(`await axios.get(http://127.0.0.1:3001/conv/${conversationId}/users/${userId}`);
-			await axios.get(`http://127.0.0.1:3001/conv/${conversationId}/users/${userId}`);
+			let user = (await axios.get(`http://127.0.0.1:3001/users/${userId}/pseudo`)).data;
+			await axios.get(`http://127.0.0.1:3001/conv/${conversationId}/users/${user.ID}`);
 			window.alert("User added to the conversation");
 		  	sessionStorage.setItem('idConv', conversationId);
 		  	window.location.reload();
