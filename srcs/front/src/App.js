@@ -248,9 +248,9 @@ export default function App() {
 		})
 		}
 		let addUserInput = (
-			<div>
-				<div className="ConvSettings-title">ADD USER</div>
-			 	<input className="addGroupConvForm-input" type="text" placeholder="User pseudo" id="addUserId" />
+			<div className="ConvSettingsContent">
+				<div>Add User</div>
+			 	<input className="addGroupConvForm-input" type="text" placeholder="USER PSEUDO" id="addUserId" />
 			  	<button className="ConvSettingsContent-btn" onClick={() => {
 				const userIdToAdd = document.getElementById("addUserId").value;
 				if(userIdToAdd) {
@@ -258,7 +258,7 @@ export default function App() {
 				} else {
 					window.alert("Please enter a user ID");
 				}
-			  }}></button>
+			  }}>ADD</button>
 			</div>);
 	
 		setGestion(	<div className="MessageCanvas">
