@@ -37,7 +37,7 @@ export default function Game() {
         speed: 7, 
         meScore: 0, 
         oppScore: 0,
-        isLeft:true //test ball
+        isLeft:true, //test ball
     };
     
     let opponent = {
@@ -48,7 +48,7 @@ export default function Game() {
         speed: 7, 
         meScore: 0, 
         oppScore: 0, 
-        isLeft:false //test ball
+        isLeft:false, //test ball
 
     };
     const [players, setPlayers] = useState({});
@@ -59,7 +59,7 @@ export default function Game() {
     };
 
     const handleKeyDown = (event) => {
-        if (!gameStarted && event.key === 'p') { //me.isLeft &&
+        if (!gameStarted && me.isLeft && event.key === 'p') {
             playerLeft = me.isLeft ? me : opponent;
             playerRight = me.isLeft ? opponent : me;
             gameStarted = true;
@@ -193,35 +193,29 @@ export default function Game() {
             // console.log("connection socket ID: " + socket.id);
             // Créer une copie mise à jour des joueurs
             const updatedPlayers = { ...players };
+            console.log(updatedPlayers);
 
             // Mettre à jour les données des joueurs en fonction de backendPlayers
-            
+
             for (const id in backendPlayers) {
                 const backendPlayer = backendPlayers[id];
+                console.log(backendPlayer);
                 if (!updatedPlayers[id])
                 {
-                    //console.log("id loop:" + id);
-                    const player = {
-                        posX: backendPlayer.x,
-                        posY: def.WIN_H / 2 - 10,
-                        speed: 5,
-                        id: id,
-                        isLeft: backendPlayer.isLeft,
-                        meScore: 0,
-                        oppScore: 0
-                    };
-
-                    updatedPlayers[id] = player;
-
+                    console.log("ID: " + id + " - X: " + backendPlayer.x + " - left:" + backendPlayer.isLeft);
                     if (socket.id === id) {
-                        //console.log(me);
-
-                        me = player;
-                    } else {
-                        //console.log(me);
-
-                        opponent = player;
+                        me.id = id;
+                        me.posX = backendPlayer.x;
+                        me.isLeft = backendPlayer.isLeft;
                     }
+                    else {
+                        opponent.id = id;
+                        opponent.posX = backendPlayer.x;
+                        opponent.isLeft = backendPlayer.isLeft;
+                    }
+                    console.log("ME ID: " + me.id + " -ME X: " + me.posX + " -ME left:" + me.isLeft);
+                    console.log("OP ID: " + opponent.id + " -OP X: " + opponent.posX + " -OP left:" + opponent.isLeft);
+                    updatedPlayers[id] = backendPlayer;
                 }
             }
             

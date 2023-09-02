@@ -36,24 +36,27 @@ io.on("connection", async (socket) => {
     socket.once("setup_game", (objMatch) => {
         matches = objMatch;
         //console.log(matches);
-        console.log(objMatch);
+        //console.log(objMatch);
         if (objMatch.ID_user2 === null) {
-            console.log("ici");
+            //console.log("ici");
             players[socket.id] = {      //[objMatch.ID_user1.ID] = {
                 x: 20,
                 isLeft: true
             };
-            console.log(players);
+            console.log(objMatch.ID_user2);
+            console.log(socket.id);
             console.log(players[socket.id]);
             //pas sur car le obj playe peu changer et ne plus avoir les datas dont j ai besoin a voir
             socket.join(matches.ID);
             io.to(matches.ID).emit('updatePlayers', players);
         } else if (objMatch.ID_user2) {
-            console.log(players);
             players[socket.id] = {
                 x: 760,
                 isLeft: false
             };
+            console.log(objMatch.ID_user2);
+            console.log(socket.id);
+            console.log(players[socket.id]);
             //voir si pas de soucis du fait que je set pas de room avant et etre sur que les data sont tjr au bon endroit apres le socket join
             //pas sur car le obj playe peu changer et ne plus avoir les datas dont j ai besoin a voir
             socket.join(matches.ID);
