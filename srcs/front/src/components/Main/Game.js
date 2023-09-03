@@ -8,14 +8,14 @@ import axios from 'axios';
 export default function Game() { 
 	sessionStorage.setItem('idConv', 0);
 
-    //le soucis vient de l url qui n est pas bon et donc ne sait pas se connecter
-    //utiliser une var d environnemen? `${process.env.REACT_APP_BACKEND_SOCKET}`
     const socket = io("http://127.0.0.1:3002");
+
     // const [sizeScreen, updateScreen] = useState({width: 800, height: 600});
     // let ratioX = sizeScreen.height/def.WIN_H;
     // let ratioY = sizeScreen.width/def.WIN_W;
 	const ref=useRef();
-    let gameStarted = false;
+    const [players, setPlayers] = useState({});
+    let createdRoom = false;
     let playerLeft;
     let playerRight;
     
@@ -29,78 +29,119 @@ export default function Game() {
         speed: 3
     };
     
-    let me = {
-        x: def.PL_W, 
-        y: def.PL_H, 
+    const me = {
+        x: def.PL_W,
+        y: def.PL_H,
         posX: 20,
         posY: def.WIN_H/2 - 10,
-        speed: 7, 
-        meScore: 0, 
+        speed: 7,
+        meScore: 0,
         oppScore: 0,
-        isLeft:true, //test ball
+        isLeft: false,
+        roomName: "",
+        id: 0,
     };
     
-    let opponent = {
-        x: def.PL_W, 
-        y: def.PL_H, 
+    const opponent = {
+        x: def.PL_W,
+        y: def.PL_H,
         posX: 760,
         posY: def.WIN_H/2 - 10,
-        speed: 7, 
-        meScore: 0, 
-        oppScore: 0, 
-        isLeft:false, //test ball
+        speed: 7,
+        meScore: 0,
+        oppScore: 0,
+        isLeft: false,
+        roomName: "",
+        id: 0,
+    };
 
-    };
-    const [players, setPlayers] = useState({});
+    // let me = {
+    //     x: def.PL_W, 
+    //     y: def.PL_H, 
+    //     posX: 0,
+    //     posY: def.WIN_H/2 - 10,
+    //     speed: 7, 
+    //     meScore: 0, 
+    //     oppScore: 0,
+    //     isLeft: false, 
+    //     roomName: "",
+    //     id: 0,
+    // };
     
-    //je peux passer la nouvelle position en parametre et puis l envoyer en param de socket emit
-    const sendPosition = () => {
-        socket.emit("send_position", me.posY);
-    };
+    // let opponent = {
+    //     x: def.PL_W, 
+    //     y: def.PL_H, 
+    //     posX: 0,
+    //     posY: def.WIN_H/2 - 10,
+    //     speed: 7, 
+    //     meScore: 0, 
+    //     oppScore: 0,
+    //     isLeft: false,
+    //     roomName: "",
+    //     id: 0,
+    // };
 
     const handleKeyDown = (event) => {
-        if (!gameStarted && me.isLeft && event.key === 'p') {
+        if (me.isLeft && event.key === 'p') {
             playerLeft = me.isLeft ? me : opponent;
             playerRight = me.isLeft ? opponent : me;
-            gameStarted = true;
-            updateBallPosition(); // Démarrer la mise à jour de la position de la balle
+            updateBallPosition();
         }
         if (event.key === 'w' && me.posY > 0) {
             me.speed = -5;
             me.posY += me.speed;
-            sendPosition();
-        }
-        else if (event.key === 's' && me.posY + def.PL_H < def.WIN_H) {
+            sendPosition(); 
+        } else if (event.key === 's' && me.posY + def.PL_H < def.WIN_H) {
             me.speed = 5;
             me.posY += me.speed;
-            sendPosition();
+            sendPosition(); // Assurez-vous également de mettre à jour cette fonction pour envoyer la nouvelle position.
         }
     };
 
     const handleKeyUp = (event) => {
-        if (players[socket.id]) {
-            if (event.key === 'w' || event.key === 's') {
-                me.speed = 0;
-            }
+        if (event.key === 'w' || event.key === 's') {
+            me.speed = 0;
+        }
+    };
+    
+    const createRoom = async () => {
+        try {
+            //condition qui empeche le joueur de setup un game si deja une en cours et donc il est que spectator
+            console.log("player started game");
+            const playerData = JSON.parse(sessionStorage.getItem('userData'));
+            //console.log(playerData);
+            const gameID = playerData.ID;
+            //console.log(gameID);
+            const jsonMatch = await axios.get(`http://127.0.0.1:3001/matches/${gameID}/search`);
+            const objMatch = jsonMatch.data;
+            //console.log(objMatch); 
+            socket.emit('create_room', objMatch.ID, objMatch);
+            createdRoom = true;
+            me.roomName = objMatch.ID;
+        } catch (error) {
+            console.error('Une erreur s\'est produite lors de la requête:', error);
         }
     };
 
-    //faire un update ball pos qui contient le calcul des bords de la ball 
-    //et faire un send pos ball comme pour la pos de la ball  
+    const sendPosition = () => {
+        socket.emit("send_position", me.posY, me.roomName);
+    };
+
     const sendBallPosition = () => {
-        socket.emit("send_ball_pos", ball);
+        socket.emit("send_ball_pos", ball, me.roomName);
     };
 
     const sendScore = () => {
-        socket.emit("send_score", me);
+        socket.emit("send_score", me, me.roomName);
     }
 
-    //reset la ball lorsquelle sort
     const reset = () => {
         ball.posX = def.WIN_W /2 -10;
         ball.posY = def.WIN_H /2 - 10;
 
-        me.posY = def.WIN_H/2 - 10;
+        me.posY = def.WIN_H/2 - 50;
+        opponent.posY = def.WIN_H/2 - 50;
+
         sendPosition();
     }
 
@@ -134,7 +175,6 @@ export default function Game() {
         }
     };
 
-    //lancer l update de la ball dans l interval 
     const updateBallPosition = () => {
         
         // Vérifier les collisions avec les bords verticaux du canvas
@@ -143,7 +183,6 @@ export default function Game() {
         }
 
         //collision avec les player
-        //fonctionne bizarrement quand les player ne sont pas bien setup
         if (((ball.posX <= playerLeft.posX + playerLeft.x) && (ball.posY + ball.y >= playerLeft.posY) && (ball.posY <= playerLeft.posY + playerLeft.y)) || 
             ((ball.posX + ball.x >= playerRight.posX) && (ball.posY + ball.y >= playerRight.posY) && (ball.posY <= playerRight.posY + playerRight.y))) {
             ball.velX = -ball.velX;
@@ -154,7 +193,6 @@ export default function Game() {
         ball.posY += ball.velY;
         // ball.posX += ball.velX * ball.speed;
         // ball.posY += ball.velY * ball.speed;
-        //console.log("ball posX: " + ball.posX + " - ball posY: " + ball.posY);
         
         //check une fois le deplacement si il y a goal
         checkGoal();
@@ -167,40 +205,24 @@ export default function Game() {
 
     useEffect(() => {
         //console.log("win win X: " + sizeScreen.width + "win hei Y: " + sizeScreen.height);
+        
+        if (!createdRoom) {
+            createRoom();
+        }
 
-        socket.on('setupGame', async (id) => {
-            try {
-                console.log("player ID: " + id);
-                const playerData = JSON.parse(sessionStorage.getItem('userData'));
-                //console.log(playerData);
-                const gameID = playerData.ID;
-                //le gameId est a 2 donc erreur de requete
-                //console.log(gameID);
-                const jsonMatch = await axios.get(`http://127.0.0.1:3001/matches/${gameID}/search`);
-                const objMatch = jsonMatch.data;
-                //console.log(objMatch); 
-                socket.emit('setup_game', objMatch);
-                //setupPlayer(objMatch);              
-            } catch (error) {
-                console.error('Une erreur s\'est produite lors de la requête:', error);
-            }
-        });
-
-        //passe dans ce socket encore et encore pq??
-        socket.on('updatePlayers', (backendPlayers) => {
-            //verifier si les data setup au premier socket donc avant le socket.mit  du serveur sont tjr bonne
+        socket.on('setup_player', (backendPlayers) => {
             // console.log(backendPlayers);
             // console.log("connection socket ID: " + socket.id);
             // Créer une copie mise à jour des joueurs
             const updatedPlayers = { ...players };
-            console.log(updatedPlayers);
-
+            console.log(backendPlayers);
+    
             // Mettre à jour les données des joueurs en fonction de backendPlayers
-
+    
             for (const id in backendPlayers) {
                 const backendPlayer = backendPlayers[id];
                 console.log(backendPlayer);
-                if (!updatedPlayers[id])
+                if (!updatedPlayers[id] && Object.keys(updatedPlayers).length < 3)
                 {
                     console.log("ID: " + id + " - X: " + backendPlayer.x + " - left:" + backendPlayer.isLeft);
                     if (socket.id === id) {
@@ -218,7 +240,7 @@ export default function Game() {
                     updatedPlayers[id] = backendPlayer;
                 }
             }
-            
+
             //supp le/les player si deconnexion
             for (const id in updatedPlayers) {
                 if (!backendPlayers[id]) {
@@ -229,13 +251,11 @@ export default function Game() {
             //console.log(updatedPlayers);
             setPlayers(updatedPlayers);
         });
-        
+
         socket.on("receive_position", (data) => {
-            //envoye bien les donnee a l adversaire!
             opponent.posY = data;
         });
 
-        // Écouter les mises à jour de la position de la balle depuis le serveur
         socket.on('receive_ball_pos', (newBall) => {
             ball.posX= newBall.posX;
             ball.posY= newBall.posY; 
@@ -253,23 +273,10 @@ export default function Game() {
             console.log("opp" + me.oppScore);
         });
 
-        console.log("PLAYER LEFT PRESS p TO START GAME");
+        socket.on('player_disconnect', () => {
+            console.log("the other player left the game");
+        });
 
-        //voir si je peux utiliser intervalle pour le deplacement de la ball
-        // console.log(me);
-        // console.log("is left" + me.isLeft);
-        // const interval = setInterval(() => {
-        //     updateBallPosition();
-        //     if (me.isLeft) {
-        //     }
-
-        // }, 1000/60);
-
-        // if (me.isLeft) {
-            //updateBallPosition(); // Démarrer la mise à jour de la position de la balle
-        // }
-        
-        //ecoute des input 
         document.addEventListener('keydown', handleKeyDown);
         document.addEventListener('keyup', handleKeyUp);
             
@@ -280,12 +287,10 @@ export default function Game() {
             document.removeEventListener('keyup', handleKeyUp);
             
             //clear les ecoute du serveur
-            socket.off('updatePlayers');
+            socket.off('setup_player');
             socket.off('receive_position');
             socket.off('receive_ball_pos');
             socket.off('receive_score');
-
-            //clearInterval(interval);
         };
 
     }, [ ]);
@@ -296,10 +301,9 @@ export default function Game() {
             height="600"
             // sizeScreen={sizeScreen}
             // updateScreen={updateScreen}
-            myId={socket.id}
             me={me}
             opponent={opponent}
             ball={ball}
-            />
+        /> 
     );
 }

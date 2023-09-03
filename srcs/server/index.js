@@ -4,10 +4,6 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 
-
-//import Paddle from '../client/src/game/Paddle.js';
-//const def  = import('../client/src/game/Constants.js'); 
-
 app.use(cors());
 
 const server = http.createServer(app);
@@ -16,84 +12,112 @@ const io  = new Server(server, {
         origin: "*",
         methods: ["GET", "POST"],
     },
-    transports: ['websocket', 'polling'], 
+    //transports: ['websocket', 'polling'], 
 });
 
-const players = {  };
-const gameStarted = false;
-let matches = {};
+let send_players = {  };
+let gameStarted = false;
+let rooms = {};
 
-io.on("connection", async (socket) => {
+io.on("connection", (socket) => {
 
-    //a la connexion emit un event 
-    socket.emit("setupGame", socket.id);
+    //save les joueurs d une autre facon 
+    //l idee c est que les players soit savent dans un tableau player avec leur id et qu a cet endroit on save la room name pour la recup avec le socket  id pour palier quand le player quitte et quand faut le kick
+    // const players[socket.id] = {
+    //     roomName: "",
+    // }
 
-    // socket.once(eventName, listener)
-    // Adds a one-time listener function for the event named eventName
-    //utilisée pour écouter un événement une seule fois.
+    socket.on('create_room', (roomName, objMatch) => {
+        if (!rooms[roomName]) {
+            rooms[roomName] = {
+                players: [],
+                spectators: []
+            };
+        }
+        if (Object.keys(rooms[roomName].players) < 3) {
+            rooms[roomName].players.push(socket.id);
+        }
+        else {
+            //envoier une var dans client pour qu il n ait pas acces au input
+            rooms[roomName].spectators.push(socket.id);
+        }
+        socket.join(roomName);
 
-    //a voir si ca fonctionne du fait qu'on set pas de game avant?
-    socket.once("setup_game", (objMatch) => {
-        matches = objMatch;
-        //console.log(matches);
-        //console.log(objMatch);
         if (objMatch.ID_user2 === null) {
-            //console.log("ici");
-            players[socket.id] = {      //[objMatch.ID_user1.ID] = {
+            send_players[socket.id] = {
                 x: 20,
                 isLeft: true
             };
-            console.log(objMatch.ID_user2);
-            console.log(socket.id);
-            console.log(players[socket.id]);
-            //pas sur car le obj playe peu changer et ne plus avoir les datas dont j ai besoin a voir
-            socket.join(matches.ID);
-            io.to(matches.ID).emit('updatePlayers', players);
+            console.log(send_players[socket.id]);
+            io.to(roomName).emit('setup_player', send_players);
         } else if (objMatch.ID_user2) {
-            players[socket.id] = {
+            send_players[socket.id] = {
                 x: 760,
                 isLeft: false
             };
-            console.log(objMatch.ID_user2);
-            console.log(socket.id);
-            console.log(players[socket.id]);
-            //voir si pas de soucis du fait que je set pas de room avant et etre sur que les data sont tjr au bon endroit apres le socket join
-            //pas sur car le obj playe peu changer et ne plus avoir les datas dont j ai besoin a voir
-            socket.join(matches.ID);
-            io.to(matches.ID).emit('updatePlayers', players);
+            console.log(send_players[socket.id]);
+            gameStarted = true;
+            io.to(roomName).emit('setup_player', send_players);
         }
+
+        console.log("player: " + socket.id + " | joined room:" + roomName);
     });
-   
-    //si la game demarre on emet plus vers le client car il a les donnees necessaire au client
-    //cela pourrait il causer des problemes pour les gens qui veulent regarder la game? ou alors tuot fonctionnerai bien avec le join game dudessus
-    // if (!gameStarted) {
-    //     io.to(objMatch.ID).emit('updatePlayers', players);
 
-    //     if (Object.keys(players).length === 2) {
-    //         gameStarted = true;
-    //     }
-    // }
-    
+    //voir si besoin de passer des data
+    socket.on('join_spectator', () => {
 
-    socket.on("send_position", (data) => {
+    });
+
+    socket.on('send_position', (data, roomName) => {
         // Diffusez la nouvelle position à tous les autres joueurs sauf l'expéditeur
-        socket.to(matches.ID).emit('receive_position', data);
+        socket.to(roomName).emit('receive_position', data);
     });
     
-    socket.on("send_ball_pos", (data) => {
+    socket.on('send_ball_pos', (data, roomName) => {
         //envoi au joueur inviter la pos de la ball
-        socket.to(matches.ID).emit('receive_ball_pos', data);
+        socket.to(roomName).emit('receive_ball_pos', data);
     });
     
-    socket.on("send_score", (data) => {
+    socket.on('send_score', (data, roomName) => {
         //envoi au joueur inviter la pos de la ball
-        socket.to(matches.ID).emit('receive_score', data);
+        socket.to(roomName).emit('receive_score', data);
+    });
+
+    socket.on('disconnecting', () => {
+
     });
     
     socket.on('disconnect', (reason) => {
         console.log(reason);
-        delete players[socket.id];
-        io.in(matches.ID).emit('updatePlayers', players);
+        delete send_players[socket.id];
+        
+        console.log("ID been disconnected: " + socket.id);
+        
+        for (const roomName in rooms) {
+            const room = rooms[roomName];
+            
+            // Supprimer le joueur de la liste des joueurs de la salle
+            const playerIndex = room.players.indexOf(socket.id);
+            if (playerIndex !== -1) {
+                console.log(room.players);
+                room.players.splice(playerIndex, 1);
+                io.in(room).emit('setup_player', send_players);
+
+                // Si la salle n'a plus de joueurs, vous pouvez la supprimer si nécessaire
+                if (room.players.length === 0) {
+                    delete rooms[roomName];
+                }
+
+                // Émettre un événement pour informer les autres joueurs de la déconnexion
+                io.to(roomName).emit('player_disconnect', socket.id);
+            }
+
+            // Vous pouvez également gérer le cas où le joueur est un spectateur
+            const spectatorIndex = room.spectators.indexOf(socket.id);
+            if (spectatorIndex !== -1) {
+                room.spectators.splice(spectatorIndex, 1);
+            }
+        }
     });
 });
 
