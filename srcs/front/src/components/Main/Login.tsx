@@ -65,7 +65,9 @@ export default function Login(props: LoginProps) {
                         <label htmlFor="ing">Avatar</label>
                         <input className="login-content-input" id="ing" name="ing" type="file" placeholder="Avatar"
                             onChange={handleFileChange} />
-                        <input margin="2%" id="email" name="email" type="text" placeholder="Mail" value={user.email}
+                        {/* <input margin="2%" id="email" name="email" type="text" placeholder="Mail" value={user.email}
+                            onChange={(e) => setUser(prevUser => ({ ...prevUser, email: e.target.value }))} /> */}
+                        <input id="email" name="email" type="text" placeholder="Mail" value={user.email}
                             onChange={(e) => setUser(prevUser => ({ ...prevUser, email: e.target.value }))} />
                         <button className="login-content-btn" onClick={() => { update(); }}>Submit</button>
                     </div>

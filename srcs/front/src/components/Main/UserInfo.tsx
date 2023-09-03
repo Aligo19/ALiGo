@@ -6,12 +6,12 @@ import History from "./UserInfo/History";
 interface UserProps {
     name: string;
     lstCo: string;
-    Game_status?: boolean;
-    avatar?: string;
-    level?: number;
-    winnb?: number;
-    losenb?: number;
-    histo?: any[]; // Remplacez any[] par le type approprié de votre historique
+    Game_status: boolean;
+    avatar: string;
+    level: number;
+    winnb: number;
+    losenb: number;
+    histo: any[]; // Remplacez any[] par le type approprié de votre historique
 }
 
 export default function UserInfo(props: UserProps) {

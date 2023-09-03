@@ -6,7 +6,7 @@ interface GroupChatsProps {
     name: string;
 }
 
-const GroupChats: React.FC<GroupChatsProps> = (props) => {
+const GroupChats: React.FC<GroupChatsProps> = (props:any) => {
 
     async function openConversation(props: GroupChatsProps) {
         try {

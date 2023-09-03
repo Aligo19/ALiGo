@@ -10,7 +10,7 @@ interface HistoryProps {
     }>
 }
 
-const History: React.FC<HistoryProps> = (props) => {
+const History: React.FC<HistoryProps> = (props:any) => {
     if (!props.histo || props.histo.length === 0) {
         return (
             <div className="History">
@@ -24,7 +24,7 @@ const History: React.FC<HistoryProps> = (props) => {
     let res: string, userVs: string, frst: number, scd: number, str: string;
     const x = JSON.parse(sessionStorage.getItem('userData') || '{}');
 
-    props.histo.forEach(item => {
+    props.histo.forEach((item:any) => {
         if (x.ID === item.ID_user1.ID) {
             userVs = item.ID_user2.Pseudo;
             frst = item.Score_user1;

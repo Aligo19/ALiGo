@@ -5,7 +5,7 @@ interface PrivateChatsProps {
     name: string;
 }
 
-const PrivateChats: React.FC<PrivateChatsProps> = (props) => {
+const PrivateChats: React.FC<PrivateChatsProps> = (props:any) => {
     async function openConversation(props: PrivateChatsProps) {
         try {
             sessionStorage.setItem('idConv', props.value);

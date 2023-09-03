@@ -7,7 +7,7 @@ interface StatsProps {
     level: number;
 }
 
-const Stats: React.FC<StatsProps> = (props) => {
+const Stats: React.FC<StatsProps> = (props:any) => {
     const { winnb: wins, losenb: loses, level } = props;
     const isEmpty = wins === 0 && loses === 0;
 
