@@ -42,7 +42,7 @@ export default function UserInfo(props: UserProps) {
     let button = null;
     let isFriend = null;
 
-    if (props.name === JSON.parse(sessionStorage.getItem('userData')!).Pseudo) {
+    if (props.name === JSON.parse(sessionStorage.getItem('userData') || 'null').Pseudo) {
         button = <button className="erase-btn" onClick={() => sessionStorage.setItem('status', '1')}>Settings</button>;
         isFriend = <span></span>;
     } else {

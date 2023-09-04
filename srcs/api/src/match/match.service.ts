@@ -33,6 +33,32 @@ export class MatchService {
     return this.matchRepository.save(match);
   }
 
+  async createMatchWithFriend(user1: User, user2: User): Promise<Match> {
+    let testUser = await this.userService.getUserById(user1.ID);
+    
+    let testGame = await this.matchRepository.findOne({
+      where: { ID_user1: Equal(user1.ID), Status: Equal(0) },
+    });
+    if (!user1 || !testUser)
+      throw new Error('User1 not found');
+    testUser = await this.userService.getUserById(user2.ID);
+    testGame = await this.matchRepository.findOne({
+      where: { ID_user1: Equal(user2.ID), Status: Equal(0) },
+    });
+    if (!user2 || !testUser)
+      throw new Error('User1 not found');
+    if (testGame)
+      throw new Error('Game already in research');
+    const match = new Match();
+    match.ID_user1 = user1;
+    match.ID_user2 = user2;
+    match.Score_user1 = 0;
+    match.Score_user2 = 0;
+    match.Status = -1;
+    this.userService.updateDate(user1);
+    return this.matchRepository.save(match);
+  }
+
   async updateMatch(match: Match): Promise<Match> {
     if (!match || !(await this.getMatchById(match.ID)))
       throw new Error('Match not found');
@@ -56,7 +82,9 @@ export class MatchService {
   async getMatchByIdUserDebug(userId: number): Promise<Match[]> {
     return this.matchRepository.find({
       //userID = ID_user1 or ID_user2 and status = 2
-      where: [{ ID_user1: Equal(userId), Status: Equal(0) },
+      where: [{ ID_user1: Equal(userId), Status: Equal(-1) },
+              { ID_user2: Equal(userId), Status: Equal(-1) },
+              { ID_user1: Equal(userId), Status: Equal(0) },
               { ID_user2: Equal(userId), Status: Equal(0) },
               { ID_user1: Equal(userId), Status: Equal(1) }, 
               { ID_user2: Equal(userId), Status: Equal(1) }],

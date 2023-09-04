@@ -92,6 +92,52 @@ export class MatchController {
     return JSON.stringify(output);
   }
 
+  @Get(':id/search/:idFriend')
+  async createMatchWithFriend(@Param('id', ParseIntPipe) id1: number, @Param('idFriend', ParseIntPipe) id2: number) {
+    let output, logger;
+    try {
+        const user1 = await this.userService.getUserById(id1);
+        const user2 = await this.userService.getUserById(id2);
+        this.userService.updateGameStatus(user1, true);
+        this.userService.updateDate(user1);
+        let matches = await this.matchService.getMatchByIdUserDebug(user1.ID);
+        if (matches && matches.length > 0)
+            return JSON.stringify(matches[0]);
+        matches = await this.matchService.getMatchByIdUserDebug(user2.ID);
+        if (matches && matches.length > 0)
+            return JSON.stringify(matches[0]);
+        output = await this.matchService.createMatchWithFriend(user1, user2);
+        logger = ["The request is ok", "Request: POST[ /matches ]"];
+    } catch (error) {
+        logger = ["The request doesn't work", "Request: POST[ /matches ]"];
+        output = error;
+    }
+    Logger.log(logger[0], logger[1]);
+    return JSON.stringify(output);
+  }
+
+  @Get(":id/connect/:idGame")
+  async joinGame(@Param('id', ParseIntPipe) id1: number, @Param('idGame', ParseIntPipe) idGame: number)
+  {
+    let output, logger;
+    try {
+      const user1 = await this.userService.getUserById(id1);
+      this.userService.updateGameStatus(user1, true);
+      this.userService.updateDate(user1);
+      let matches = await this.matchService.getMatchById(idGame);
+      if (user1.Pseudo === matches.ID_user1.Pseudo)
+        return;
+      matches.Status = 1;
+      output = await this.matchService.updateMatch(matches);
+      logger = ["The request is ok", "Request: POST[ /matches ]"];
+  } catch (error) {
+      logger = ["The request doesn't work", "Request: POST[ /matches ]"];
+      output = error;
+  }
+  Logger.log(logger[0], logger[1]);
+  return JSON.stringify(output);
+  }
+
   /****************************************/
   /*                                      */
   /*   POST                               */

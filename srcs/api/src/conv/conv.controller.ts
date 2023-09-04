@@ -209,6 +209,8 @@ export class ConvController {
     let output, logger;
     try {
       output = await this.convService.removeUserFromConv(id, userId);
+      output = await this.convService.removeAdminFromConv(id, userId);
+      output = await this.convService.removeMutedFromConv(id, userId);
       logger = ["The request is ok", "Request: POST[ /conv/:id/users/:idUser/remove ]"];
     } catch (error) {
       logger = ["The request doesn't work", "Request: POST[ /conv/:id/users/:idUser/remove ]"];
