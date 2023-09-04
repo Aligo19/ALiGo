@@ -1,5 +1,5 @@
 import React from 'react';
-import Chart from 'react-google-charts';
+import {Chart} from 'react-google-charts';
 
 interface StatsProps {
     winnb: number;
@@ -21,7 +21,7 @@ const Stats: React.FC<StatsProps> = (props:any) => {
         return (
             <div className="Stat">
                 <h3>Lvl. {level} </h3>
-                {/* <Chart 
+                <Chart 
                     className="Stat--pie"
                     chartType="PieChart"
                     loader={<div>Loading Chart</div>}
@@ -39,7 +39,7 @@ const Stats: React.FC<StatsProps> = (props:any) => {
                         pieSliceBorderColor: { color: '#7289da' },
                     }}
                     rootProps={{ 'data-testid': '1' }}
-                /> */}
+                />
             </div>
         )
     }

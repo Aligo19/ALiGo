@@ -29,6 +29,7 @@ export default function App() {
 	const [timeoutIdUserInfos, setTimeouIdUserInfos] = useState<any>(null);
 	const [matchHisto, setMatchHisto] = useState<any>([]);
 	const [gestion, setGestion] = useState<any>([]);
+	const [selectedFriend, setSelectedFriend] = useState<any>(null);
 
 	async function update(newUser: any) {
 		let oldUser = JSON.parse(sessionStorage.getItem('userData') || 'null');
@@ -447,7 +448,12 @@ export default function App() {
 			value.value = '';
 	}
 
-	function showGameCanvas() {
+	function showGameCanvas(friendInfo : any) {
+		if (friendInfo)
+		{
+			//???
+			// est ce que ca va fonctionner avec l'appel dans le return de app
+		}
 		if (timeoutIdConv)
 				clearTimeout(timeoutIdConv);
 		if (timeoutIdConvs)
@@ -457,10 +463,48 @@ export default function App() {
 		setCurrentView("game");
 	}
 
+	function showGameCanvasFriend() {
+		console.log("coccccefewfoiepfjqgirwe0[ghe[qihgei[tqhte");
+		let user = JSON.parse(sessionStorage.getItem('userData') || 'null');
+		const peopleOptions = user.Friends;
+		console.log(peopleOptions);
+
+		if (!peopleOptions)
+			return null;
+	
+		const handleRadioChange = (id : any) => {
+			setSelectedFriend(id);
+		};
+	
+		return (
+			<div>
+				{peopleOptions.map((person:any) => (
+					<div 
+						className="GameVsFriendForm"
+						key={person.ID}>
+						<input
+							className="addGroupConvForm-checkBox"
+							type="radio"
+							id={`person-${person.ID}`}
+							name="friend-selection"
+							value={person.ID}
+							checked={selectedFriend === person.ID}
+							onChange={() => handleRadioChange(person.ID)}
+						/>
+						<label className="addGroupConvForm-custom-label" htmlFor={`person-${person.ID}`}>
+							{person.Pseudo}
+						</label>
+					</div>
+				))}
+				<button className="addGroupConvForm-button" type="button" onClick={() => showGameCanvas(selectedFriend)}>Submit</button>
+			</div>
+		);
+	}
+
 	function showMessageCanvas() {
 		setCurrentView("messages");
 	}
-
+	
 	function handleAddPerson() {
 		sessionStorage.setItem('statusConv', '0');
 		sessionStorage.setItem('idConv', '0');
@@ -682,7 +726,7 @@ export default function App() {
 							{/* Utilisation des fonctions pour changer la vue actuelle */}
 							<div className="Stream-btn" onClick={showGameCanvas}>WATCH MATCH</div>
 							<div className="Random-btn" onClick={showGameCanvas}>RANDOM PLAYER</div>
-							<div className="Friend-btn" onClick={showGameCanvas}>PLAY WITH FRIEND</div>
+							<div className="Friend-btn" onClick={showGameCanvasFriend}>PLAY WITH FRIEND</div>
 						</div>
 						<div className="PrivateChats">
 							<p>PRIVATE CHATS</p>
