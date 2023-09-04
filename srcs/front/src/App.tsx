@@ -73,8 +73,8 @@ export default function App() {
 
 	async function fetchMatchHisto() {
 		try {
-			const x = JSON.parse(sessionStorage.getItem('userData')  || 'null');
-			const response = await axios.get(`http://127.0.0.1:3001/matches/${x.ID}/user`);
+			const x = JSON.parse(sessionStorage.getItem('idUserInfos')  || 'null');
+			const response = await axios.get(`http://127.0.0.1:3001/matches/${x}/user`);
 			if (!response || !response.data || response.status < 200 || response.status >= 300 || response.data.status)
 				return ;
 			setMatchHisto(response.data);
@@ -190,7 +190,7 @@ export default function App() {
 				let buttonUser;
 				let buttonAdmin ;
 				let buttonMuted ;
-				let owner ;
+				let owner = 'Simple mortel' ;
 				if (datasConv.Admin && datasConv.Admin.find((admin:any) => admin.ID === user.ID))
 				{
 					if (datasConv.Admin && datasConv.Admin[0].ID === user.ID && datasConv.Admin[0].ID !== JSON.parse(sessionStorage.getItem('userData') || 'null').ID)
@@ -232,11 +232,25 @@ export default function App() {
 						window.location.reload();
 					}}>MUTE</button>;
 				buttonUser = <button className="ConvSettingsContent-btn" onClick={async () => {
+					if (datasConv.Admin && datasConv.Admin.length && datasConv.Admin[0].ID === user.ID)
+					{
+						let me:any = sessionStorage.getItem("userData");
+						me = me.ID; 
+						if (user.ID === parseInt(me))
+						{
+							await axios.get(`http://127.0.0.1:3001/conv/${datasConv.ID}/users/${user.ID}/remove`);
+							window.alert("User removed");
+							window.location.reload();
+						}
+						window.alert("User is owner");
+						window.location.reload();
+						return;
+					}
 					await axios.get(`http://127.0.0.1:3001/conv/${datasConv.ID}/users/${user.ID}/remove`);
 					window.alert("User removed");
 					window.location.reload();
 				}}>REMOVE</button>;
-				if (datasConv.Admin && datasConv.length && datasConv.Admin[0].ID === user.ID)
+				if (datasConv.Admin && datasConv.Admin.length && datasConv.Admin[0].ID === user.ID)
 					owner = "Owner";
 				
 				return (
@@ -377,6 +391,23 @@ export default function App() {
 		}
 
 		let button;
+		/**
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * A DECOMMENTER AVANT LE PUSH !
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 */
 		if (datas.Status !== 2 /*&& datas.Admins && datas.Admins.find((user) => user.ID === datasUser.ID)*/)
 		{
 			button = <button className="ConvSettings-btn" onClick={() => {control(datas)}}>
