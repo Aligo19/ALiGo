@@ -24,6 +24,7 @@ export default function App() {
 	const [createGroup, setCreateGroup] = useState<any>([]);
 	const [currentView, setCurrentView] = useState<any>("");
 	const [userData, setUserData] = useState<any>([]);
+	const [friend, setFriend] = useState<any>([]);
 	const [timeoutIdConv, setTimeoutIdConv] = useState<any>(null);
 	const [timeoutIdConvs, setTimeoutIdConvs] = useState<any>(null);
 	const [timeoutIdUserInfos, setTimeouIdUserInfos] = useState<any>(null);
@@ -451,8 +452,7 @@ export default function App() {
 	function showGameCanvas(friendInfo : any) {
 		if (friendInfo)
 		{
-			//???
-			// est ce que ca va fonctionner avec l'appel dans le return de app
+			//fdsfsd
 		}
 		if (timeoutIdConv)
 				clearTimeout(timeoutIdConv);
@@ -464,10 +464,10 @@ export default function App() {
 	}
 
 	function showGameCanvasFriend() {
-		console.log("coccccefewfoiepfjqgirwe0[ghe[qihgei[tqhte");
+		sessionStorage.setItem('statusConv', '0');
+		sessionStorage.setItem('idConv', '0');
 		let user = JSON.parse(sessionStorage.getItem('userData') || 'null');
 		const peopleOptions = user.Friends;
-		console.log(peopleOptions);
 
 		if (!peopleOptions)
 			return null;
@@ -475,9 +475,9 @@ export default function App() {
 		const handleRadioChange = (id : any) => {
 			setSelectedFriend(id);
 		};
-	
-		return (
-			<div>
+		setCurrentView("gameFriend");
+		setFriend (
+			<div className='EmptyCanvas'>
 				{peopleOptions.map((person:any) => (
 					<div 
 						className="GameVsFriendForm"
@@ -740,7 +740,7 @@ export default function App() {
 						</div>
 					</div>
 					{/* Conditionnellement afficher soit le GameCanvas, soit le MessageCanvas */}
-					{((currentView === "game") ? <Game /> : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup :(currentView === "login") ? <Login Pseudo='' Avatar='' update={update} />:(currentView === "gestion") ? gestion : ( <div className='EmptyCanvas'></div>))}
+					{((currentView === "game") ? <Game /> : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup :(currentView === "login") ? <Login Pseudo='' Avatar='' update={update} />:(currentView === "gestion") ? gestion : (currentView === "gameFriend") ? friend : ( <div className='EmptyCanvas'></div>))}
 					{/* User Infos */}
 					{userInfoComponents}
 				</div>
