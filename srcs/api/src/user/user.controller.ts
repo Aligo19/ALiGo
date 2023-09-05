@@ -152,12 +152,26 @@ export class UserController {
                     "data": output
                 }
             }
+            this.userService.updateDate(output);
         } catch (error) {
             logger = ["The request doesn't work", "Request: GET[ /users/:code/login ]"];
             output = error;
         }
         Logger.log(logger[0], logger[1]);
         return JSON.stringify(output);
+    }
+
+    @Get(':id/active')
+    async active(@Param('id', ParseIntPipe) id: number)
+    {
+      let logger;
+      try {
+          await this.userService.updateDate(await this.userService.getUserById(id));
+          logger = ["The request is ok", "Request: GET[ /users/:code/login ]"];
+      } catch (error) {
+          logger = ["The request doesn't work", "Request: GET[ /users/:code/login ]"];
+      }
+      Logger.log(logger[0], logger[1]);
     }
 
 /**

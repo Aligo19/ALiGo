@@ -3,7 +3,7 @@ import React from 'react';
 const Navbar: React.FC = () => {
     return (
         <div className="Navbar">
-            <img src="../img/logo_aligo.png" alt="logo aligo" className="logo" />
+            <img src="logo_aligo.png" alt="logo aligo" className="logo" />
             <button onClick={redirect}>
                 <h1>ft_transcendence</h1>
             </button>

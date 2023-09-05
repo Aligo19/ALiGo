@@ -48,8 +48,9 @@ export default function App() {
 			return ;
 		}
 		output = output.data;
-		setUserData(output);
 		sessionStorage.setItem('userData', JSON.stringify(output));
+		setUserData(output);
+		window.location.replace('http://127.0.0.1:3000');
 	}
 
   	async function fetchUserInfo() {
@@ -120,6 +121,9 @@ export default function App() {
 					sessionStorage.setItem('userData', JSON.stringify(response));
 				window.location.replace('http://127.0.0.1:3000');
 			}
+			let data = JSON.parse(sessionStorage.getItem('userData') || 'null');
+			if (data && data.ID)
+				axios.get(`http://127.0.0.1:3001/users/${data.ID}/active`);
 		}
 		async function fetchChats() {
 			try {
@@ -591,10 +595,12 @@ export default function App() {
 	}
 
 	async function handleFormSubmit() {
+		console.log("try");
+
 		sessionStorage.setItem('statusConv', '0');
 		sessionStorage.setItem('idConv', '0');
 		let value =  document.getElementById("name") as HTMLInputElement | null;
-		let out =  (value) ? value.value : null;
+		let out:any =  (value) ? value.value : null;
 		let groupName =out,
 			isPrivate,
 			password = null,
@@ -603,6 +609,8 @@ export default function App() {
 		// Utilisez les variables groupName, isPrivate, password et selectedPeople pour traiter le formulaire
 		if (document.getElementById("isPrivate"))
 		{
+		console.log("try");
+
 			value = document.getElementById("isPrivate") as HTMLInputElement | null;
 			let ut = (value) ? value.checked: null;
 			isPrivate = ut ;
@@ -628,6 +636,7 @@ export default function App() {
 		}
 		else
 		{
+			
 			isPrivate = 2;
 			try {
 				value = document.getElementById("pseudo") as HTMLInputElement | null;
@@ -658,17 +667,23 @@ export default function App() {
 					return;
 				}
 				selectedPeople.push(user.ID);
-				let out = await connect(groupName, isPrivate, password);
-				for (let i = 0; i < selectedPeople.length; i++)
-					await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${selectedPeople[i]}`);
-				await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}`);
-				await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/admins/${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}`);
-				setCurrentView("messages");
-				sessionStorage.setItem('statusConv', '0');
-				sessionStorage.setItem('idConv', String(out.ID));
+				
 			} catch (error) {
 				console.log("error");
 			}
+		}
+		try {
+			out = await connect(groupName, isPrivate, password);
+			for (let i = 0; i < selectedPeople.length; i++)
+				await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${selectedPeople[i]}`);
+			await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/users/${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}`);
+			await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/admins/${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}`);
+			setCurrentView("messages");
+			sessionStorage.setItem('statusConv', '0');
+			sessionStorage.setItem('idConv', String(out.ID));
+
+		} catch (error) {
+			console.log("error");
 		}
 	}
 

@@ -26,9 +26,6 @@ const PrivateChats: React.FC<PrivateChatsProps> = (props:any) => {
             <div className="Player-name" style={{ cursor: 'pointer' }} onClick={() => openConversation(props)}>
                 {props.name}
             </div>
-            <div className="Play-btn">
-                &gt;
-            </div>
         </div>
     );
 }
