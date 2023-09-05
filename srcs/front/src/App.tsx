@@ -69,6 +69,10 @@ export default function App() {
 			setTimeouIdUserInfos(setTimeout(() => fetchUserInfo(), clock));
 		} catch (error) {
 			console.error("Error getting user infos: ", error);
+			if (timeoutIdUserInfos)
+				clearTimeout(timeoutIdUserInfos);
+				window.location.replace('http://127.0.0.1:3000/error.html');
+
 		}
 	}
 
@@ -81,6 +85,9 @@ export default function App() {
 			setMatchHisto(response.data);
 		} catch (error) {
 			console.error("Error getting match historique: ", error);
+			window.location.replace('http://127.0.0.1:3000/error.html');
+
+
 		}
 	}
 
@@ -146,6 +153,9 @@ export default function App() {
 				setTimeoutIdConvs( await setTimeout(async () => { fetchChats() }, clock));
 			} catch (error) {
 				console.error("Error fetching chats:", error);
+				if (timeoutIdConvs)
+					clearTimeout(timeoutIdConvs);
+				window.location.replace('http://127.0.0.1:3000/error.html');
 			}
 		}
 
@@ -336,7 +346,8 @@ export default function App() {
 			setTimeoutIdConv( await setTimeout(async () => {
 				onOpenConversation();
 			}, clock));
-			return ;
+			window.location.replace('http://127.0.0.1:3000/error.html');
+
 		}
 		const datasUser = JSON.parse(sessionStorage.getItem('userData') || 'null');
 		let newMessages = [];
@@ -595,8 +606,6 @@ export default function App() {
 	}
 
 	async function handleFormSubmit() {
-		console.log("try");
-
 		sessionStorage.setItem('statusConv', '0');
 		sessionStorage.setItem('idConv', '0');
 		let value =  document.getElementById("name") as HTMLInputElement | null;
@@ -609,8 +618,6 @@ export default function App() {
 		// Utilisez les variables groupName, isPrivate, password et selectedPeople pour traiter le formulaire
 		if (document.getElementById("isPrivate"))
 		{
-		console.log("try");
-
 			value = document.getElementById("isPrivate") as HTMLInputElement | null;
 			let ut = (value) ? value.checked: null;
 			isPrivate = ut ;
@@ -670,6 +677,8 @@ export default function App() {
 				
 			} catch (error) {
 				console.log("error");
+				window.location.replace('http://127.0.0.1:3000/error.html');
+
 			}
 		}
 		try {
@@ -684,6 +693,8 @@ export default function App() {
 
 		} catch (error) {
 			console.log("error");
+			window.location.replace('http://127.0.0.1:3000/error.html');
+
 		}
 	}
 
