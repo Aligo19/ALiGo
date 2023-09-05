@@ -69,8 +69,7 @@ export default function App() {
 			setTimeouIdUserInfos(setTimeout(() => fetchUserInfo(), clock));
 		} catch (error) {
 			console.error("Error getting user infos: ", error);
-			if (timeoutIdUserInfos)
-				clearTimeout(timeoutIdUserInfos);
+			if (sessionStorage.getItem('userData'))
 				window.location.replace('http://127.0.0.1:3000/error.html');
 
 		}
@@ -85,9 +84,8 @@ export default function App() {
 			setMatchHisto(response.data);
 		} catch (error) {
 			console.error("Error getting match historique: ", error);
-			window.location.replace('http://127.0.0.1:3000/error.html');
-
-
+			if (sessionStorage.getItem('userData'))
+				window.location.replace('http://127.0.0.1:3000/error.html');
 		}
 	}
 
@@ -153,9 +151,8 @@ export default function App() {
 				setTimeoutIdConvs( await setTimeout(async () => { fetchChats() }, clock));
 			} catch (error) {
 				console.error("Error fetching chats:", error);
-				if (timeoutIdConvs)
-					clearTimeout(timeoutIdConvs);
-				window.location.replace('http://127.0.0.1:3000/error.html');
+				if (sessionStorage.getItem('userData'))
+					window.location.replace('http://127.0.0.1:3000/error.html');
 			}
 		}
 
@@ -341,13 +338,8 @@ export default function App() {
 		}
 		catch (error)
 		{
-			if (timeoutIdConv)
-				clearTimeout(timeoutIdConv);
-			setTimeoutIdConv( await setTimeout(async () => {
-				onOpenConversation();
-			}, clock));
-			window.location.replace('http://127.0.0.1:3000/error.html');
-
+			if (sessionStorage.getItem('userData'))
+				window.location.replace('http://127.0.0.1:3000/error.html');
 		}
 		const datasUser = JSON.parse(sessionStorage.getItem('userData') || 'null');
 		let newMessages = [];
@@ -677,8 +669,8 @@ export default function App() {
 				
 			} catch (error) {
 				console.log("error");
-				window.location.replace('http://127.0.0.1:3000/error.html');
-
+				if (sessionStorage.getItem('userData'))
+					window.location.replace('http://127.0.0.1:3000/error.html');
 			}
 		}
 		try {
@@ -690,11 +682,10 @@ export default function App() {
 			setCurrentView("messages");
 			sessionStorage.setItem('statusConv', '0');
 			sessionStorage.setItem('idConv', String(out.ID));
-
 		} catch (error) {
 			console.log("error");
-			window.location.replace('http://127.0.0.1:3000/error.html');
-
+			if (sessionStorage.getItem('userData'))
+				window.location.replace('http://127.0.0.1:3000/error.html');
 		}
 	}
 

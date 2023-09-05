@@ -152,7 +152,7 @@ export class UserController {
                     "data": output
                 }
             }
-            this.userService.updateDate(output);
+            await this.userService.updateDate(output);
         } catch (error) {
             logger = ["The request doesn't work", "Request: GET[ /users/:code/login ]"];
             output = error;
@@ -276,7 +276,7 @@ export class UserController {
     
       logger = ["The request is ok", "PATCH [/users/:id]"];
       output =  updatedUserData;
-      this.userService.updateUser(user);
+      await this.userService.updateUser(user);
     } catch (error) {
       logger = ["The request doesn't work", "PATCH [/users/:id]"];
       output = error;
@@ -286,17 +286,3 @@ export class UserController {
 
   }
 }
-
-
-/**
-    let output, logger;
-    try {
-      logger = ["The request is ok", "Request: POST[ /users ]"];
-      output = await this.convService.getConversationsByUserId(id);
-    } catch (error) {
-      logger = ["The request doesn't work", "Request: POST[ /users ]"];
-      output = error;
-    }
-    Logger.log(logger[0], logger[1]);
-    return JSON.stringify(output);
- */
