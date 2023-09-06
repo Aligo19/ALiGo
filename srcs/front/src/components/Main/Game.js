@@ -4,8 +4,8 @@ import { def } from "./Game/Constants";
 import Canvas from './Game/GameCanvas';
 import axios from 'axios';
 
-
-export default function Game() { 
+//si spectator envoyer un props isPlayer a false sinon true et ajouter un roomID si spectator
+export default function Game()  {
 	sessionStorage.setItem('idConv', 0);
 
     const socket = io("http://127.0.0.1:3002");
@@ -18,6 +18,8 @@ export default function Game() {
     let createdRoom = false;
     let playerLeft;
     let playerRight;
+    //a passer en parametre dans game
+    let isPlayer = true;
     
     const ball = {
         x: 20, 
@@ -55,52 +57,30 @@ export default function Game() {
         id: 0,
     };
 
-    // let me = {
-    //     x: def.PL_W, 
-    //     y: def.PL_H, 
-    //     posX: 0,
-    //     posY: def.WIN_H/2 - 10,
-    //     speed: 7, 
-    //     meScore: 0, 
-    //     oppScore: 0,
-    //     isLeft: false, 
-    //     roomName: "",
-    //     id: 0,
-    // };
-    
-    // let opponent = {
-    //     x: def.PL_W, 
-    //     y: def.PL_H, 
-    //     posX: 0,
-    //     posY: def.WIN_H/2 - 10,
-    //     speed: 7, 
-    //     meScore: 0, 
-    //     oppScore: 0,
-    //     isLeft: false,
-    //     roomName: "",
-    //     id: 0,
-    // };
-
     const handleKeyDown = (event) => {
-        if (me.isLeft && event.key === 'p') {
-            playerLeft = me.isLeft ? me : opponent;
-            playerRight = me.isLeft ? opponent : me;
-            updateBallPosition();
-        }
-        if (event.key === 'w' && me.posY > 0) {
-            me.speed = -5;
-            me.posY += me.speed;
-            sendPosition(); 
-        } else if (event.key === 's' && me.posY + def.PL_H < def.WIN_H) {
-            me.speed = 5;
-            me.posY += me.speed;
-            sendPosition(); // Assurez-vous également de mettre à jour cette fonction pour envoyer la nouvelle position.
+        if (isPlayer) {
+            if (me.isLeft && event.key === 'p') {
+                playerLeft = me.isLeft ? me : opponent;
+                playerRight = me.isLeft ? opponent : me;
+                updateBallPosition();
+            }
+            if (event.key === 'w' && me.posY > 0) {
+                me.speed = -5;
+                me.posY += me.speed;
+                sendPosition(); 
+            } else if (event.key === 's' && me.posY + def.PL_H < def.WIN_H) {
+                me.speed = 5;
+                me.posY += me.speed;
+                sendPosition(); // Assurez-vous également de mettre à jour cette fonction pour envoyer la nouvelle position.
+            }
         }
     };
 
     const handleKeyUp = (event) => {
-        if (event.key === 'w' || event.key === 's') {
-            me.speed = 0;
+        if (isPlayer) {
+            if (event.key === 'w' || event.key === 's') {
+                me.speed = 0;
+            }
         }
     };
     
@@ -122,6 +102,16 @@ export default function Game() {
             console.error('Une erreur s\'est produite lors de la requête:', error);
         }
     };
+
+    // const launchGame = () => {
+    //     socket.emit('set_player', objMatch.ID, objMatch);
+    //     me.roomName = objMatch.ID;
+    // };
+
+    // const joinRoom = () => {
+    //     //voir si il faut faire une requete ou si on recup la roomName d une autre maniere
+    //     socket.emit('join_spectator', 4);
+    // };
 
     const sendPosition = () => {
         socket.emit("send_position", me.posY, me.roomName);
@@ -171,7 +161,11 @@ export default function Game() {
         }
 
         if (me.meScore === 5 || me.oppScore === 5) {
-            console.log("game end");
+            axios.post({
+                "Score_user1" : me.meScore,
+                "Score_user2" : me.oppScore,
+                "Id": me.roomName
+            });
         }
     };
 
@@ -203,11 +197,27 @@ export default function Game() {
         requestAnimationFrame(updateBallPosition);
     };
 
+    const sendRequest = async () => {
+        try {
+            await axios.post(`http://127.0.0.1:3001/matches/end`,{
+                "Score_user1" : 5,
+                "Score_user2" : 0,
+                "Id": me.roomName
+            });
+        } catch (error) {
+            console.error('Une erreur s\'est produite lors de la requête:', error);
+        }
+    };
+
     useEffect(() => {
         //console.log("win win X: " + sizeScreen.width + "win hei Y: " + sizeScreen.height);
-        
-        if (!createdRoom) {
+ 
+        if (isPlayer && !createdRoom) {
             createRoom();
+        }
+
+        if(!isPlayer) {
+            //joinRoom();
         }
 
         socket.on('setup_player', (backendPlayers) => {
@@ -272,9 +282,12 @@ export default function Game() {
             console.log("me" + me.meScore);
             console.log("opp" + me.oppScore);
         });
-
-        socket.on('player_disconnect', () => {
-            console.log("the other player left the game");
+        
+        socket.on('dis', (disconnectID) => {
+            //definir qui est user 1 et 2 (genre le player qui lance la game est 1 et l autre 2)
+            //dans ce cas ajouter des conditions isLeft....
+            console.log("the other player left the game" + disconnectID);
+            sendRequest();
         });
 
         document.addEventListener('keydown', handleKeyDown);
@@ -291,6 +304,7 @@ export default function Game() {
             socket.off('receive_position');
             socket.off('receive_ball_pos');
             socket.off('receive_score');
+            socket.off('dis');
         };
 
     }, [ ]);

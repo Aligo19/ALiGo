@@ -109,7 +109,7 @@ io.on("connection", (socket) => {
                 }
 
                 // Émettre un événement pour informer les autres joueurs de la déconnexion
-                io.to(roomName).emit('player_disconnect', socket.id);
+                io.to(roomName).emit('dis', socket.id);
             }
 
             // Vous pouvez également gérer le cas où le joueur est un spectateur
