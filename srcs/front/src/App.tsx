@@ -521,7 +521,7 @@ export default function App() {
 						className="GameVsFriendForm"
 						key={person.ID}>
 						<input
-							className="addGroupConvForm-checkBox"
+							className="GameVsFriendForm-checkBox"
 							type="radio"
 							id={`person-${person.ID}`}
 							name="friend-selection"
@@ -529,12 +529,12 @@ export default function App() {
 							checked={selectedFriend === person.ID}
 							onChange={() => handleRadioChange(person.ID)}
 						/>
-						<label className="addGroupConvForm-custom-label" htmlFor={`person-${person.ID}`}>
+						<label className="GameVsFriendForm-custom-label" htmlFor={`person-${person.ID}`}>
 							{person.Pseudo}
 						</label>
 					</div>
 				))}
-				<button className="addGroupConvForm-button" type="button" onClick={() => showGameCanvas(selectedFriend)}>Submit</button>
+				<button className="GameVsFriendForm-button" type="button" onClick={() => showGameCanvas(selectedFriend)}>Submit</button>
 			</div>
 		);
 	}
