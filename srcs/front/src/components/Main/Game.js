@@ -285,7 +285,7 @@ export default function Game()  {
             console.log("opp" + me.oppScore);
         });
         
-        socket.on('playe_left', (disconnectID) => {
+        socket.on('player_left', (disconnectID) => {
             //definir qui est user 1 et 2 (genre le player qui lance la game est 1 et l autre 2)
             //dans ce cas ajouter des conditions isLeft....
             console.log("the other player left the game " + disconnectID);
@@ -306,7 +306,7 @@ export default function Game()  {
             socket.off('receive_position');
             socket.off('receive_ball_pos');
             socket.off('receive_score');
-            socket.off('dis');
+            socket.off('player_left');
         };
 
     }, [ ]);
