@@ -10,6 +10,8 @@ export default function Game()  {
 
     const socket = io("http://127.0.0.1:3002");
 
+    console.log("socket: " + socket);
+
     // const [sizeScreen, updateScreen] = useState({width: 800, height: 600});
     // let ratioX = sizeScreen.height/def.WIN_H;
     // let ratioY = sizeScreen.width/def.WIN_W;
@@ -283,10 +285,10 @@ export default function Game()  {
             console.log("opp" + me.oppScore);
         });
         
-        socket.on('dis', (disconnectID) => {
+        socket.on('playe_left', (disconnectID) => {
             //definir qui est user 1 et 2 (genre le player qui lance la game est 1 et l autre 2)
             //dans ce cas ajouter des conditions isLeft....
-            console.log("the other player left the game" + disconnectID);
+            console.log("the other player left the game " + disconnectID);
             sendRequest();
         });
 

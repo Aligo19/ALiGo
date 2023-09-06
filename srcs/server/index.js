@@ -21,12 +21,6 @@ let rooms = {};
 
 io.on("connection", (socket) => {
 
-    //save les joueurs d une autre facon 
-    //l idee c est que les players soit savent dans un tableau player avec leur id et qu a cet endroit on save la room name pour la recup avec le socket  id pour palier quand le player quitte et quand faut le kick
-    // const players[socket.id] = {
-    //     roomName: "",
-    // }
-
     socket.on('create_room', (roomName, objMatch) => {
         if (!rooms[roomName]) {
             rooms[roomName] = {
@@ -34,7 +28,8 @@ io.on("connection", (socket) => {
                 spectators: []
             };
         }
-        if (Object.keys(rooms[roomName].players) < 3) {
+        console.log(rooms[roomName].players.length);
+        if (rooms[roomName].players.length < 5) {
             rooms[roomName].players.push(socket.id);
         }
         else {
@@ -61,6 +56,7 @@ io.on("connection", (socket) => {
         }
 
         console.log("player: " + socket.id + " | joined room:" + roomName);
+        console.log("player: " + rooms[roomName].players + " | in room:" + roomName);
     });
 
     //voir si besoin de passer des data
@@ -88,28 +84,31 @@ io.on("connection", (socket) => {
     });
     
     socket.on('disconnect', (reason) => {
-        console.log(reason);
+        //console.log(reason);
         delete send_players[socket.id];
         
-        console.log("ID been disconnected: " + socket.id);
+        //console.log("ID been disconnected: " + socket.id);
         
         for (const roomName in rooms) {
             const room = rooms[roomName];
             
             // Supprimer le joueur de la liste des joueurs de la salle
-            const playerIndex = room.players.indexOf(socket.id);
+            //console.log(rooms[roomName].players);
+            const playerIndex = rooms[roomName].players.indexOf(socket.id); //find index
             if (playerIndex !== -1) {
                 console.log(room.players);
-                room.players.splice(playerIndex, 1);
-                io.in(room).emit('setup_player', send_players);
+                room.players.splice(playerIndex, 2);
 
                 // Si la salle n'a plus de joueurs, vous pouvez la supprimer si nécessaire
-                if (room.players.length === 0) {
+                console.log("nb player in room: " + rooms[roomName].players.length);
+                if (rooms[roomName].players.length === 0) {
                     delete rooms[roomName];
                 }
 
                 // Émettre un événement pour informer les autres joueurs de la déconnexion
-                io.to(roomName).emit('dis', socket.id);
+                console.log("Here ");
+                io.to(roomName).emit('player_left', "here");
+                console.log("There ");
             }
 
             // Vous pouvez également gérer le cas où le joueur est un spectateur
