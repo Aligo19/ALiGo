@@ -94,7 +94,16 @@ export default function Game()  {
             //console.log(playerData);
             const gameID = playerData.ID;
             //console.log(gameID);
-            const jsonMatch = await axios.get(`http://127.0.0.1:3001/matches/${gameID}/search`);
+            let jsonMatch;
+            ///ici
+		    if (sessionStorage.getItem("selectFriend"))
+            {
+                const otherPlayer = parseInt((sessionStorage.getItem("selectFriend") || 'null'))
+                jsonMatch = await axios.get(`http://127.0.0.1:3001/matches/${gameID}/search/${otherPlayer}`);
+            }
+            else
+                jsonMatch = await axios.get(`http://127.0.0.1:3001/matches/${gameID}/search`);
+
             const objMatch = jsonMatch.data;
             //console.log(objMatch); 
             socket.emit('create_room', objMatch.ID, objMatch);

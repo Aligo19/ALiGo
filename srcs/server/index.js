@@ -38,14 +38,16 @@ io.on("connection", (socket) => {
         }
         socket.join(roomName);
 
-        if (objMatch.ID_user2 === null) {
+        // if (objMatch.ID_user2 === null){
+        if (objMatch.Status === -1 || objMatch.Status === 0) {
             send_players[socket.id] = {
                 x: 20,
                 isLeft: true
             };
             console.log(send_players[socket.id]);
             io.to(roomName).emit('update_players', send_players);
-        } else if (objMatch.ID_user2) {
+        // } else if (objMatch.ID_user2) {
+        } else if (objMatch.Status === 1) {
             send_players[socket.id] = {
                 x: 760,
                 isLeft: false

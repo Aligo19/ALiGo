@@ -30,7 +30,7 @@ export default function App() {
 	const [timeoutIdUserInfos, setTimeouIdUserInfos] = useState<any>(null);
 	const [matchHisto, setMatchHisto] = useState<any>([]);
 	const [gestion, setGestion] = useState<any>([]);
-	const [selectedFriend, setSelectedFriend] = useState<number>(0);
+
 
 	async function update(newUser: any) {
 		let oldUser = JSON.parse(sessionStorage.getItem('userData') || 'null');
@@ -488,12 +488,9 @@ export default function App() {
 	}
 
 	function showGameCanvas() {
-		let friendInfo;
-		if (selectedFriend !== 0)
-			friendInfo = selectedFriend;
-		console.log('friendInfo')
-		console.log(friendInfo)
-		console.log('friendInfo')
+		let friendInfo; 
+		if (sessionStorage.getItem("selectFriend"))
+			friendInfo = parseInt((sessionStorage.getItem("selectFriend") || 'null'));
 		if (timeoutIdConv)
 				clearTimeout(timeoutIdConv);
 		if (timeoutIdConvs)
@@ -510,18 +507,14 @@ export default function App() {
 		const peopleOptions = user.Friends;
 
 		if (!peopleOptions)
-			return null;
-
-		if (peopleOptions == 0)
-			<div className="GameVsFriendForm-title">You do not have any Friend</div>
+			setFriend( <div className="GameVsFriendForm-title">You do not have any Friend</div>)
 	
 		const handleDropdownChange = (event: any) => {
-			let tmp = event.target.value;
-			setSelectedFriend(parseInt(tmp));
+			sessionStorage.setItem("selectFriend", event.target.value)
 		};
 			  
 		setCurrentView("gameFriend");
-		setSelectedFriend(parseInt(peopleOptions[0].ID))
+		sessionStorage.setItem("selectFriend", peopleOptions[0].ID)
 		setFriend (
 			<div className='GameVsFriendForm'>
 				<div className="GameVsFriendForm-title">Select a Friend to play</div>

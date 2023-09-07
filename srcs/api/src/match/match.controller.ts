@@ -111,45 +111,60 @@ async sdf() {
     try {
         const user1 = await this.userService.getUserById(id1);
         const user2 = await this.userService.getUserById(id2);
-        this.userService.updateGameStatus(user1, true);
-        this.userService.updateDate(user1);
-        let matches = await this.matchService.getMatchByIdUserDebug(user1.ID);
-        if (matches && matches.length > 0)
-            return JSON.stringify(matches[0]);
-        matches = await this.matchService.getMatchByIdUserDebug(user2.ID);
-        if (matches && matches.length > 0)
-            return JSON.stringify(matches[0]);
-        output = await this.matchService.createMatchWithFriend(user1, user2);
-        logger = ["The request is ok", "Request: POST[ /matches ]"];
+        let game = await this.matchService.getMatchByIdUserDebug(user1.ID)
+        let game2 = await this.matchService.getMatchByIdUserDebug(user2.ID)
+        if (game && game2 && game.length && game2.length && game[0].ID === game2[0].ID && game[0].Status === -1)
+        {
+          let matches = await this.matchService.getMatchById(game[0].ID);
+          if (matches.ID_user1.ID !== user1.ID)
+          {
+            matches.Status = 1;
+            output = await this.matchService.updateMatch(matches);
+          }
+          output = null
+        }
+        else
+        {
+          this.userService.updateGameStatus(user1, true);
+          this.userService.updateDate(user1);
+          let matches = await this.matchService.getMatchByIdUserDebug(user1.ID);
+          if (matches && matches.length > 0)
+              return JSON.stringify(matches[0]);
+          matches = await this.matchService.getMatchByIdUserDebug(user2.ID);
+          if (matches && matches.length > 0)
+              return JSON.stringify(matches[0]);
+          output = await this.matchService.createMatchWithFriend(user1, user2);
+        }
+        logger = ["The request is ok", "Request: GET[ /matches/:id/search/:idFriend ]"];
     } catch (error) {
-        logger = ["The request doesn't work", "Request: POST[ /matches ]"];
+        logger = ["The request doesn't work", "Request: GET[ /matches/:id/search/:idFriend ]"];
         output = error;
     }
     Logger.log(logger[0], logger[1]);
     return JSON.stringify(output);
   }
 
-  @Get(":id/connect/:idGame")
-  async joinGame(@Param('id', ParseIntPipe) id1: number, @Param('idGame', ParseIntPipe) idGame: number)
-  {
-    let output, logger;
-    try {
-      const user1 = await this.userService.getUserById(id1);
-      this.userService.updateGameStatus(user1, true);
-      this.userService.updateDate(user1);
-      let matches = await this.matchService.getMatchById(idGame);
-      if (user1.Pseudo === matches.ID_user1.Pseudo)
-        return;
-      matches.Status = 1;
-      output = await this.matchService.updateMatch(matches);
-      logger = ["The request is ok", "Request: POST[ /matches ]"];
-  } catch (error) {
-      logger = ["The request doesn't work", "Request: POST[ /matches ]"];
-      output = error;
-  }
-  Logger.log(logger[0], logger[1]);
-  return JSON.stringify(output);
-  }
+  // @Get(":id/connect/:idGame")
+  // async joinGame(@Param('id', ParseIntPipe) id1: number, @Param('idGame', ParseIntPipe) idGame: number)
+  // {
+  //   let output, logger;
+  //   try {
+  //     const user1 = await this.userService.getUserById(id1);
+  //     this.userService.updateGameStatus(user1, true);
+  //     this.userService.updateDate(user1);
+  //     let matches = await this.matchService.getMatchById(idGame);
+  //     if (user1.Pseudo === matches.ID_user1.Pseudo)
+  //       return;
+  //     matches.Status = 1;
+  //     output = await this.matchService.updateMatch(matches);
+  //     logger = ["The request is ok", "Request: POST[ /matches ]"];
+  // } catch (error) {
+  //     logger = ["The request doesn't work", "Request: POST[ /matches ]"];
+  //     output = error;
+  // }
+  // Logger.log(logger[0], logger[1]);
+  // return JSON.stringify(output);
+  // }
 
   /****************************************/
   /*                                      */
