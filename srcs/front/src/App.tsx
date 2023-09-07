@@ -30,7 +30,7 @@ export default function App() {
 	const [timeoutIdUserInfos, setTimeouIdUserInfos] = useState<any>(null);
 	const [matchHisto, setMatchHisto] = useState<any>([]);
 	const [gestion, setGestion] = useState<any>([]);
-	const [selectedFriend, setSelectedFriend] = useState<any>(0);
+	const [selectedFriend, setSelectedFriend] = useState<number>(0);
 
 	async function update(newUser: any) {
 		let oldUser = JSON.parse(sessionStorage.getItem('userData') || 'null');
@@ -511,6 +511,9 @@ export default function App() {
 
 		if (!peopleOptions)
 			return null;
+
+		if (peopleOptions == 0)
+			<div className="GameVsFriendForm-title">You do not have any Friend</div>
 	
 		const handleDropdownChange = (event: any) => {
 			let tmp = event.target.value;
