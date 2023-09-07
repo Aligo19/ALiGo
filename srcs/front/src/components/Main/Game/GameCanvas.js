@@ -2,7 +2,7 @@ import { def } from "./Constants";
 import { useEffect, useRef } from 'react';
 
 
-export default function Canvas({ me, opponent, ball, ...props}) {
+export default function Canvas({ me, opponent, ball, inGame, ...props}) {
 	const ref = useRef(null);
 	let canvas = ref.current;
 
@@ -49,10 +49,12 @@ export default function Canvas({ me, opponent, ball, ...props}) {
 		const context = canvas.getContext('2d');
 
 		drawBackground(context);
-		drawPlayer(context, me);
-		drawPlayer(context, opponent);
-		drawBall(context);
-		drawScore(context, me);
+		if (inGame) {
+			drawPlayer(context, me);
+			drawPlayer(context, opponent);
+			drawBall(context);
+			drawScore(context, me);
+		}
 		
 		requestAnimationFrame(drawAll);
 	};

@@ -21,7 +21,7 @@ let rooms = {};
 
 io.on("connection", (socket) => {
 
-    socket.on('create_room', (roomName, objMatch) => {
+    socket.once('create_room', (roomName, objMatch) => {
         if (!rooms[roomName]) {
             rooms[roomName] = {
                 players: [],
@@ -44,7 +44,7 @@ io.on("connection", (socket) => {
                 isLeft: true
             };
             console.log(send_players[socket.id]);
-            io.to(roomName).emit('setup_player', send_players);
+            io.to(roomName).emit('update_players', send_players);
         } else if (objMatch.ID_user2) {
             send_players[socket.id] = {
                 x: 760,
@@ -52,7 +52,7 @@ io.on("connection", (socket) => {
             };
             console.log(send_players[socket.id]);
             gameStarted = true;
-            io.to(roomName).emit('setup_player', send_players);
+            io.to(roomName).emit('update_players', send_players);
         }
 
         console.log("player: " + socket.id + " | joined room:" + roomName);
@@ -62,6 +62,10 @@ io.on("connection", (socket) => {
     //voir si besoin de passer des data
     socket.on('join_spectator', () => {
 
+    });
+
+    socket.on('game_started', (inGame, roomName) => {
+        socket.to(roomName).emit('receive_start', inGame);
     });
 
     socket.on('send_position', (data, roomName) => {
@@ -77,10 +81,6 @@ io.on("connection", (socket) => {
     socket.on('send_score', (data, roomName) => {
         //envoi au joueur inviter la pos de la ball
         socket.to(roomName).emit('receive_score', data);
-    });
-
-    socket.on('disconnecting', () => {
-
     });
     
     socket.on('disconnect', (reason) => {
@@ -102,12 +102,13 @@ io.on("connection", (socket) => {
                 // Si la salle n'a plus de joueurs, vous pouvez la supprimer si nécessaire
                 console.log("nb player in room: " + rooms[roomName].players.length);
                 if (rooms[roomName].players.length === 0) {
+                    console.log("deleted room");
                     delete rooms[roomName];
                 }
 
                 // Émettre un événement pour informer les autres joueurs de la déconnexion
                 console.log("Here ");
-                io.to(roomName).emit('player_left', "here");
+                io.to(roomName).emit('update_players', send_players);
                 console.log("There ");
             }
 

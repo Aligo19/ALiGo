@@ -10,18 +10,18 @@ export default function Game()  {
 
     const socket = io("http://127.0.0.1:3002");
 
-    console.log("socket: " + socket);
-
     // const [sizeScreen, updateScreen] = useState({width: 800, height: 600});
     // let ratioX = sizeScreen.height/def.WIN_H;
     // let ratioY = sizeScreen.width/def.WIN_W;
 	const ref=useRef();
     const [players, setPlayers] = useState({});
+    const [inGame, setInGame] = useState(false);
     let createdRoom = false;
     let playerLeft;
     let playerRight;
     //a passer en parametre dans game
     let isPlayer = true;
+    //let inGame = false;
     
     const ball = {
         x: 20, 
@@ -222,7 +222,7 @@ export default function Game()  {
             //joinRoom();
         }
 
-        socket.on('setup_player', (backendPlayers) => {
+        socket.on('update_players', (backendPlayers) => {
             // console.log(backendPlayers);
             // console.log("connection socket ID: " + socket.id);
             // Créer une copie mise à jour des joueurs
@@ -253,9 +253,18 @@ export default function Game()  {
                 }
             }
 
+            if(!inGame && players.length > 1) {
+                console.log("start game");
+                setInGame(true);
+                socket.emit("game_started", inGame, me.roomName);
+                //inGame = true;
+            }
+
             //supp le/les player si deconnexion
             for (const id in updatedPlayers) {
                 if (!backendPlayers[id]) {
+                    console.log("the other player left the game " + updatedPlayers[id]);
+                    updatedPlayers[id].remove();
                     delete updatedPlayers[id];
                 }
             }
@@ -320,6 +329,7 @@ export default function Game()  {
             me={me}
             opponent={opponent}
             ball={ball}
+            inGame= {inGame}
         /> 
     );
 }
