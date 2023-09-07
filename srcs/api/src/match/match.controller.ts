@@ -16,7 +16,20 @@ export class MatchController {
 /*   GET                                */
 /*                                      */
 /****************************************/
-
+@Get('/streaming')
+async sdf() {
+  let output, logger;
+  try { 
+    output = await this.matchService.getMatchPlaying();
+    logger = ["The request is ok", "Request: GET[ /streaming ]"];
+  
+  } catch (error) {
+    output = error;
+    logger = ["The request doesn't work", "Request: GET[ /streaming ]"];
+  }
+  Logger.log(logger[0], logger[1]);
+  return JSON.stringify(output);
+}
 /**
  * @description Get match with id
  * @param id 
@@ -179,6 +192,8 @@ export class MatchController {
         Logger.log(logger[0], logger[1]);
         return JSON.stringify(output);
     }
+
+
 }
 
 

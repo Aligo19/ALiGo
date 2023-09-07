@@ -1,8 +1,8 @@
 import React from "react";
 
 interface MessageCanvasProps {
-    sent?: boolean;
-    user?: {
+    sent: boolean;
+    user: {
         ID: string;
         Pseudo: string;
     };
@@ -17,8 +17,8 @@ export default function MessageCanvas(props: MessageCanvasProps) {
     if (!props.sent) {
         return (
             <div>
-                <div className="Message-username" style={{ cursor: 'pointer' }} onClick={() => userInfoLoaded(props.user!.ID)}>
-                    {props.user!.Pseudo}
+                <div className="Message-username" style={{ cursor: 'pointer' }} onClick={() => userInfoLoaded(props.user.ID)}>
+                    {props.user.Pseudo}
                 </div>
                 <div className={"Message Message-received"}>
                     {props.content}

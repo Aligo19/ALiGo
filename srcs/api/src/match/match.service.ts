@@ -93,8 +93,17 @@ export class MatchService {
   }
   async getMatchLoading(): Promise<Match[]> {
     return this.matchRepository.find({
-      where: { Status: Equal(0) },
+      where: [{ Status: Equal(0) },
+              { Status: Equal(-1) }],
       relations: ['ID_user1'],
+    });
+  }
+
+  async getMatchPlaying(): Promise<Match[]>
+  {
+    return this.matchRepository.find({
+      where: { Status: Equal(1)},
+      relations: ['ID_user1', 'ID_user2']
     });
   }
 

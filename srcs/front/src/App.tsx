@@ -30,7 +30,7 @@ export default function App() {
 	const [timeoutIdUserInfos, setTimeouIdUserInfos] = useState<any>(null);
 	const [matchHisto, setMatchHisto] = useState<any>([]);
 	const [gestion, setGestion] = useState<any>([]);
-	const [selectedFriend, setSelectedFriend] = useState<any>(null);
+	const [selectedFriend, setSelectedFriend] = useState<any>(0);
 
 	async function update(newUser: any) {
 		let oldUser = JSON.parse(sessionStorage.getItem('userData') || 'null');
@@ -440,7 +440,7 @@ export default function App() {
 									name="send-message"
 									placeholder="Send message..."
 									rows={1}
-									style={{ width: '95%' }} // Ajout d'une marge à droite pour séparer les éléments
+									style={{ width: '95%' }}
 									onKeyPress={(e) => {
 										if (e.key === 'Enter') {
 											sendMessage(datas);
@@ -487,11 +487,13 @@ export default function App() {
 			value.value = '';
 	}
 
-	function showGameCanvas(friendInfo : any) {
-		if (friendInfo)
-		{
-			//fdsfsd
-		}
+	function showGameCanvas() {
+		let friendInfo;
+		if (selectedFriend !== 0)
+			friendInfo = selectedFriend;
+		console.log('friendInfo')
+		console.log(friendInfo)
+		console.log('friendInfo')
 		if (timeoutIdConv)
 				clearTimeout(timeoutIdConv);
 		if (timeoutIdConvs)
@@ -510,32 +512,28 @@ export default function App() {
 		if (!peopleOptions)
 			return null;
 	
-		const handleRadioChange = (id : any) => {
-			setSelectedFriend(id);
+		const handleDropdownChange = (event: any) => {
+			let tmp = event.target.value;
+			setSelectedFriend(parseInt(tmp));
 		};
+			  
 		setCurrentView("gameFriend");
+		setSelectedFriend(parseInt(peopleOptions[0].ID))
 		setFriend (
-			<div className='EmptyCanvas'>
-				{peopleOptions.map((person:any) => (
-					<div 
-						className="GameVsFriendForm"
-						key={person.ID}>
-						<input
-							className="GameVsFriendForm-checkBox"
-							type="radio"
-							id={`person-${person.ID}`}
-							name="friend-selection"
-							value={person.ID}
-							checked={selectedFriend === person.ID}
-							onChange={() => handleRadioChange(person.ID)}
-						/>
-						<label className="GameVsFriendForm-custom-label" htmlFor={`person-${person.ID}`}>
+			<div className='GameVsFriendForm'>
+				<div className="GameVsFriendForm-title">Select a Friend to play</div>
+				<div>
+					<select	onChange={(e) => handleDropdownChange(e)}
+							className="GameVsFriendForm-dropdown">
+					{peopleOptions.map((person: any) => (
+						<option key={person.ID} value={person.ID}>
 							{person.Pseudo}
-						</label>
-					</div>
-				))}
-				<button className="GameVsFriendForm-button" type="button" onClick={() => showGameCanvas(selectedFriend)}>Submit</button>
-			</div>
+						</option>))
+					}
+		  			</select>
+				</div>
+				<button className="GameVsFriendForm-button" type="button" onClick={() => showGameCanvas()}>Submit</button>
+	  		</div>
 		);
 	}
 
@@ -681,6 +679,7 @@ export default function App() {
 			await axios.get(`http://127.0.0.1:3001/conv/${out.ID}/admins/${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}`);
 			setCurrentView("messages");
 			sessionStorage.setItem('statusConv', '0');
+			sessionStorage.setItem('idUserInfos', `${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}`);
 			sessionStorage.setItem('idConv', String(out.ID));
 		} catch (error) {
 			console.log("error");
@@ -746,16 +745,15 @@ export default function App() {
 	}
 	else if (sessionStorage.getItem('status') == '2')
 	{
-		content = <div>
+		content = <div className="mdpMail">
 					<div>
-						<h1>Mot de passe fourni par mail</h1>
+						<h1 className="ConvSettings-title">Mot de passe fourni par mail</h1>
 						<input
 							id="password"
-							className="Text-input"
+							className="mdpMail-input"
 							type="password"
 							name="password"
 							placeholder="Password"
-							style={{ width: '95%' }}
 							onKeyDown={(e) => {
 								if (e.key === 'Enter')
 								{

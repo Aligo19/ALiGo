@@ -22,10 +22,10 @@ const History: React.FC<HistoryProps> = (props:any) => {
 
     let matchs: string[] = [];
     let res: string, userVs: string, frst: number, scd: number, str: string;
-    const x = JSON.parse(sessionStorage.getItem('userData') || '{}');
+    const x = parseInt(sessionStorage.getItem('idUserInfos') || '');
 
     props.histo.forEach((item:any) => {
-        if (x.ID === item.ID_user1.ID) {
+        if (x === item.ID_user1.ID) {
             userVs = item.ID_user2.Pseudo;
             frst = item.Score_user1;
             scd = item.Score_user2;

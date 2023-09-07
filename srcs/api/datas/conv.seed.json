@@ -1,6 +1,6 @@
 [
     {
-      "Name": "Conversation ahhh",
+      "Name": "LeLisa",
       "ID_users": [ "LeGodurix",
                     "LaLisa"],
       "Status": 2,
@@ -18,7 +18,7 @@
       ]
     },
     {
-      "Name": "Conversation bouh",
+      "Name": "alapeu",
       "ID_users": [ "AlanCazam",
                     "Philippeu"],
       "Status": 2,
@@ -32,59 +32,6 @@
           "ID_user": 4,
           "data": "Salut Hugo, ça va bien merci ! Et toi ?",
           "Logged_at": "2023-07-28T12:05:00"
-        }
-      ]
-    },
-    {
-      "Name": "Conversation 2",
-      "ID_users":["AlanCazam",
-                  "LaLisa"],
-      "Status": 2,
-      "Messages": [
-        {
-          "ID_user": 3,
-          "data": "Salut Hugo, ca va l'Espagne ?",
-          "Logged_at": "2023-07-28T14:00:00"
-        },
-        {
-          "ID_user": 4,
-          "data": "Oui oui, je m'amuse bien ! Et toi ?",
-          "Logged_at": "2023-07-28T14:05:00"
-        },
-        {
-          "ID_user": 3,
-          "data": "Super, je voulais juste discuter un peu. Comment s'est passée ta journée ?",
-          "Logged_at": "2023-07-28T14:10:00"
-        },
-        {
-          "ID_user": 4,
-          "data": "Bien, j'ai fait du vélo et j'ai mangé une glace !",
-          "Logged_at": "2023-07-28T14:15:00"
-        },
-        {
-          "ID_user": 3,
-          "data": "Cool !",
-          "Logged_at": "2023-07-28T14:20:00"
-        },
-        {
-          "ID_user": 4,
-          "data": "Et toi ?",
-          "Logged_at": "2023-07-28T14:25:00"
-        },
-        {
-          "ID_user": 3,
-          "data": "J'ai fait du vélo aussi, mais je n'ai pas mangé de glace !",
-          "Logged_at": "2023-07-28T14:30:00"
-        },
-        {
-          "ID_user": 4,
-          "data": "Ahah, tu devrais !",
-          "Logged_at": "2023-07-28T14:35:00"
-        },
-        {
-          "ID_user": 3,
-          "data": "Oui, je vais y penser !",
-          "Logged_at": "2023-07-28T14:40:00"
         }
       ]
     },
