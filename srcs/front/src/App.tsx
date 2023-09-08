@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import * as dotenv from 'dotenv';
+import env from "react-dotenv";
+
 
 import Navbar from "./components/Navbar";
 import PrivateChats from "./components/Main/Groups/PrivateChats";
@@ -13,14 +14,12 @@ import Game from './components/Main/Game';
 const clock = 500;
 
 // try {
-// 	output = await axios.patch(process.env.URL_API + '/users/' + oldUser.ID, newUser);
+// 	output = await axios.patch(env.URL_API + '/users/' + oldUser.ID, newUser);
 // } catch (error) {
-// 	window.location.replace(process.env.URL_REACT + '/error.html');
+// 	window.location.replace(env.URL_REACT + '/error.html');
 // }
 
 export default function App() {
-
-	dotenv.config();
 
 	const [gchats, setGChats] = useState<any>([]);
 	const [pchats, setPChats] = useState<any>([]);
@@ -39,14 +38,14 @@ export default function App() {
 
 	async function update(newUser: any) {
 		let oldUser = JSON.parse(sessionStorage.getItem('userData') || 'null');
-		let output = await axios.patch(process.env.URL_API + '/users/' + oldUser.ID, newUser);
+		let output = await axios.patch(env.URL_API + '/users/' + oldUser.ID, newUser);
 		if (!output || !output.data || output.status < 200 || output.status >= 300 || output.data.status)
 		{
 			window.alert("Error while updating user");
 			return ;
 		}
 		sessionStorage.removeItem('status');
-		output = await axios.get(process.env.URL_API + '/users/' + oldUser.ID);
+		output = await axios.get(env.URL_API + '/users/' + oldUser.ID);
 		if (!output || !output.data || output.status < 200 || output.status >= 300 || output.data.status)
 		{
 			window.alert("Error while updating user");
@@ -55,13 +54,13 @@ export default function App() {
 		output = output.data;
 		sessionStorage.setItem('userData', JSON.stringify(output));
 		setUserData(output);
-		window.location.replace(process.env.URL_REACT + '');
+		window.location.replace(env.URL_REACT + '');
 	}
 
   	async function fetchUserInfo() {
 		try {
 			let id = sessionStorage.getItem('idUserInfos');
-			let userProfile = (await axios.get(process.env.URL_API + `/users/${id}`));
+			let userProfile = (await axios.get(env.URL_API + `/users/${id}`));
 			if (!userProfile || !userProfile.data || userProfile.status < 200 || userProfile.status >= 300 || userProfile.data.status)
 				return ;
 			userProfile = userProfile.data;
@@ -74,8 +73,8 @@ export default function App() {
 			setTimeouIdUserInfos(setTimeout(() => fetchUserInfo(), clock));
 		} catch (error) {
 			console.error("Error getting user infos: ", error);
-			if (sessionStorage.getItem('userData'))
-				window.location.replace(process.env.URL_REACT + '/error.html');
+			// if (sessionStorage.getItem('userData'))
+			// 	window.location.replace(env.URL_REACT + '/error.html');
 
 		}
 	}
@@ -83,14 +82,14 @@ export default function App() {
 	async function fetchMatchHisto() {
 		try {
 			const x = JSON.parse(sessionStorage.getItem('idUserInfos')  || 'null');
-			const response = await axios.get(process.env.URL_API + `/matches/${x}/user`);
+			const response = await axios.get(env.URL_API + `/matches/${x}/user`);
 			if (!response || !response.data || response.status < 200 || response.status >= 300 || response.data.status)
 				return ;
 			setMatchHisto(response.data);
 		} catch (error) {
 			console.error("Error getting match historique: ", error);
-			if (sessionStorage.getItem('userData'))
-				window.location.replace(process.env.URL_REACT + '/error.html');
+			// if (sessionStorage.getItem('userData'))
+			// 	window.location.replace(env.URL_REACT + '/error.html');
 		}
 	}
 
@@ -108,7 +107,7 @@ export default function App() {
 					return;
 				}
 				sessionStorage.setItem('coco', '0');
-				let response:any = await axios.get(process.env.URL_API + `/users/${code}/login`);
+				let response:any = await axios.get(env.URL_API + `/users/${code}/login`);
 				response = response.data;
 				if (response.data)
 				{
@@ -120,7 +119,7 @@ export default function App() {
 				if (response.email && response.email.length > 0 && sessionStorage.getItem('status') != '2')
 				{
 					sessionStorage.setItem('status', '2');
-					axios.post(process.env.URL_API + `/mail/welcome`, {
+					axios.post(env.URL_API + `/mail/welcome`, {
 						email: response.email,
 						pseudo: response.Pseudo
 					})
@@ -130,15 +129,15 @@ export default function App() {
 				}
 				else if (sessionStorage.getItem('status') != '2')
 					sessionStorage.setItem('userData', JSON.stringify(response));
-				window.location.replace(process.env.URL_REACT + '');
+				window.location.replace(env.URL_REACT + '');
 			}
 			let data = JSON.parse(sessionStorage.getItem('userData') || 'null');
 			if (data && data.ID)
-				axios.get(process.env.URL_API + `/users/${data.ID}/active`);
+				axios.get(env.URL_API + `/users/${data.ID}/active`);
 		}
 		async function fetchChats() {
 			try {
-				const response = await axios.get(process.env.URL_API + `/conv/${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}/user`);
+				const response = await axios.get(env.URL_API + `/conv/${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}/user`);
 				const 	chats = response.data,
 						privateChats: any[] = [],
 						groupChats: any[] = [];
@@ -157,8 +156,8 @@ export default function App() {
 				setTimeoutIdConvs( await setTimeout(async () => { fetchChats() }, clock));
 			} catch (error) {
 				console.error("Error fetching chats:", error);
-				if (sessionStorage.getItem('userData'))
-					window.location.replace(process.env.URL_REACT + '/error.html');
+				// if (sessionStorage.getItem('userData'))
+				// 	window.location.replace(env.URL_REACT + '/error.html');
 			}
 		}
 
@@ -189,7 +188,7 @@ export default function App() {
 	}
 	
 	async function onSubmitPassword(datas:any, password: String) {
-		let status = await axios.get(process.env.URL_API + `/conv/${datas.ID}/pwd/${password}`)
+		let status = await axios.get(env.URL_API + `/conv/${datas.ID}/pwd/${password}`)
 		if (!password || !datas || !status.data)
 			return ;
 		sessionStorage.setItem('statusConv', '0');
@@ -219,7 +218,7 @@ export default function App() {
 						buttonAdmin = <button className="ConvSettingsContent-btn" onClick={async () => {
 							if (datasConv.Admin && datasConv.Admin.length === 1)
 								return ;
-							await axios.get(process.env.URL_API + `/conv/${datasConv.ID}/admins/${user.ID}/remove`);
+							await axios.get(env.URL_API + `/conv/${datasConv.ID}/admins/${user.ID}/remove`);
 							window.alert("User demoted");
 							sessionStorage.setItem('idConv', datasConv.ID);
 							window.location.reload();
@@ -229,21 +228,21 @@ export default function App() {
 
 				else
 					buttonAdmin = <button className="ConvSettingsContent-btn" onClick={async () => {
-						await axios.get(process.env.URL_API + `/conv/${datasConv.ID}/admins/${user.ID}`);
+						await axios.get(env.URL_API + `/conv/${datasConv.ID}/admins/${user.ID}`);
 						window.alert("User promoted");
 						sessionStorage.setItem('idConv', datasConv.ID);
 						window.location.reload();
 					}}>PROMOTE</button>;
 				if (datasConv.Muted && datasConv.Muted.find((muted: any) => muted.ID === user.ID))
 					buttonMuted = <button className="ConvSettingsContent-btn" onClick={async () => {
-						await axios.get(process.env.URL_API + `/conv/${datasConv.ID}/muteds/${user.ID}/remove`);
+						await axios.get(env.URL_API + `/conv/${datasConv.ID}/muteds/${user.ID}/remove`);
 						window.alert("User unmuted");
 						sessionStorage.setItem('idConv', datasConv.ID);
 						window.location.reload();
 					}}>UNMUTE</button>;
 				else
 					buttonMuted = <button className="ConvSettingsContent-btn" onClick={async () => {
-						await axios.get(process.env.URL_API + `/conv/${datasConv.ID}/muteds/${user.ID}`);
+						await axios.get(env.URL_API + `/conv/${datasConv.ID}/muteds/${user.ID}`);
 						window.alert("User muted");
 						sessionStorage.setItem('idConv', datasConv.ID);
 						window.location.reload();
@@ -255,7 +254,7 @@ export default function App() {
 						me = me.ID; 
 						if (user.ID === parseInt(me))
 						{
-							await axios.get(process.env.URL_API + `/conv/${datasConv.ID}/users/${user.ID}/remove`);
+							await axios.get(env.URL_API + `/conv/${datasConv.ID}/users/${user.ID}/remove`);
 							window.alert("User removed");
 							window.location.reload();
 						}
@@ -263,7 +262,7 @@ export default function App() {
 						window.location.reload();
 						return;
 					}
-					await axios.get(process.env.URL_API + `/conv/${datasConv.ID}/users/${user.ID}/remove`);
+					await axios.get(env.URL_API + `/conv/${datasConv.ID}/users/${user.ID}/remove`);
 					window.alert("User removed");
 					window.location.reload();
 				}}>REMOVE</button>;
@@ -312,8 +311,8 @@ export default function App() {
 
 	async function addUserToConversation(conversationId:any, userId:any) {
 		try {
-			let user = (await axios.get(process.env.URL_API + `/users/${userId}/pseudo`)).data;
-			await axios.get(process.env.URL_API + `/conv/${conversationId}/users/${user.ID}`);
+			let user = (await axios.get(env.URL_API + `/users/${userId}/pseudo`)).data;
+			await axios.get(env.URL_API + `/conv/${conversationId}/users/${user.ID}`);
 			window.alert("User added to the conversation");
 		  	sessionStorage.setItem('idConv', conversationId);
 		  	window.location.reload();
@@ -339,14 +338,14 @@ export default function App() {
 		showMessageCanvas();
 		let datas:any = null;
 		try {
-			datas = await axios.get(process.env.URL_API + `/conv/${id}`);
+			datas = await axios.get(env.URL_API + `/conv/${id}`);
 			datas = datas.data;
 		}
 		catch (error)
 		{
 			console.log("coucou");
-			if (sessionStorage.getItem('userData'))
-				window.location.replace(process.env.URL_REACT + '/error.html');
+			// if (sessionStorage.getItem('userData'))
+			// 	window.location.replace(env.URL_REACT + '/error.html');
 		}
 		const datasUser = JSON.parse(sessionStorage.getItem('userData') || 'null');
 		let newMessages = [];
@@ -486,7 +485,7 @@ export default function App() {
 		}
 		value = document.getElementById('inputText') as HTMLInputElement | null;
 		result = (value) ? value.value : null;
-		await axios.post(process.env.URL_API + `/conv/${oldDatas.ID}/message`, {
+		await axios.post(env.URL_API + `/conv/${oldDatas.ID}/message`, {
 			ID_user: datas.ID,
 			data: result,
 			Logged_at: Date.now()});
@@ -544,7 +543,7 @@ export default function App() {
 		sessionStorage.setItem('statusConv', '0');
 		sessionStorage.setItem('idConv', '0');
 		try {
-			const  response = await axios.get(process.env.URL_API + `/matches/streaming`);
+			const  response = await axios.get(env.URL_API + `/matches/streaming`);
 			if (!response || !response.data || response.status < 200 || response.status >= 300 || response.data.status)
 			{
 				window.alert("Error while getting stream");
@@ -567,7 +566,7 @@ export default function App() {
 		} catch (error) {
 			console.error("Error while getting stream: ", error);
 			// if (sessionStorage.getItem('userData'))
-			// window.location.replace(process.env.URL_REACT + '/error.html');
+			// window.location.replace(env.URL_REACT + '/error.html');
 		};
 		setCurrentView("stream");
 	}
@@ -617,7 +616,7 @@ export default function App() {
 
 	async function connect(groupName:any, isPrivate:any, password:any)
 	{
-		let out = await axios.post(process.env.URL_API + '/conv', {
+		let out = await axios.post(env.URL_API + '/conv', {
 			name: groupName,
 			status: isPrivate,
 			password: password
@@ -678,7 +677,7 @@ export default function App() {
 					window.alert("Veuillez remplir tous les champs");
 					return;
 				}
-				let user:any = await axios.get(process.env.URL_API + `/users/${pseudo}/pseudo`);
+				let user:any = await axios.get(env.URL_API + `/users/${pseudo}/pseudo`);
 				if (!user || !user.data || user.status !== 200 || user.data.status)
 				{
 					window.alert("User not found");
@@ -686,7 +685,7 @@ export default function App() {
 				}
 				user = user.data;
 				let me = JSON.parse(sessionStorage.getItem('userData') || 'null');
-				let tout = await axios.get(process.env.URL_API + `/users/${me.ID}/friends/${user.Pseudo}/add`);
+				let tout = await axios.get(env.URL_API + `/users/${me.ID}/friends/${user.Pseudo}/add`);
 	
 				if (user.ID === me.ID)
 				{
@@ -702,31 +701,31 @@ export default function App() {
 				
 			} catch (error) {
 				console.log("error");
-				if (sessionStorage.getItem('userData'))
-					window.location.replace(process.env.URL_REACT + '/error.html');
+				// if (sessionStorage.getItem('userData'))
+				// 	window.location.replace(env.URL_REACT + '/error.html');
 			}
 		}
 		try {
 			out = await connect(groupName, isPrivate, password);
 			for (let i = 0; i < selectedPeople.length; i++)
-				await axios.get(process.env.URL_API + `/conv/${out.ID}/users/${selectedPeople[i]}`);
-			await axios.get(process.env.URL_API + `/conv/${out.ID}/users/${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}`);
-			await axios.get(process.env.URL_API + `/conv/${out.ID}/admins/${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}`);
+				await axios.get(env.URL_API + `/conv/${out.ID}/users/${selectedPeople[i]}`);
+			await axios.get(env.URL_API + `/conv/${out.ID}/users/${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}`);
+			await axios.get(env.URL_API + `/conv/${out.ID}/admins/${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}`);
 			setCurrentView("messages");
 			sessionStorage.setItem('statusConv', '0');
 			sessionStorage.setItem('idUserInfos', `${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}`);
 			sessionStorage.setItem('idConv', String(out.ID));
 		} catch (error) {
 			console.log("error");
-			if (sessionStorage.getItem('userData'))
-				window.location.replace(process.env.URL_REACT + '/error.html');
+			// if (sessionStorage.getItem('userData'))
+			// 	window.location.replace(env.URL_REACT + '/error.html');
 		}
 	}
 
 	async function pwdMail(){
 		let bla = document.getElementById('password') as HTMLInputElement | null;
 		let dsf = (bla) ? bla.value: null;
-		let out = await axios.get(process.env.URL_API + `/users/${(sessionStorage.getItem('idUserInfos') || 'null')}/password/${dsf}`);
+		let out = await axios.get(env.URL_API + `/users/${(sessionStorage.getItem('idUserInfos') || 'null')}/password/${dsf}`);
 		if (!out || !out.data || out.status < 200 || out.status >= 300 || out.data.status)
 		{
 			window.alert("Mauvais mot de passe");
@@ -840,6 +839,6 @@ const [timeoutId, setTimeoutId] = useState(null);
 if (timeoutIdConv)
 	clearTimeout(timeoutIdConv);
 setTimeoutIdConv( await setTimeout(async () => {
-onOpenConversation((await axios.get(process.env.URL_API + `/conv/${datas.ID}`)).data)
+onOpenConversation((await axios.get(env.URL_API + `/conv/${datas.ID}`)).data)
 }, clock));
 */

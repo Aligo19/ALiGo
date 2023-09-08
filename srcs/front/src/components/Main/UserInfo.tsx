@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import * as dotenv from 'dotenv';
+import env from "react-dotenv";
 
 import Stats from "./UserInfo/Stats";
 import History from "./UserInfo/History";
@@ -18,13 +18,11 @@ interface UserProps {
 
 export default function UserInfo(props: UserProps) {
 
-	dotenv.config();
-
     async function erase() {
         try {
-            await axios.get(process.env.URL_API + `users/${props.name}/pseudo`);
-            await axios.get(process.env.URL_API + `users/${JSON.parse(sessionStorage.getItem('userData')!).ID}/block/${props.name}/add`);
-            await axios.get(process.env.URL_API + `conv/${JSON.parse(sessionStorage.getItem('userData')!).ID}/erase/${props.name}`);
+            await axios.get(env.URL_API + `users/${props.name}/pseudo`);
+            await axios.get(env.URL_API + `users/${JSON.parse(sessionStorage.getItem('userData')!).ID}/block/${props.name}/add`);
+            await axios.get(env.URL_API + `conv/${JSON.parse(sessionStorage.getItem('userData')!).ID}/erase/${props.name}`);
             sessionStorage.setItem('idUserInfos', JSON.parse(sessionStorage.getItem('userData')!).ID);
             sessionStorage.setItem('idConv', '0');
             window.location.reload();
@@ -62,7 +60,7 @@ export default function UserInfo(props: UserProps) {
         }
     }
 
-    const pic = props.avatar?.includes('http') ? props.avatar : process.env.URL_API + `${props.avatar}`;
+    const pic = props.avatar?.includes('http') ? props.avatar : env.URL_API + `${props.avatar}`;
 
     return (
         <div className="UserInfo">
