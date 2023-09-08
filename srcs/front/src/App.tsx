@@ -534,40 +534,37 @@ export default function App() {
 		);
 	}
 
-	// async function showStream() {
-	// 	sessionStorage.setItem('statusConv', '0');
-	// 	sessionStorage.setItem('idConv', '0');
-	// 	try {
-	// 		const  response = await axios.get(`http://127.0.0.1:3001/streaming`);
-	// 		if (!response || !response.data || response.status < 200 || response.status >= 300 || response.data.status)
-	// 		{
-	// 			window.alert("Error while getting stream");
-	// 			return ;
-	// 		}
-	// 		const 	matchs = response.data,
-	// 		streamMatchs: any[] = [];
+	async function showStream() {
+		sessionStorage.setItem('statusConv', '0');
+		sessionStorage.setItem('idConv', '0');
+		try {
+			const  response = await axios.get(`http://127.0.0.1:3001/matches/streaming`);
+			if (!response || !response.data || response.status < 200 || response.status >= 300 || response.data.status)
+			{
+				window.alert("Error while getting stream");
+				return ;
+			}
+			const 	streamMatchs = response.data;
+			console.log(streamMatchs);
 			
-	// 		matchs.forEach((element:any) => {
-	// 			/*if (element.Status ===  status partie en cours) */	
-	// 				streamMatchs.push(element);})			
-	// 		seStreamtMatch (
-	// 			<div className="GameVsFriendForm">
-	// 				<div className="GameVsFriendForm-title">Select a match to watch</div>
-	// 				{streamMatchs.map((item: any, index: number) => (
-	// 					<div key={index} className="watchMatchGroup">
-	// 						{item.ID_user1} vs. {item.ID_user2} {item.Score_user1} - {item.Score_user2}
-	// 						<button className="watchMatchGroup-button" type="button" onClick={() => showGameCanvas()}>WATCH</button>
-	// 					</div>
-	// 				))}
-	// 			</div>
-	// 		);
-	// 	} catch (error) {
-	// 		console.error("Error while getting stream: ", error);
-	// 		if (sessionStorage.getItem('userData'))
-	// 		window.location.replace('http://127.0.0.1:3000/error.html');
-	// 	};
-	// 	setCurrentView("stream");
-	// }
+			seStreamtMatch (
+				<div className="GameVsFriendForm">
+					<div className="GameVsFriendForm-title">Select a match to watch</div>
+					{streamMatchs.map((item: any) => (
+						<div key={item.ID} className="watchMatchGroup">
+							{item.ID_user1.Pseudo} vs. {item.ID_user2.Pseudo}
+							<button className="watchMatchGroup-button" type="button" onClick={() => showGameCanvas()}>WATCH</button>
+						</div>
+					))}
+				</div>
+			);
+		} catch (error) {
+			console.error("Error while getting stream: ", error);
+			// if (sessionStorage.getItem('userData'))
+			// window.location.replace('http://127.0.0.1:3000/error.html');
+		};
+		setCurrentView("stream");
+	}
 
 	function showMessageCanvas() {
 		setCurrentView("messages");
@@ -801,7 +798,7 @@ export default function App() {
 		content = <div className="Main">
 					<div className="Groups">
 						<div className="PlayButtons">
-							{/* <div className="Stream-btn" onClick={showStream}>WATCH MATCH</div> */}
+							<div className="Stream-btn" onClick={showStream}>WATCH MATCH</div>
 							<div className="Random-btn" onClick={showGameCanvas}>RANDOM PLAYER</div>
 							<div className="Friend-btn" onClick={showGameCanvasFriend}>PLAY WITH FRIEND</div>
 						</div>
