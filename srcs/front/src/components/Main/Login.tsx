@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent } from "react";
 import axios from 'axios';
+import * as dotenv from 'dotenv';
 
 interface LoginProps {
     Pseudo: string;
@@ -15,6 +16,9 @@ interface UserState {
 }
 
 export default function Login(props: LoginProps) {
+
+	dotenv.config();
+
     const [user, setUser] = useState<UserState>({
         Pseudo: props.Pseudo,
         Avatar: props.Avatar,
@@ -41,12 +45,12 @@ export default function Login(props: LoginProps) {
             formData.append('file', file);
         }
         try {
-            await axios.post('http://127.0.0.1:3001/users/' + props.Pseudo, formData, {
+            await axios.post(process.env.URL_API + '/users/' + props.Pseudo, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            const userData = await axios.get(`http://127.0.0.1:3001/users/${props.Pseudo}/pseudo`);
+            const userData = await axios.get(process.env.URL_API + `/users/${props.Pseudo}/pseudo`);
             sessionStorage.setItem('userData', JSON.stringify(userData.data));
         } catch (error) {
             console.error('Error uploading file:', error);

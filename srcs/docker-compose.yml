@@ -18,6 +18,8 @@ services:
           - private
         volumes:
           - ./data:/var/lib/postgresql/data
+        depends_on:
+          - api
     # adminer:
     #   image: adminer
     #   restart: always
@@ -34,8 +36,8 @@ services:
         - '3001:3001'
       networks:
         - private
-      depends_on:
-        - postgres
+      # depends_on:
+      #   - postgres
     react:
       build: front/
       restart: always
