@@ -93,7 +93,7 @@ export default function App() {
 	useEffect(() => {
 		async function connect()
 		{
-			if (!JSON.parse(sessionStorage.getItem('userData')  || 'null')) 
+			if (!JSON.parse(sessionStorage.getItem('userData')  || 'null') && !sessionStorage.getItem('coco')) 
 			{
 				sessionStorage.setItem('statusConv','0');
 				sessionStorage.setItem('idConv', '0');
@@ -103,6 +103,7 @@ export default function App() {
 					window.location.replace('https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2af-c8d7a0565d4286d9500ef0d06a006e7c508dda519e50f426fb0f8d607172c430&redirect_uri=http%3A%2F%2F127.0.0.1%3A3000&response_type=code');
 					return;
 				}
+				sessionStorage.setItem('coco', '0');
 				let response:any = await axios.get(`http://127.0.0.1:3001/users/${code}/login`);
 				response = response.data;
 				if (response.data)
@@ -339,6 +340,7 @@ export default function App() {
 		}
 		catch (error)
 		{
+			console.log("coucou");
 			if (sessionStorage.getItem('userData'))
 				window.location.replace('http://127.0.0.1:3000/error.html');
 		}
