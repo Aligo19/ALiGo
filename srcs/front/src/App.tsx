@@ -15,7 +15,7 @@ const clock = 500;
 // try {
 // 	output = await axios.patch(process.env.URL_API + '/users/' + oldUser.ID, newUser);
 // } catch (error) {
-// 	window.location.replace('http://127.0.0.1:3000/error.html');
+// 	window.location.replace(process.env.URL_REACT + '/error.html');
 // }
 
 export default function App() {
@@ -55,7 +55,7 @@ export default function App() {
 		output = output.data;
 		sessionStorage.setItem('userData', JSON.stringify(output));
 		setUserData(output);
-		window.location.replace('http://127.0.0.1:3000');
+		window.location.replace(process.env.URL_REACT + '');
 	}
 
   	async function fetchUserInfo() {
@@ -75,7 +75,7 @@ export default function App() {
 		} catch (error) {
 			console.error("Error getting user infos: ", error);
 			if (sessionStorage.getItem('userData'))
-				window.location.replace('http://127.0.0.1:3000/error.html');
+				window.location.replace(process.env.URL_REACT + '/error.html');
 
 		}
 	}
@@ -90,7 +90,7 @@ export default function App() {
 		} catch (error) {
 			console.error("Error getting match historique: ", error);
 			if (sessionStorage.getItem('userData'))
-				window.location.replace('http://127.0.0.1:3000/error.html');
+				window.location.replace(process.env.URL_REACT + '/error.html');
 		}
 	}
 
@@ -130,7 +130,7 @@ export default function App() {
 				}
 				else if (sessionStorage.getItem('status') != '2')
 					sessionStorage.setItem('userData', JSON.stringify(response));
-				window.location.replace('http://127.0.0.1:3000');
+				window.location.replace(process.env.URL_REACT + '');
 			}
 			let data = JSON.parse(sessionStorage.getItem('userData') || 'null');
 			if (data && data.ID)
@@ -158,7 +158,7 @@ export default function App() {
 			} catch (error) {
 				console.error("Error fetching chats:", error);
 				if (sessionStorage.getItem('userData'))
-					window.location.replace('http://127.0.0.1:3000/error.html');
+					window.location.replace(process.env.URL_REACT + '/error.html');
 			}
 		}
 
@@ -346,7 +346,7 @@ export default function App() {
 		{
 			console.log("coucou");
 			if (sessionStorage.getItem('userData'))
-				window.location.replace('http://127.0.0.1:3000/error.html');
+				window.location.replace(process.env.URL_REACT + '/error.html');
 		}
 		const datasUser = JSON.parse(sessionStorage.getItem('userData') || 'null');
 		let newMessages = [];
@@ -567,7 +567,7 @@ export default function App() {
 		} catch (error) {
 			console.error("Error while getting stream: ", error);
 			// if (sessionStorage.getItem('userData'))
-			// window.location.replace('http://127.0.0.1:3000/error.html');
+			// window.location.replace(process.env.URL_REACT + '/error.html');
 		};
 		setCurrentView("stream");
 	}
@@ -703,7 +703,7 @@ export default function App() {
 			} catch (error) {
 				console.log("error");
 				if (sessionStorage.getItem('userData'))
-					window.location.replace('http://127.0.0.1:3000/error.html');
+					window.location.replace(process.env.URL_REACT + '/error.html');
 			}
 		}
 		try {
@@ -719,7 +719,7 @@ export default function App() {
 		} catch (error) {
 			console.log("error");
 			if (sessionStorage.getItem('userData'))
-				window.location.replace('http://127.0.0.1:3000/error.html');
+				window.location.replace(process.env.URL_REACT + '/error.html');
 		}
 	}
 
