@@ -10,7 +10,6 @@ const PrivateChats: React.FC<PrivateChatsProps> = (props:any) => {
         try {
             sessionStorage.setItem('idConv', props.value);
             sessionStorage.setItem('statusConv', "0");
-            
             const userData = sessionStorage.getItem('userData');
             if (userData) {
                 const parsedData = JSON.parse(userData);

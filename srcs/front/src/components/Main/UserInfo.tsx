@@ -20,13 +20,9 @@ export default function UserInfo(props: UserProps) {
 
     async function erase() {
         try {
-            console.log("pipi11");
             await axios.get(env.URL_API + `/users/${props.name}/pseudo`);
-            console.log("pipi1");
             await axios.get(env.URL_API + `/users/${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}/block/${props.name}/add`);
-            console.log("pipi2");
             await axios.get(env.URL_API + `/conv/${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}/erase/${props.name}`);
-            console.log("pipi3");
             sessionStorage.setItem('idUserInfos', JSON.parse(sessionStorage.getItem('userData') || 'null').ID);
             sessionStorage.setItem('idConv', '0');
             window.location.replace(env.URL_REACT);
@@ -40,12 +36,10 @@ export default function UserInfo(props: UserProps) {
     const timeDifference = lastConnectionTime ? (currentTime.getTime() - lastConnectionTime.getTime()) / 1000 : null;
     let statusPointClass = (timeDifference !== null && timeDifference <= 600) ? 'online' : 'offline';
 
-    if (statusPointClass === 'online' && props.Game_status) {
+    if (statusPointClass === 'online' && props.Game_status)
         statusPointClass = 'ingame';
-    }
-
-    if (!JSON.parse(sessionStorage.getItem('userData')!)) return <div></div>;
-
+    if (!JSON.parse(sessionStorage.getItem('userData')!))
+        return <div></div>;
     let button = null;
     let isFriend = null;
 
@@ -55,7 +49,6 @@ export default function UserInfo(props: UserProps) {
     } else {
         const friendList = JSON.parse(sessionStorage.getItem('userData')!).Friends;
         let isCurrentFriend = friendList.some((friend: any) => friend.Pseudo === props.name);
-
         if (isCurrentFriend) {
             button = <button className="erase-btn" onClick={erase}>Delete friend</button>;
             isFriend = <p className="UserInfo--smiley">&#10084;</p>;

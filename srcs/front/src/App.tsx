@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import env from "react-dotenv";
 
-
 import Navbar from "./components/Navbar";
 import PrivateChats from "./components/Main/Groups/PrivateChats";
 import GroupChats from "./components/Main/Groups/GroupChats";
@@ -13,12 +12,6 @@ import Game from './components/Main/Game';
 import MessageJoinGame from './components/Main/MessageJoinGame';
 
 const clock = 500;
-
-// try {
-// 	output = await axios.patch(env.URL_API + '/users/' + oldUser.ID, newUser);
-// } catch (error) {
-// 	window.location.replace(env.URL_REACT + '/error.html');
-// }
 
 export default function App() {
 
@@ -61,7 +54,7 @@ export default function App() {
   	async function fetchUserInfo() {
 		try {
 			let id = sessionStorage.getItem('idUserInfos');
-			let userProfile = (await axios.get(env.URL_API + `/users/${id}`));
+			let userProfile = await axios.get(env.URL_API + `/users/${id}`);
 			if (!userProfile || !userProfile.data || userProfile.status < 200 || userProfile.status >= 300 || userProfile.data.status)
 				return ;
 			userProfile = userProfile.data;
@@ -99,7 +92,6 @@ export default function App() {
 		{
 			if (!JSON.parse(sessionStorage.getItem('userData')  || 'null') && !sessionStorage.getItem('coco')) 
 			{
-				console.log("HUGO FAIT UN GROS PIPI HIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHI")
 				sessionStorage.setItem('statusConv','0');
 				sessionStorage.setItem('idConv', '0');
 				const code = new URLSearchParams(window.location.search).get('code');
@@ -108,16 +100,8 @@ export default function App() {
 					window.location.replace(env.URL_19);
 					return;
 				}
-				console.log("2")
-
 				sessionStorage.setItem('coco', '0');
-				console.log("4")
-
 				let response:any = await axios.get(env.URL_API + `/users/${code}/login`);
-				console.log("3")
-
-				console.log("HUGO");
-				console.log(response);
 				response = response.data;
 				if (response.data)
 				{
@@ -125,7 +109,6 @@ export default function App() {
 					response = response.data;
 				}
 				sessionStorage.setItem('idUserInfos', response.ID);
-				
 				if (response.email && response.email.length > 0 && sessionStorage.getItem('status') != '2')
 				{
 					sessionStorage.setItem('status', '2');
@@ -133,9 +116,7 @@ export default function App() {
 						email: response.email,
 						pseudo: response.Pseudo
 					})
-					sessionStorage.setItem('userData', JSON.stringify({
-						data: "bouh"
-					}));
+					sessionStorage.setItem('userData', JSON.stringify({data: "bouh"}));
 				}
 				else if (sessionStorage.getItem('status') != '2')
 					sessionStorage.setItem('userData', JSON.stringify(response));
@@ -181,25 +162,13 @@ export default function App() {
 		test();
 	}, []);
 
-	const userInfoComponents = <UserInfo 
-		name={userData.Pseudo} avatar={userData.Avatar} lstCo={userData.Last_connection} 
-		level={userData.Elo} winnb={userData.Wins} losenb={userData.Loses} histo={matchHisto} Game_status={false}/>;
-	
+	const userInfoComponents = <UserInfo	name={userData.Pseudo} avatar={userData.Avatar} lstCo={userData.Last_connection} level={userData.Elo} winnb={userData.Wins} losenb={userData.Loses} histo={matchHisto} Game_status={false}/>;
 	let pchatComponents = [],
 		gchatComponents = [];
-
 	if (pchats)
-	{
-		pchatComponents = pchats.map((item:any) => (
-			<PrivateChats key={item.ID} name={item.Name} value={item.ID}/>
-		));
-	}
+		pchatComponents = pchats.map((item:any) => (<PrivateChats key={item.ID} name={item.Name} value={item.ID}/>));
 	if (gchats)
-	{
-		gchatComponents = gchats.map((item:any) => (
-			<GroupChats key={item.ID} name={item.Name} value={item.ID} status={item.Status}/>
-		));
-	}
+		gchatComponents = gchats.map((item:any) => ( <GroupChats key={item.ID} name={item.Name} value={item.ID} status={item.Status}/> ));
 	
 	async function onSubmitPassword(datas:any, password: String) {
 		let status = await axios.get(env.URL_API + `/conv/${datas.ID}/pwd/${password}`)
@@ -300,11 +269,10 @@ export default function App() {
 			  	<button className="ConvSettingsContent-btn" onClick={() => {
 					const addUserIdElement = document.getElementById("addUserId") as HTMLInputElement | null;
 					const userIdToAdd = addUserIdElement ? addUserIdElement.value : null;
-					if(userIdToAdd) {
+					if(userIdToAdd)
 						addUserToConversation(datasConv.ID, userIdToAdd);
-					} else {
+					else
 						window.alert("Please enter a user ID");
-					}
 				}}>ADD</button>
 			</div>);
 	
@@ -314,12 +282,16 @@ export default function App() {
 								{datasConv.Name} chat settings
 							</div>
 						</div>
-						<div align-content="stretch">{user}</div>
+						<div align-content="stretch">
+							{user}
+						</div>
 						{addUserInput}
 						<button className="ConvSettingsBack-btn" onClick={async () => {
 							sessionStorage.setItem('statusConv', '0');
 							sessionStorage.setItem('idConv', String(datasConv.ID));
-						}}>Back</button>
+						}}>
+							Back
+						</button>
 					</div>);
 	}
 
@@ -361,13 +333,21 @@ export default function App() {
 			// if (sessionStorage.getItem('userData'))
 			// 	window.location.replace(env.URL_REACT + '/error.html');
 		}
-		console.log(datas);
 		if (!datas)
+		{
+			sessionStorage.setItem('idConv', '0');
+			let user:any = JSON.parse(sessionStorage.getItem('userData') || 'null');
+			sessionStorage.setItem('idUserInfos', user.ID);
+			window.location.replace(env.URL_REACT);
+		}
+		const datasUser = JSON.parse(sessionStorage.getItem('userData') || 'null');
+		const foundElement = datas.Users.find((element: { ID: any; }) => element.ID === datasUser.ID);
+		if (!foundElement)
 		{
 			sessionStorage.setItem('idConv', '0');
 			window.location.replace(env.URL_REACT);
 		}
-		const datasUser = JSON.parse(sessionStorage.getItem('userData') || 'null');
+
 		let newMessages = [];
 		
 		if (sessionStorage.getItem('statusConv') == '1')
@@ -418,14 +398,8 @@ export default function App() {
 			newMessages = datas.Messages.map((item:any, index: number) => {
 				const user = datas.Users.find((user:any) => user.ID === item.ID_user);
 				if (item.Button && item.Button === true)
-				{
-					return (
-						<MessageJoinGame content={item.data} sent={datasUser.ID === item.ID_user} user={user} joinFriend={joinFriend}/>
-						);
-				}
-				return (
-				<MessageCanvas content={item.data} sent={datasUser.ID === item.ID_user} user={user}/>
-				);
+					return (<MessageJoinGame content={item.data} sent={datasUser.ID === item.ID_user} user={user} joinFriend={joinFriend}/>);
+				return (<MessageCanvas content={item.data} sent={datasUser.ID === item.ID_user} user={user}/>);
 			});
 		}
 
@@ -448,11 +422,7 @@ export default function App() {
 		 * 
 		 */
 		if (datas.Status !== 2 /*&& datas.Admins && datas.Admins.find((user) => user.ID === datasUser.ID)*/)
-		{
-			button = <button className="ConvSettings-btn" onClick={() => {control(datas)}}>
-						Settings
-					</button>;
-		}
+			button = <button className="ConvSettings-btn" onClick={() => {control(datas)}}>Settings</button>;
 		else
         {
             datas.Users.map((item:any) => {
@@ -474,9 +444,8 @@ export default function App() {
 									rows={1}
 									style={{ width: '95%' }}
 									onKeyPress={(e) => {
-										if (e.key === 'Enter') {
+										if (e.key === 'Enter')
 											sendMessage(datas);
-										}
 									}}
 									/>
 								<button className="SendMessage-btn" onClick={() => {
@@ -544,9 +513,6 @@ export default function App() {
 				for (let i2 = 0; i2 < convFriends.length; i2++)
 					if (convPersos[i1].ID === convFriends[i2].ID && convPersos[i1].Status === 2)
 						conv = convPersos[i1]
-
-			console.log(conv);
-			
 			if (user)
 			{
 				await axios.post(env.URL_API + `/conv/${conv.ID}/message`, {
@@ -554,16 +520,14 @@ export default function App() {
 					data: "FIGHT !",
 					Logged_at: Date.now(),
 					Button: true});
-
 			}
 			showGameCanvas();
 		}
 	}
 
 	function joinFriend(idFriend: any) {
-		sessionStorage.setItem("selectFriend", String(idFriend))
+		sessionStorage.setItem("selectFriend", idFriend)
 		showGameCanvas();
-		
 	}
 
 	function choseFriend() {
@@ -571,32 +535,25 @@ export default function App() {
 		sessionStorage.setItem('idConv', '0');
 		let user = JSON.parse(sessionStorage.getItem('userData') || 'null');
 		const peopleOptions = user.Friends;
-
 		if (!peopleOptions)
 			setFriend( <div className="GameVsFriendForm-title">You do not have any Friend</div>)
-	
-		const handleDropdownChange = (event: any) => {
-			sessionStorage.setItem("selectFriend", event.target.value)
-		};
-			  
+		const handleDropdownChange = (event: any) => { sessionStorage.setItem("selectFriend", event.target.value) };
 		setCurrentView("gameFriend");
 		sessionStorage.setItem("selectFriend", peopleOptions[0].ID)
-		setFriend (
-			<div className='GameVsFriendForm'>
-				<div className="GameVsFriendForm-title">Select a Friend to play</div>
-				<div>
-					<select	onChange={(e) => handleDropdownChange(e)}
-							className="GameVsFriendForm-dropdown">
-					{peopleOptions.map((person: any) => (
-						<option key={person.ID} value={person.ID}>
-							{person.Pseudo}
-						</option>))
-					}
-		  			</select>
-				</div>
-				<button className="GameVsFriendForm-button" type="button" onClick={() => sendInvit()}>Submit</button>
-	  		</div>
-		);
+		setFriend (	<div className='GameVsFriendForm'>
+						<div className="GameVsFriendForm-title">Select a Friend to play</div>
+						<div>
+							<select	onChange={(e) => handleDropdownChange(e)}
+									className="GameVsFriendForm-dropdown">
+							{peopleOptions.map((person: any) => (
+								<option key={person.ID} value={person.ID}>
+									{person.Pseudo}
+								</option>))
+							}
+							</select>
+						</div>
+						<button className="GameVsFriendForm-button" type="button" onClick={() => sendInvit()}>Submit</button>
+					</div>);
 	}
 
 	async function showStream() {
@@ -609,20 +566,16 @@ export default function App() {
 				window.alert("Error while getting stream");
 				return ;
 			}
-			const 	streamMatchs = response.data;
-			console.log(streamMatchs);
-			
-			seStreamtMatch (
-				<div className="GameVsFriendForm">
-					<div className="GameVsFriendForm-title">Select a match to watch</div>
-					{streamMatchs.map((item: any) => (
-						<div key={item.ID} className="watchMatchGroup">
-							{item.ID_user1.Pseudo} vs. {item.ID_user2.Pseudo}
-							<button className="watchMatchGroup-button" type="button" onClick={() => showGameCanvas()}>WATCH</button>
-						</div>
-					))}
-				</div>
-			);
+			const streamMatchs = response.data;
+			seStreamtMatch (	<div className="GameVsFriendForm">
+									<div className="GameVsFriendForm-title">Select a match to watch</div>
+									{streamMatchs.map((item: any) => (
+										<div key={item.ID} className="watchMatchGroup">
+											{item.ID_user1.Pseudo} vs. {item.ID_user2.Pseudo}
+											<button className="watchMatchGroup-button" type="button" onClick={() => showGameCanvas()}>WATCH</button>
+										</div>
+									))}
+								</div>);
 		} catch (error) {
 			console.error("Error while getting stream: ", error);
 			// if (sessionStorage.getItem('userData'))
@@ -699,7 +652,6 @@ export default function App() {
 			password = null,
 			selectedPeople = [],
 			peopleOptions;
-		// Utilisez les variables groupName, isPrivate, password et selectedPeople pour traiter le formulaire
 		if (document.getElementById("isPrivate"))
 		{
 			value = document.getElementById("isPrivate") as HTMLInputElement | null;
@@ -721,13 +673,11 @@ export default function App() {
 				if (ut)
 					selectedPeople.push(peopleOptions[i].ID);
 			}
-			
 			password = (!isPrivate) ? null: password;
 			isPrivate = (!isPrivate) ? 0: 1;	
 		}
 		else
 		{
-			
 			isPrivate = 2;
 			try {
 				value = document.getElementById("pseudo") as HTMLInputElement | null;
@@ -745,8 +695,7 @@ export default function App() {
 				}
 				user = user.data;
 				let me = JSON.parse(sessionStorage.getItem('userData') || 'null');
-				let tout = await axios.get(env.URL_API + `/users/${me.ID}/friends/${user.Pseudo}/add`);
-	
+				await axios.get(env.URL_API + `/users/${me.ID}/friends/${user.Pseudo}/add`);
 				if (user.ID === me.ID)
 				{
 					window.alert("Vous ne pouvez pas vous ajouter vous même");
@@ -758,7 +707,6 @@ export default function App() {
 					return;
 				}
 				selectedPeople.push(user.ID);
-				
 			} catch (error) {
 				console.log("error");
 				// if (sessionStorage.getItem('userData'))
@@ -803,7 +751,6 @@ export default function App() {
 		const peopleOptions = user.Friends;
 		if (!peopleOptions)
 			return;
-
 		setCreateGroup(	<div className="addFriendForm">
 							<div className="addFriendForm-input-group" >
 								<label className="addFriendForm-custom-label" htmlFor="name">CHAT NAME</label>
@@ -831,11 +778,7 @@ export default function App() {
 	if (sessionStorage.getItem('status') == '1')
 	{
 		const localUser = JSON.parse(sessionStorage.getItem('userData') || 'null');
-		content = <Login 
-		Pseudo={localUser.Pseudo} 
-		Avatar={localUser.Avatar} 
-		update={update} />;
-
+		content = <Login Pseudo={localUser.Pseudo} Avatar={localUser.Avatar} update={update} />;
 	}
 	else if (sessionStorage.getItem('status') == '2')
 	{
@@ -850,9 +793,7 @@ export default function App() {
 							placeholder="Password"
 							onKeyDown={(e) => {
 								if (e.key === 'Enter')
-								{
 									pwdMail();
-								}
 							}}
 						/>
 					</div>
@@ -878,9 +819,7 @@ export default function App() {
 							{gchatComponents}
 						</div>
 					</div>
-					{/* Conditionnellement afficher soit le GameCanvas, soit le MessageCanvas */}
 					{((currentView === "game") ? <Game /> : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup :(currentView === "login") ? <Login Pseudo='' Avatar='' update={update} />:(currentView === "gestion") ? gestion : (currentView === "gameFriend") ? friend : (currentView === "stream") ? streamMatch : ( <div className='EmptyCanvas'></div>))}
-					{/* User Infos */}
 					{userInfoComponents}
 				</div>
 	}
@@ -889,16 +828,3 @@ export default function App() {
 				{content}
 			</div>);
 }
-
-
-//Il faut creer un timeoutid  remplacer timeoutidconv par celui que l'on veut
-/*
-const [timeoutId, setTimeoutId] = useState(null);
-
-
-if (timeoutIdConv)
-	clearTimeout(timeoutIdConv);
-setTimeoutIdConv( await setTimeout(async () => {
-onOpenConversation((await axios.get(env.URL_API + `/conv/${datas.ID}`)).data)
-}, clock));
-*/

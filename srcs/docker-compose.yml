@@ -3,11 +3,6 @@ services:
     postgres:
         image: postgres:latest
         restart: always
-        environment: 
-          - POSTGRES_USER=postgres
-          - POSTGRES_PASSWORD=postgres
-          - POSTGRES_DB=postgres
-          - LANG=en_US.utf8 
         logging:
           options:
             max-size: 10m
@@ -16,6 +11,7 @@ services:
           - '5432:5432'
         networks:
           - private
+        env_file: .env
         volumes:
           - ./data:/var/lib/postgresql/data
         # depends_on:
@@ -36,6 +32,7 @@ services:
         - '3001:3001'
       networks:
         - private
+      env_file: .env
       depends_on:
         - postgres
     react:
@@ -45,6 +42,7 @@ services:
         - '3000:3000'
       networks:
         - private
+      env_file: .env
       depends_on:
         - api
     server:
@@ -54,5 +52,6 @@ services:
         - '3002:3002'
       networks:
         - private
+      env_file: .env
 networks:
   private:

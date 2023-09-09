@@ -37,7 +37,6 @@ export default function Login(props: LoginProps) {
     }
 
     async function AvatarUpload() {
-
         const formData = new FormData();
         if (file) {
             formData.append('file', file);

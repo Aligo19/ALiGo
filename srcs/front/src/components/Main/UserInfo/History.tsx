@@ -19,11 +19,9 @@ const History: React.FC<HistoryProps> = (props:any) => {
             </div>
         );
     }
-
     let matchs: string[] = [];
     let res: string, userVs: string, frst: number, scd: number, str: string;
     const x = parseInt(sessionStorage.getItem('idUserInfos') || '');
-
     props.histo.forEach((item:any) => {
         if (x === item.ID_user1.ID) {
             userVs = item.ID_user2.Pseudo;
