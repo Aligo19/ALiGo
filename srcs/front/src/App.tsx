@@ -99,16 +99,25 @@ export default function App() {
 		{
 			if (!JSON.parse(sessionStorage.getItem('userData')  || 'null') && !sessionStorage.getItem('coco')) 
 			{
+				console.log("HUGO FAIT UN GROS PIPI HIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHIHI")
 				sessionStorage.setItem('statusConv','0');
 				sessionStorage.setItem('idConv', '0');
 				const code = new URLSearchParams(window.location.search).get('code');
 				if (!code)
 				{
-					window.location.replace('https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2af-c8d7a0565d4286d9500ef0d06a006e7c508dda519e50f426fb0f8d607172c430&redirect_uri=http%3A%2F%2F127.0.0.1%3A3000&response_type=code');
+					window.location.replace(env.URL_19);
 					return;
 				}
+				console.log("2")
+
 				sessionStorage.setItem('coco', '0');
+				console.log("4")
+
 				let response:any = await axios.get(env.URL_API + `/users/${code}/login`);
+				console.log("3")
+
+				console.log("HUGO");
+				console.log(response);
 				response = response.data;
 				if (response.data)
 				{
@@ -162,10 +171,14 @@ export default function App() {
 			}
 		}
 
-		connect();
-		fetchUserInfo();
-		fetchChats();
-		onOpenConversation();
+		async function test()
+		{
+			await connect();
+			await fetchUserInfo();
+			await fetchChats();
+			await onOpenConversation();
+		}
+		test();
 	}, []);
 
 	const userInfoComponents = <UserInfo 

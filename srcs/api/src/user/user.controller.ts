@@ -135,7 +135,7 @@ export class UserController {
                     client_id: process.env.CLIENT_ID,
                     client_secret: process.env.CLIENT_SECRET,
                     code: code,
-                    redirect_uri: 'http://127.0.0.1:3000',
+                    redirect_uri: process.env.URL_RED,
                 },
                 {   
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
