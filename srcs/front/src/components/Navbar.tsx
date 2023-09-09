@@ -1,4 +1,5 @@
 import React from 'react';
+import env from "react-dotenv";
 
 const Navbar: React.FC = () => {
     return (
@@ -12,7 +13,7 @@ const Navbar: React.FC = () => {
 };
 
 function redirect() {
-    window.location.replace('http://127.0.0.1:3000');
+    window.location.replace(env.URL_REACT);
 }
 
 export default Navbar;
