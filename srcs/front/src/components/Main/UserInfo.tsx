@@ -20,12 +20,16 @@ export default function UserInfo(props: UserProps) {
 
     async function erase() {
         try {
-            await axios.get(env.URL_API + `users/${props.name}/pseudo`);
-            await axios.get(env.URL_API + `users/${JSON.parse(sessionStorage.getItem('userData')!).ID}/block/${props.name}/add`);
-            await axios.get(env.URL_API + `conv/${JSON.parse(sessionStorage.getItem('userData')!).ID}/erase/${props.name}`);
-            sessionStorage.setItem('idUserInfos', JSON.parse(sessionStorage.getItem('userData')!).ID);
+            console.log("pipi11");
+            await axios.get(env.URL_API + `/users/${props.name}/pseudo`);
+            console.log("pipi1");
+            await axios.get(env.URL_API + `/users/${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}/block/${props.name}/add`);
+            console.log("pipi2");
+            await axios.get(env.URL_API + `/conv/${JSON.parse(sessionStorage.getItem('userData') || 'null').ID}/erase/${props.name}`);
+            console.log("pipi3");
+            sessionStorage.setItem('idUserInfos', JSON.parse(sessionStorage.getItem('userData') || 'null').ID);
             sessionStorage.setItem('idConv', '0');
-            window.location.reload();
+            window.location.replace(env.URL_REACT);
         } catch (error) {
             console.error('Error erasing user:', error);
         }

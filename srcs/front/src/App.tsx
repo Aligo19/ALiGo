@@ -55,7 +55,7 @@ export default function App() {
 		output = output.data;
 		sessionStorage.setItem('userData', JSON.stringify(output));
 		setUserData(output);
-		window.location.replace(env.URL_REACT + '');
+		window.location.replace(env.URL_REACT);
 	}
 
   	async function fetchUserInfo() {
@@ -139,7 +139,7 @@ export default function App() {
 				}
 				else if (sessionStorage.getItem('status') != '2')
 					sessionStorage.setItem('userData', JSON.stringify(response));
-				window.location.replace(env.URL_REACT + '');
+				window.location.replace(env.URL_REACT);
 			}
 			let data = JSON.parse(sessionStorage.getItem('userData') || 'null');
 			if (data && data.ID)
@@ -360,6 +360,12 @@ export default function App() {
 			console.log("coucou");
 			// if (sessionStorage.getItem('userData'))
 			// 	window.location.replace(env.URL_REACT + '/error.html');
+		}
+		console.log(datas);
+		if (!datas)
+		{
+			sessionStorage.setItem('idConv', '0');
+			window.location.replace(env.URL_REACT);
 		}
 		const datasUser = JSON.parse(sessionStorage.getItem('userData') || 'null');
 		let newMessages = [];
