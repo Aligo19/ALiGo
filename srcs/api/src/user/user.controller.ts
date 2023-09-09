@@ -147,14 +147,11 @@ export class UserController {
             if (output == null)
             {
                 output = (await this.userService.createUser(user.data["login"], user.data["login"], user.data["image"]["link"]));
-                output = {
-                    "status": 1,
-                    "data": output
-                }
             }
+            console.log('tre')
             await this.userService.updateDate(output);
         } catch (error) {
-            logger = ["The request doesn't work", "Request: GET[ /users/:code/login ]"];
+            logger = ["The request doesn't work", output];
             output = error;
         }
         Logger.log(logger[0], logger[1]);

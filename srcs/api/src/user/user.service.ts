@@ -16,19 +16,23 @@ export class UserService {
         throw new Error('User already exist');
     if (await this.getUserByPseudo(Pseudo))
         throw new Error('Pseudo already exist');
+    if (!Avatar)
+      Avatar = 'philipe';
     const user = new User();
     user.ID_19 = ID_19;
     user.Pseudo = Pseudo;
-    user.Avatar = Avatar;
+    user.Avatar = (Avatar);
+    user.Friends = [];
     user.Elo = 0;
     user.Actual_skin = 0;
     user.Global_skin = [];
+    user.Blocked = [];
     user.Wins = 0;
     user.Loses = 0;
     user.Last_connection = new Date();
     user.Game_status = false;
     user.password = 0;
-    user.email = '';
+    user.email = "";
 
     return this.userRepository.save(user);
   }
