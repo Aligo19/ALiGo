@@ -6,10 +6,11 @@ import { Match } from 'src/match/match.entity';
 import { UserService } from 'src/user/user.service';
 import { CreateUserDto } from 'src/user/create-user.dto';
 import { EndMatchDto } from './end-match.dot';
+import { ConvService } from 'src/conv/conv.service';
 
 @Controller('matches')
 export class MatchController {
-  constructor(private matchService: MatchService, private userService: UserService) {}
+  constructor(private matchService: MatchService, private userService: UserService, private convService: ConvService) {}
 
 /****************************************/
 /*                                      */
@@ -119,6 +120,16 @@ async sdf() {
           if (matches.ID_user1.ID !== user1.ID)
           {
             matches.Status = 1;
+            let convs1:any = await this.convService.getConversationsByUserId(user1.ID)
+            let convs2:any = await this.convService.getConversationsByUserId(user2.ID)
+            let conv;
+            for (let i1 = 0; i1 < convs1.length; i1++)
+              for (let i2 = 0; i2 < convs2.length; i2++)
+                if (convs1[i1].ID === convs2[i2].ID && convs1[i1].Status === 2)
+                  conv = convs1[i1]
+            conv = await this.convService.getConvById(conv.ID);
+            conv.Messages = conv.Messages.filter(message => message.Button !== true);
+            conv.save();
             output = await this.matchService.updateMatch(matches);
           }
           output = null

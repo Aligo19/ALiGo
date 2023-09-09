@@ -10,6 +10,7 @@ import MessageCanvas from "./components/Main/MessageCanvas";
 import UserInfo from "./components/Main/UserInfo";
 import Login from './components/Main/Login';
 import Game from './components/Main/Game';
+import MessageJoinGame from './components/Main/MessageJoinGame';
 
 const clock = 500;
 
@@ -397,6 +398,12 @@ export default function App() {
 		{
 			newMessages = datas.Messages.map((item:any, index: number) => {
 				const user = datas.Users.find((user:any) => user.ID === item.ID_user);
+				if (item.Button && item.Button === true)
+				{
+					return (
+						<MessageJoinGame content={item.data} sent={datasUser.ID === item.ID_user} user={user} joinFriend={joinFriend}/>
+						);
+				}
 				return (
 				<MessageCanvas content={item.data} sent={datasUser.ID === item.ID_user} user={user}/>
 				);
@@ -494,9 +501,7 @@ export default function App() {
 	}
 
 	function showGameCanvas() {
-		let friendInfo; 
-		if (sessionStorage.getItem("selectFriend"))
-			friendInfo = parseInt((sessionStorage.getItem("selectFriend") || 'null'));
+		
 		if (timeoutIdConv)
 				clearTimeout(timeoutIdConv);
 		if (timeoutIdConvs)
@@ -506,7 +511,43 @@ export default function App() {
 		setCurrentView("game");
 	}
 
-	function showGameCanvasFriend() {
+	async function sendInvit() {
+		if (sessionStorage.getItem("selectFriend"))
+		{
+			let friendInfo = parseInt((sessionStorage.getItem("selectFriend") || 'null'));
+			let user = JSON.parse(sessionStorage.getItem('userData') || 'null');
+			let convPersos:any = await axios.get(env.URL_API + `/conv/${user.ID}/user`);
+			convPersos = convPersos.data;
+			let convFriends:any = await axios.get(env.URL_API + `/conv/${friendInfo}/user`);
+			convFriends = convFriends.data;
+			let conv:any;
+			for (let i1 = 0; i1 < convPersos.length; i1++)
+				for (let i2 = 0; i2 < convFriends.length; i2++)
+					if (convPersos[i1].ID === convFriends[i2].ID && convPersos[i1].Status === 2)
+						conv = convPersos[i1]
+
+			console.log(conv);
+			
+			if (user)
+			{
+				await axios.post(env.URL_API + `/conv/${conv.ID}/message`, {
+					ID_user: user.ID,
+					data: "FIGHT !",
+					Logged_at: Date.now(),
+					Button: true});
+
+			}
+			showGameCanvas();
+		}
+	}
+
+	function joinFriend(idFriend: any) {
+		sessionStorage.setItem("selectFriend", String(idFriend))
+		showGameCanvas();
+		
+	}
+
+	function choseFriend() {
 		sessionStorage.setItem('statusConv', '0');
 		sessionStorage.setItem('idConv', '0');
 		let user = JSON.parse(sessionStorage.getItem('userData') || 'null');
@@ -534,7 +575,7 @@ export default function App() {
 					}
 		  			</select>
 				</div>
-				<button className="GameVsFriendForm-button" type="button" onClick={() => showGameCanvas()}>Submit</button>
+				<button className="GameVsFriendForm-button" type="button" onClick={() => sendInvit()}>Submit</button>
 	  		</div>
 		);
 	}
@@ -805,7 +846,7 @@ export default function App() {
 						<div className="PlayButtons">
 							<div className="Stream-btn" onClick={showStream}>WATCH MATCH</div>
 							<div className="Random-btn" onClick={showGameCanvas}>RANDOM PLAYER</div>
-							<div className="Friend-btn" onClick={showGameCanvasFriend}>PLAY WITH FRIEND</div>
+							<div className="Friend-btn" onClick={choseFriend}>PLAY WITH FRIEND</div>
 						</div>
 						<div className="PrivateChats">
 							<p>PRIVATE CHATS</p>

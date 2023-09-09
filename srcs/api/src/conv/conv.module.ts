@@ -14,5 +14,6 @@ import { UserModule } from 'src/user/user.module';
   ],
   controllers: [ConvController],
   providers: [ConvService],
+  exports: [ConvService]
 })
 export class ConvModule {}

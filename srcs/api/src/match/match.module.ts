@@ -4,10 +4,11 @@ import { Match } from './match.entity';
 import { MatchService } from './match.service';
 import { MatchController } from './match.controller';
 import { UserModule } from 'src/user/user.module';
+import { ConvModule } from 'src/conv/conv.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Match]), 
-            UserModule],
+            UserModule, ConvModule],
   providers: [MatchService],
   controllers: [MatchController],
 })
