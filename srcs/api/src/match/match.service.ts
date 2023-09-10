@@ -90,10 +90,20 @@ export class MatchService {
       relations: ['ID_user1', 'ID_user2'],
     });
   }
+
+  async getMatchByIdUserjsp(userId: number): Promise<Match[]> {
+    return this.matchRepository.find({
+      //userID = ID_user1 or ID_user2 and status = 2
+      where: [{ ID_user1: Equal(userId), Status: Equal(0) },
+              { ID_user2: Equal(userId), Status: Equal(0) },
+              { ID_user1: Equal(userId), Status: Equal(1) }, 
+              { ID_user2: Equal(userId), Status: Equal(1) }],
+      relations: ['ID_user1', 'ID_user2'],
+    });
+  }
   async getMatchLoading(): Promise<Match[]> {
     return this.matchRepository.find({
-      where: [{ Status: Equal(0) },
-              { Status: Equal(-1) }],
+      where: [{ Status: Equal(0) }],
       relations: ['ID_user1'],
     });
   }

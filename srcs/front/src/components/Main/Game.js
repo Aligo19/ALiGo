@@ -68,7 +68,7 @@ export default function Game()  {
     const handleKeyDown = (event) => {
         if (isPlayer && twoConnected) {
             //console.log("2 players connected: " + inGame);
-            if (me.isLeft && event.key === 'p') {
+            if (me.isLeft && event.key === 'p' && startedGame === false) {
                 playerLeft = me.isLeft ? me : opponent;
                 playerRight = me.isLeft ? opponent : me;
                 //verifier si besoin de fqire un event server pour receptionner le starrt ga;e
@@ -100,23 +100,16 @@ export default function Game()  {
         try {
             //condition qui empeche le joueur de setup un game si deja une en cours et donc il est que spectator
             const playerData = JSON.parse(sessionStorage.getItem('userData'));
-            //console.log(playerData);
             const gameID = playerData.ID;
-            //console.log(gameID);
             let jsonMatch;
-            ///ici
-		    // if (sessionStorage.getItem("selectFriend"))
-            // {
-            //     const otherPlayer = parseInt((sessionStorage.getItem("selectFriend") || 'null'))
-            //     console.log(otherPlayer);
-            //     jsonMatch = await axios.get(env.URL_API + `/matches/${gameID}/search/${otherPlayer}`);
-            // }
-            // else
+		    if (sessionStorage.getItem("selectFriend"))
+            {
+                const otherPlayer = parseInt((sessionStorage.getItem("selectFriend") || 'null'))
+                jsonMatch = await axios.get(env.URL_API + `/matches/${gameID}/search/${otherPlayer}`);
+            }
+            else
                 jsonMatch = await axios.get(env.URL_API + `/matches/${gameID}/search`);
-
             objMatch = jsonMatch.data;
-            // console.log(objMatch.ID_user1);
-            // console.log(objMatch.ID_user2);
             socket.emit('create_room', objMatch.ID, objMatch);
         } catch (error) {
             console.error('Une erreur s\'est produite lors de la requête:', error);
@@ -188,6 +181,7 @@ export default function Game()  {
             let user = JSON.parse(sessionStorage.getItem('userData') || 'null')
             sessionStorage.setItem('idConv', '0');
             sessionStorage.setItem('idUserInfos', user.ID);
+            sessionStorage.removeItem('selectFriend');
             window.location.replace(env.URL_REACT);
         }
     };
@@ -284,7 +278,6 @@ export default function Game()  {
             //supp le/les player si deconnexion
            
             for (const id in players) {
-                console.log('cghcghch');
                 if (!backendPlayers[id]) {
                     //si doconnexion gerer comme lorsqu on clique sur trancescendqnce et quitte
                     console.log("the other player left the game " + players[id]);
@@ -293,6 +286,7 @@ export default function Game()  {
                     let user = JSON.parse(sessionStorage.getItem('userData') || 'null')
                     sessionStorage.setItem('idConv', '0');
                     sessionStorage.setItem('idUserInfos', user.ID);
+                    sessionStorage.removeItem('selectFriend');
                     window.location.replace(env.URL_REACT);
                 }
             }

@@ -535,6 +535,8 @@ export default function App() {
 		sessionStorage.setItem('idConv', '0');
 		let user = JSON.parse(sessionStorage.getItem('userData') || 'null');
 		const peopleOptions = user.Friends;
+		if (!user.Friends || user.Friends.length === 0)
+			return;
 		if (!peopleOptions)
 			setFriend( <div className="GameVsFriendForm-title">You do not have any Friend</div>)
 		const handleDropdownChange = (event: any) => { sessionStorage.setItem("selectFriend", event.target.value) };
@@ -763,16 +765,6 @@ export default function App() {
 							<button type="button" className="addFriendForm-button" onClick={handleFormSubmit}>Confirm</button>
 						</div>);
 		setCurrentView("addPerson");
-	}
-
-	if (currentView === "game")
-	{
-		if (timeoutIdConv)
-			clearTimeout(timeoutIdConv);
-		if (timeoutIdConvs)
-			clearTimeout(timeoutIdConvs);
-		if (timeoutIdUserInfos)
-			clearTimeout(timeoutIdUserInfos);
 	}
 	let content;
 	if (sessionStorage.getItem('status') == '1')

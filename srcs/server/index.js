@@ -46,8 +46,8 @@ io.on("connection", (socket) => {
 
         socket.join(roomName);
 
-        if (objMatch.ID_user2 === null){
-        // if (objMatch.Status === -1 || objMatch.Status === 0) {
+        // if (objMatch.ID_user2 === null){
+        if (objMatch.ID_user2===null || objMatch.Status === -1) {
             players[socket.id] = {
                 x: 20,
                 isLeft: true,
