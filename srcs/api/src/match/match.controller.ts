@@ -182,6 +182,8 @@ async sdf() {
         let output, logger, match;
         try {
             match = await this.matchService.getMatchById(matchDatas.Id);
+            match.Score_user1 = matchDatas.Score_user1;
+            match.Score_user2 = matchDatas.Score_user2;
             this.userService.updateGameStatus(match.ID_user1, false);
             this.userService.updateGameStatus(match.ID_user2, false);
             if (match.Status != 1)

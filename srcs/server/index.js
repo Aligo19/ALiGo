@@ -52,6 +52,7 @@ io.on("connection", (socket) => {
                 x: 20,
                 isLeft: true,
                 name: objMatch.ID_user1.Pseudo,
+                skin: objMatch.ID_user1.Actual_skin,
                 roomName: objMatch.ID
             };
             console.log(players[socket.id]);
@@ -61,6 +62,7 @@ io.on("connection", (socket) => {
                 x: 760,
                 isLeft: false, 
                 name: objMatch.ID_user2.Pseudo, 
+                skin: objMatch.ID_user2.Actual_skin,
                 roomName: objMatch.ID
             };
             console.log(players[socket.id]);
@@ -88,9 +90,10 @@ io.on("connection", (socket) => {
         socket.to(roomName).emit('receive_ball_pos', data);
     });
     
-    socket.on('send_score', (data, roomName) => {
+    socket.on('send_score', (leftScore, rightScore, roomName) => {
+        console.log(leftScore, rightScore);
         //envoi au joueur inviter la pos de la ball
-        socket.to(roomName).emit('receive_score', data);
+        socket.to(roomName).emit('receive_score', leftScore, rightScore);
     });
     
     // //deco sans room
@@ -117,7 +120,7 @@ io.on("connection", (socket) => {
             const playerIndex = rooms[roomName].players.indexOf(socket.id); //find index
             if (playerIndex !== -1) {
                 console.log(room.players);
-                room.players.splice(playerIndex, 2);
+                room.players.splice(playerIndex, 1);
 
                 // Si la salle n'a plus de joueurs, vous pouvez la supprimer si nécessaire
                 console.log("nb player in room: " + rooms[roomName].players.length);
@@ -128,6 +131,7 @@ io.on("connection", (socket) => {
 
                 // Émettre un événement pour informer les autres joueurs de la déconnexion
                 io.to(roomName).emit('update_players', players);
+                io.to(roomName).emit('end_game');
             }
 
             // Vous pouvez également gérer le cas où le joueur est un spectateur

@@ -3,8 +3,8 @@ import io from 'socket.io-client'
 import { def } from "./Game/Constants";
 import Canvas from './Game/GameCanvas';
 import axios from 'axios';
-
-const socket = io("http://127.0.0.1:3002");
+import env from "react-dotenv";
+const socket = io(env.URL_RED2);
 
 //si spectator envoyer un props isPlayer a false sinon true et ajouter un roomID si spectator
 export default function Game()  {
@@ -22,8 +22,10 @@ export default function Game()  {
     let playerRight;
     //a passer en parametre dans game
     let isPlayer = true;
-    //let inGame = false;
+    let twoConnected = false;
     let objMatch = {};
+    let rightScore = 0;
+    let leftScore = 0;
     
     const ball = {
         x: 20, 
@@ -64,8 +66,8 @@ export default function Game()  {
     };
 
     const handleKeyDown = (event) => {
-        if (isPlayer) {
-            console.log("2 players connected: " + inGame);
+        if (isPlayer && twoConnected) {
+            //console.log("2 players connected: " + inGame);
             if (me.isLeft && event.key === 'p') {
                 playerLeft = me.isLeft ? me : opponent;
                 playerRight = me.isLeft ? opponent : me;
@@ -107,10 +109,10 @@ export default function Game()  {
             // {
             //     const otherPlayer = parseInt((sessionStorage.getItem("selectFriend") || 'null'))
             //     console.log(otherPlayer);
-            //     jsonMatch = await axios.get(`http://127.0.0.1:3001/matches/${gameID}/search/${otherPlayer}`);
+            //     jsonMatch = await axios.get(env.URL_API + `/matches/${gameID}/search/${otherPlayer}`);
             // }
             // else
-                jsonMatch = await axios.get(`http://127.0.0.1:3001/matches/${gameID}/search`);
+                jsonMatch = await axios.get(env.URL_API + `/matches/${gameID}/search`);
 
             objMatch = jsonMatch.data;
             // console.log(objMatch.ID_user1);
@@ -135,7 +137,7 @@ export default function Game()  {
     };
 
     const sendScore = () => {
-        socket.emit("send_score", me, me.roomName);
+        socket.emit("send_score", leftScore, rightScore, me.roomName);
     }
 
     const reset = () => {
@@ -152,33 +154,41 @@ export default function Game()  {
 
         if (ball.posX + ball.x >= def.WIN_W - 15) {
             if (me.isLeft) {
-                me.meScore ++;
+                leftScore++;
+                document.getElementById('me').textContent = leftScore
             } 
             else {
-                me.oppScore ++;
+                rightScore++;
+                document.getElementById('opp').textContent = rightScore
             }
             reset();
         }
         else if (ball.posX <= 15) {
             if (me.isLeft) {
-                me.oppScore ++;
+                rightScore++;
+                document.getElementById('opp').textContent = rightScore;
             } 
             else {
-                me.meScore ++;
+                leftScore++;
+                document.getElementById('me').textContent = leftScore;
             }
             reset();
         }
 
-        if (me.isLeft) {
+       if (me.isLeft) {
             sendScore();
         }
 
         //a tester avec Hugo
-        if (me.meScore === 5 || me.oppScore === 5) {
+        if (leftScore === 1 || rightScore === 1) {
+
             if (me.isLeft) 
-                sendRequest(me);
-            else if (!me.isLeft)
-                sendRequest(opponent);
+                sendRequest(leftScore, rightScore, me);
+  
+            let user = JSON.parse(sessionStorage.getItem('userData') || 'null')
+            sessionStorage.setItem('idConv', '0');
+            sessionStorage.setItem('idUserInfos', user.ID);
+            window.location.replace(env.URL_REACT);
         }
     };
 
@@ -216,13 +226,15 @@ export default function Game()  {
         requestAnimationFrame(updateBallPosition);
     };
 
-    const sendRequest = async (me) => {
+    const sendRequest = async (score1, score2, me) => {
         try {
-            await axios.post(`http://127.0.0.1:3001/matches/end`,{
-                "Score_user1" : me.meScore,
-                "Score_user2" : me.oppScore,
+            console.log(score1 + " - " +  score2);
+            await axios.post(env.URL_API + `/matches/end`,{
+                "Score_user1" : score1,
+                "Score_user2" : score2,
                 "Id": me.roomName
             });
+
         } catch (error) {
             console.error('Une erreur s\'est produite lors de la requête:', error);
         }
@@ -241,7 +253,7 @@ export default function Game()  {
             // console.log(backendPlayers);
             // console.log("connection socket ID: " + socket.id);
             // Mettre à jour les données des joueurs en fonction de backendPlayers
-    
+
             for (const id in backendPlayers) {
                 const backendPlayer = backendPlayers[id];
                 console.log(backendPlayer);
@@ -254,6 +266,7 @@ export default function Game()  {
                         me.isLeft = backendPlayer.isLeft;
                         me.name = backendPlayer.name;
                         me.roomName = backendPlayer.roomName;
+                        me.skin = backendPlayer.skin;
                     }
                     else {
                         opponent.id = id;
@@ -261,19 +274,26 @@ export default function Game()  {
                         opponent.isLeft = backendPlayer.isLeft;
                         opponent.name = backendPlayer.name;
                         opponent.roomName = backendPlayer.roomName;
+                        opponent.skin = backendPlayer.skin;
+                        twoConnected = true;
                     }
                     players[id] = backendPlayer;
                 }
             }
 
             //supp le/les player si deconnexion
+           
             for (const id in players) {
+                console.log('cghcghch');
                 if (!backendPlayers[id]) {
                     //si doconnexion gerer comme lorsqu on clique sur trancescendqnce et quitte
                     console.log("the other player left the game " + players[id]);
                     //players[id].remove();
-                    delete players[id];
-                    sendRequest();
+                    sendRequest(leftScore, rightScore, me);
+                    let user = JSON.parse(sessionStorage.getItem('userData') || 'null')
+                    sessionStorage.setItem('idConv', '0');
+                    sessionStorage.setItem('idUserInfos', user.ID);
+                    window.location.replace(env.URL_REACT);
                 }
             }
             //console.log("players in client updated Players");
@@ -296,14 +316,21 @@ export default function Game()  {
             ball.velY= newBall.velY;
         });
 
-        socket.on('receive_score', (scores) => {
-            if (!me.isLeft) {
-                me.meScore = scores.oppScore;
-                me.oppScore = scores.meScore;
-            }
+        socket.on('receive_score', (lfScore, rtScore) => {
+            leftScore = lfScore;
+            rightScore = rtScore;
+            checkGoal();
 
-            console.log("me" + me.meScore);
-            console.log("opp" + me.oppScore);
+            document.getElementById('me').textContent = leftScore
+            document.getElementById('opp').textContent = rightScore
+
+        });
+
+        socket.on('end_game', () => {
+            let user = JSON.parse(sessionStorage.getItem('userData') || 'null')
+            sessionStorage.setItem('idConv', '0');
+            sessionStorage.setItem('idUserInfos', user.ID);
+            window.location.replace(env.URL_REACT);
         });
 
         document.addEventListener('keydown', handleKeyDown);

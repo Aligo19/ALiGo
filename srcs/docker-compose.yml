@@ -14,17 +14,15 @@ services:
         env_file: .env
         volumes:
           - ./data:/var/lib/postgresql/data
-        # depends_on:
-        #   - api
-    # adminer:
-    #   image: adminer
-    #   restart: always
-    #   ports:
-    #     - 8081:8080
-    #   networks:
-    #     - private
-    #   depends_on:
-    #     - postgres
+    adminer:
+      image: adminer
+      restart: always
+      ports:
+        - 8081:8080
+      networks:
+        - private
+      depends_on:
+        - postgres
     api:
       build: api/
       restart: always

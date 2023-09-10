@@ -1,5 +1,6 @@
 import { def } from "./Constants";
 import { useEffect, useRef } from 'react';
+import {extractColors} from "../../../utils"
 
 
 export default function Canvas({me, opponent, ball,  ...props}) {
@@ -18,45 +19,30 @@ export default function Canvas({me, opponent, ball,  ...props}) {
 		context.fillStyle = "white";
 		context.fillRect(def.WIN_W/2 - 2, 0, 4, def.WIN_H);
 	};
-	
-	// const drawPlayer = (context, player) => {
-	// 	//draw player
-	// 	context.fillStyle = "white";
-	// 	context.fillRect(player.posX, player.posY, player.x, player.y);
-
-	// 	if (player.isLeft) {
-	// 		context.fillText(player.meScore, def.WIN_W / 2 - (2*def.PL_W), 50);
-	// 		context.fillText(player.oppScore, def.WIN_W / 2 + (2*def.PL_W), 50);
-	
-	// 		context.fillText(player.name, def.WIN_W / 4, 200);
-	// 	}
-	// 	else {
-	// 		context.fillText(player.oppScore, def.WIN_W / 2 - (2*def.PL_W), 50);
-	// 		context.fillText(player.meScore, def.WIN_W / 2 + (2*def.PL_W), 50);
-
-	// 		//context.fillText(player.oppScore, def.WIN_W / 2 + (2*def.PL_W), 50);
-	// 		context.fillText(player.name, (def.WIN_W / 4 *3), 200);
-	// 	}
-	// };
 
 	const drawPlayerLeft = (context, player) => {
 		//draw player
-		context.fillStyle = "white";
-		context.fillRect(player.posX, player.posY, player.x, player.y);
+		if(player.skin)
+			context.fillStyle = extractColors(player.skin).color;
+		else
+			context.fillStyle = "white";
+		console.log(player);
 
-		context.fillText(player.meScore, def.WIN_W / 2 - (2*def.PL_W), 50);
-		context.fillText(player.oppScore, def.WIN_W / 2 + (2*def.PL_W), 50);
+		context.fillRect(player.posX, player.posY, player.x, player.y);
 
 		context.fillText(player.name, def.WIN_W / 4, 200);
 	};
 	
 	const drawPlayerRight = (context, player) => {
 		//draw player
-		context.fillStyle = "white";
-		context.fillRect(player.posX, player.posY, player.x, player.y);
+		if(player.skin)
+			context.fillStyle = extractColors(player.skin).color;
+		else
+			context.fillStyle = "white";
+		console.log(extractColors(player.skin).color);
+		console.log(player);
 
-		context.fillText(player.oppScore, def.WIN_W / 2 - (2*def.PL_W), 50);
-		context.fillText(player.meScore, def.WIN_W / 2 + (2*def.PL_W), 50);
+		context.fillRect(player.posX, player.posY, player.x, player.y);
 
 		context.fillText(player.name, (def.WIN_W / 4 *3), 200);	
 	};
@@ -140,6 +126,12 @@ export default function Canvas({me, opponent, ball,  ...props}) {
 
 	return (
 		<div className="GameCanvas"> 
+		<span id='me'>
+			0
+		</span>
+		<span id='opp'>
+			0
+		</span>
 			<canvas ref={ref} width={props.width} height={props.height}  /> 
 		</div>
 	)
