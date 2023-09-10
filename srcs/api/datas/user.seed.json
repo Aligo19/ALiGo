@@ -2,7 +2,7 @@
   {
     "ID_19": "hgoorick",
     "Pseudo": "LeGodurix",
-    "Avatar": "https://cdn.intra.42.fr/users/9fe27554c75228788d283a4dc48bf60c/hgoorick.png",
+    "Avatar": "files/Goudurix.webp",
     "Elo": 200,
     "Actual_skin": 0,
     "Global_skin": [1, 2, 3, 4],
@@ -14,7 +14,7 @@
   {
     "ID_19": "lbuccher",
     "Pseudo": "LaLisa",
-    "Avatar": "friend1_avatar_url",
+    "Avatar": "files/LaLisa.gif",
     "Elo": 100,
     "Actual_skin": 1,
     "Global_skin": [1, 2, 3],
@@ -28,7 +28,7 @@
   {
     "ID_19": "acaillea",
     "Pseudo": "AlanCazam",
-    "Avatar": "https://cdn.intra.42.fr/users/9fe27554c75228788d283a4dc48bf60c/acaillea.png",
+    "Avatar": "files/AlanKazam.gif",
     "Elo": 150,
     "Actual_skin": 2,
     "Global_skin": [1, 3, 4],
@@ -42,7 +42,7 @@
   {
     "ID_19": "hcremers",
     "Pseudo": "Philippeu",
-    "Avatar": "blocked1_avatar_url",
+    "Avatar": "files/philippe.gif",
     "Elo": 50,
     "Actual_skin": 1,
     "Global_skin": [3, 5],

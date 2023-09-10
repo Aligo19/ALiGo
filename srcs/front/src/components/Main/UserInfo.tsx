@@ -79,7 +79,7 @@ export default function UserInfo(props: UserProps) {
         }
     }
 
-    const pic = props.avatar?.includes('http') ? props.avatar : env.URL_API + `${props.avatar}`;
+    const pic = props.avatar?.includes('http') ? props.avatar : env.URL_API + `/${props.avatar}`;
 
     return (
         <div className="UserInfo">

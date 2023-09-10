@@ -44,7 +44,7 @@ export default function Login(props: any) {
     return (
         <div className="login-container">
             <div className="login-box">
-                <div className="login-header">ALIGO'S PONG</div>
+                <div className="login-header">EDIT YOUT PROFIL</div>
                 <div className="login-content">
                     <div className="login-input">
                         <label htmlFor="pseudo">Pseudo</label>
@@ -53,8 +53,10 @@ export default function Login(props: any) {
                         <label htmlFor="ing">Avatar</label>
                         <input className="login-content-input" id="ing" name="ing" type="file" placeholder="Avatar"
                             onChange={handleFileChange} />
+                        <label htmlFor="email">Email (2AF)</label>
                         <input id="email" name="email" type="text" placeholder="Mail" value={user.email}
                             onChange={(e) => setUser((prevUser:any) => ({ ...prevUser, email: e.target.value }))} />
+                        <label>Couleur de la barre de pong</label>
                         <select	onChange={(e) => setUser((prevUser: any) => ({ ...prevUser, Actual_skin: e.target.value }))}
                                 className="GameVsFriendForm-dropdown">
                                 {props.Global_skin.map((skin: any) => (

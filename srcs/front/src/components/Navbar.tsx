@@ -13,6 +13,9 @@ const Navbar: React.FC = () => {
 };
 
 function redirect() {
+    let user:any = JSON.parse(sessionStorage.getItem('userData') || 'null')
+    sessionStorage.setItem('idConv', '0');
+    sessionStorage.setItem('idUserInfos', user.ID);
     window.location.replace(env.URL_REACT);
 }
 

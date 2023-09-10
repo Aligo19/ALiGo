@@ -33,7 +33,7 @@ export class UserService {
     if (await this.getUserByPseudo(Pseudo))
         throw new Error('Pseudo already exist');
     if (!Avatar)
-      Avatar = 'philipe';
+      Avatar = 'files/NoFace.gif';
     const user = new User();
     user.ID_19 = ID_19;
     user.Pseudo = Pseudo;
