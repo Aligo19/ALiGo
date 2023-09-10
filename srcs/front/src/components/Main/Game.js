@@ -64,20 +64,21 @@ export default function Game()  {
     };
 
     const handleKeyDown = (event) => {
-        if (isPlayer && inGame) {
-            if (!startedGame && me.isLeft && event.key === 'p') {
+        if (isPlayer) {
+            console.log("2 players connected: " + inGame);
+            if (me.isLeft && event.key === 'p') {
                 playerLeft = me.isLeft ? me : opponent;
                 playerRight = me.isLeft ? opponent : me;
                 //verifier si besoin de fqire un event server pour receptionner le starrt ga;e
                 setStartedGame(true);
                 updateBallPosition();
             }
-            if (startedGame && event.key === 'w' && me.posY > 0) {
+            if (event.key === 'w' && me.posY > 0) {
                 me.speed = -5;
                 me.posY += me.speed;
                 sendPosition(); 
             } 
-            else if (startedGame && event.key === 's' && me.posY + def.PL_H < def.WIN_H) {
+            else if (event.key === 's' && me.posY + def.PL_H < def.WIN_H) {
                 me.speed = 5;
                 me.posY += me.speed;
                 sendPosition(); // Assurez-vous également de mettre à jour cette fonction pour envoyer la nouvelle position.
@@ -112,7 +113,8 @@ export default function Game()  {
                 jsonMatch = await axios.get(`http://127.0.0.1:3001/matches/${gameID}/search`);
 
             objMatch = jsonMatch.data;
-            console.log(objMatch.ID_user1.Pseudo);
+            // console.log(objMatch.ID_user1);
+            // console.log(objMatch.ID_user2);
             socket.emit('create_room', objMatch.ID, objMatch);
         } catch (error) {
             console.error('Une erreur s\'est produite lors de la requête:', error);
@@ -321,7 +323,7 @@ export default function Game()  {
         };
 
     }, [  ]);
-    //}, [ inGame, startedGame ]);
+   // }, [ inGame, startedGame ]);
     
     return (
         <Canvas 
@@ -332,8 +334,8 @@ export default function Game()  {
             me={me}
             opponent={opponent}
             ball={ball}
-            // inGame= {inGame}
-            // startedGame= {startedGame}
+            //inGame= {inGame}
+            //startedGame= {startedGame}
         /> 
     );
 }
