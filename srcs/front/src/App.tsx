@@ -162,7 +162,7 @@ export default function App() {
 		test();
 	}, []);
 
-	const userInfoComponents = <UserInfo	name={userData.Pseudo} avatar={userData.Avatar} lstCo={userData.Last_connection} level={userData.Elo} winnb={userData.Wins} losenb={userData.Loses} histo={matchHisto} Game_status={false}/>;
+	const userInfoComponents = <UserInfo name={userData.Pseudo} avatar={userData.Avatar} lstCo={userData.Last_connection} level={userData.Elo} winnb={userData.Wins} losenb={userData.Loses} histo={matchHisto} Game_status={false}/>;
 	let pchatComponents = [],
 		gchatComponents = [];
 	if (pchats)

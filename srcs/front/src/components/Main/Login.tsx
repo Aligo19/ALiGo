@@ -1,6 +1,8 @@
 import React, { useState, ChangeEvent } from "react";
 import axios from 'axios';
 import env from "react-dotenv";
+import { extractColors } from "../../utils";
+  
 
 export default function Login(props: any) {
     const [user, setUser] = useState<any>({
@@ -59,9 +61,9 @@ export default function Login(props: any) {
                         <label>Couleur de la barre de pong</label>
                         <select	onChange={(e) => setUser((prevUser: any) => ({ ...prevUser, Actual_skin: e.target.value }))}
                                 className="GameVsFriendForm-dropdown">
-                                {props.Global_skin.map((skin: any) => (
-                                    <option key={skin} value={skin}>
-                                        {skin}
+                                {props.Global_skin.map((skin: any, index: number) => (
+                                    <option key={skin} value={skin} style={extractColors(skin)}>
+                                        Couleur {index}: {skin}
                                     </option>))
                                 }
                         </select>
