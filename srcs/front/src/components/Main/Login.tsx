@@ -2,26 +2,13 @@ import React, { useState, ChangeEvent } from "react";
 import axios from 'axios';
 import env from "react-dotenv";
 
-
-interface LoginProps {
-    Pseudo: string;
-    Avatar: string;
-    update: (user: UserState) => void;
-}
-
-interface UserState {
-    Pseudo: string;
-    Avatar: string;
-    update: (user: UserState) => void;
-    email: string;
-}
-
-export default function Login(props: LoginProps) {
-    const [user, setUser] = useState<UserState>({
+export default function Login(props: any) {
+    const [user, setUser] = useState<any>({
         Pseudo: props.Pseudo,
         Avatar: props.Avatar,
         update: props.update,
-        email: ''
+        email: '',
+        Actual_skin: props.Actual_skin
     });
 
     const [file, setFile] = useState<File | null>(null);
@@ -62,14 +49,20 @@ export default function Login(props: LoginProps) {
                     <div className="login-input">
                         <label htmlFor="pseudo">Pseudo</label>
                         <input className="login-content-input" id="pseudo" name="pseudo" type="text" placeholder="Login" value={user.Pseudo}
-                            onChange={(e) => setUser(prevUser => ({ ...prevUser, Pseudo: e.target.value }))} />
+                            onChange={(e) => setUser((prevUser: any) => ({ ...prevUser, Pseudo: e.target.value }))} />
                         <label htmlFor="ing">Avatar</label>
                         <input className="login-content-input" id="ing" name="ing" type="file" placeholder="Avatar"
                             onChange={handleFileChange} />
-                        {/* <input margin="2%" id="email" name="email" type="text" placeholder="Mail" value={user.email}
-                            onChange={(e) => setUser(prevUser => ({ ...prevUser, email: e.target.value }))} /> */}
                         <input id="email" name="email" type="text" placeholder="Mail" value={user.email}
-                            onChange={(e) => setUser(prevUser => ({ ...prevUser, email: e.target.value }))} />
+                            onChange={(e) => setUser((prevUser:any) => ({ ...prevUser, email: e.target.value }))} />
+                        <select	onChange={(e) => setUser((prevUser: any) => ({ ...prevUser, Actual_skin: e.target.value }))}
+                                className="GameVsFriendForm-dropdown">
+                                {props.Global_skin.map((skin: any) => (
+                                    <option key={skin} value={skin}>
+                                        {skin}
+                                    </option>))
+                                }
+                        </select>
                         <button className="login-content-btn" onClick={() => { update(); }}>Submit</button>
                     </div>
                 </div>

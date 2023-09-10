@@ -14,13 +14,13 @@ const Stats: React.FC<StatsProps> = (props:any) => {
     if (isEmpty) {
         return (
             <div className="Stat">
-                <h3>Lvl. {level} </h3>
+                <h3>Elo {level} </h3>
             </div>
         )
     } else {
         return (
             <div className="Stat">
-                <h3>Lvl. {level} </h3>
+                <h3>Elo {level} </h3>
                 <Chart 
                     className="Stat--pie"
                     chartType="PieChart"

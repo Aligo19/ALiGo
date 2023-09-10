@@ -778,7 +778,7 @@ export default function App() {
 	if (sessionStorage.getItem('status') == '1')
 	{
 		const localUser = JSON.parse(sessionStorage.getItem('userData') || 'null');
-		content = <Login Pseudo={localUser.Pseudo} Avatar={localUser.Avatar} update={update} />;
+		content = <Login Pseudo={localUser.Pseudo} Avatar={localUser.Avatar} update={update} Actual_skin={localUser.Actual_skin} Global_skin={localUser.Global_skin} />;
 	}
 	else if (sessionStorage.getItem('status') == '2')
 	{

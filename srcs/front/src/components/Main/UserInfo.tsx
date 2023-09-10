@@ -18,6 +18,28 @@ interface UserProps {
 
 export default function UserInfo(props: UserProps) {
 
+    function createAchivement(){
+        let output = <span><p>Bienvenu parmis nous !</p></span>;
+        let out1, out2, out3
+        if (props.winnb > 0 || props.losenb > 0)
+            out1 = <span><p>Premiere Game</p></span>;
+        if (props.winnb > 0)
+            out2 = <span><p>Premiere victoire</p></span>; 
+        if (props.losenb > 0)
+            out3 = <span><p>Premiere defaite</p></span>;        
+        return(
+            <div>
+                <h3>
+                    Achivements !
+                </h3>
+                {output}
+                {out1}
+                {out2}
+                {out3}
+            </div>
+        )
+    }
+
     async function erase() {
         try {
             await axios.get(env.URL_API + `/users/${props.name}/pseudo`);
@@ -67,6 +89,9 @@ export default function UserInfo(props: UserProps) {
                 <div className={`status-point ${statusPointClass}`}></div>
             </div>
             <img src={pic} alt="avatar" className="Avatar" />
+            <div className="Stat">
+                {createAchivement()}
+            </div>
             <Stats level={props.level} winnb={props.winnb} losenb={props.losenb} />
             <History histo={props.histo} />
             {button}
