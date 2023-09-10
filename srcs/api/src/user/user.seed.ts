@@ -1,9 +1,8 @@
-// user.seed.ts
 import { User } from './user.entity';
 const fields = require('/app/datas/user.seed.json');
 const friends = require('/app/datas/friends.seed.json');
-export async function seedUsers() {
 
+export async function seedUsers() {
   for (const field of fields) {
     const user = new User();
     user.ID_19 = field.ID_19;

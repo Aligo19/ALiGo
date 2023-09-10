@@ -1,8 +1,6 @@
-// conv.controller.ts
-import { Controller, Get, Post, Body, Param, ParseIntPipe, NotFoundException, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, ParseIntPipe, Logger } from '@nestjs/common';
 import { ConvService } from './conv.service';
-import { CreateConvDto } from './create-conv.dto'; // Replace this with your DTO if you have one
-import { Conv } from 'src/conv/conv.entity';
+import { CreateConvDto } from './create-conv.dto';
 import { UserService } from 'src/user/user.service';
 import { Message } from './message.objet';
 
@@ -143,7 +141,8 @@ export class ConvController {
     let output, logger;
     try {
       let admins = [];
-      admins.push(await this.userService.getUserById(adminId));
+      let me = await this.userService.getUserById(adminId)
+      admins.push(me);
       output = await this.convService.addAdminsToConv(id, admins);
       logger = ["The request is ok", "Request: POST[ /conv/:id/admins ]"];
     } catch (error) {
@@ -249,18 +248,3 @@ export class ConvController {
     return JSON.stringify(output);
   }
 }
-
-
-
-/**
-    let output, logger;
-    try {
-      logger = ["The request is ok", "Request: POST[ /conv ]"];
-      output = await this.convService.getConversationsByUserId(id);
-    } catch (error) {
-      logger = ["The request doesn't work", "Request: POST[ /conv ]"];
-      output = error;
-    }
-    Logger.log(logger[0], logger[1]);
-    return JSON.stringify(output);
- */

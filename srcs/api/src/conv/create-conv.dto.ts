@@ -1,4 +1,3 @@
-// create-conv.dto.ts
 import { IsNotEmpty, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class CreateConvDto {

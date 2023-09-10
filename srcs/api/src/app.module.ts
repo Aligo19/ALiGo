@@ -17,7 +17,7 @@ import { FilesController } from './pic/pic.controller';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailController } from './mail/mail.controller';
 
-dotenv.config(); // Load environment variables from .env file
+dotenv.config();
 
 @Module({
   imports: [

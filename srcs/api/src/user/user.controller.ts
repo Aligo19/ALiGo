@@ -1,13 +1,11 @@
-// user.controller.ts
 import { Controller, Get, Post, Body, Param, ParseIntPipe, NotFoundException, Logger, Patch } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { HttpService } from '@nestjs/axios';
 import { UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { promises as fsPromises } from 'fs';// npm intsall fs
+import { promises as fsPromises } from 'fs';
 import * as path from 'path';
-import * as dotenv from 'dotenv'; // Import dotenv package
 
 @Controller('users')
 export class UserController {
@@ -122,11 +120,6 @@ export class UserController {
     async getUserByCode(@Param('code') code: string){
         let logger, output;
         try {
-            // await this.mailController.sendMail({
-            //   to: 'hugoorickx@gmail.com',
-            //   subject: 'subject',
-            //   template: 'template' + '/html',
-            // });
             const response = await this.httpService.axiosRef
             .post(
             'https://api.intra.42.fr/oauth/token',
@@ -145,9 +138,7 @@ export class UserController {
             output =  await this.userService.getUserBy19Id(user.data["login"]);
             logger = ["The request is ok", "Request: GET[ /users/:code/login ]"];
             if (output == null)
-            {
                 output = (await this.userService.createUser(user.data["login"], user.data["login"], user.data["image"]["link"]));
-            }
             console.log('tre')
             await this.userService.updateDate(output);
         } catch (error) {

@@ -1,8 +1,24 @@
-// user.service.ts
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, Repository } from 'typeorm';
 import { User } from './user.entity';
+
+const red_Create = 255;
+const green_Created = 255;
+const blue_Create = 255;
+
+const red_New_friend = 100;
+const green_New_friend = 100;
+const blue_New_friend = 100;
+
+const red_New_Blocked = 50;
+const green_New_Blocked = 50;
+const blue_New_Blocked = 50;
+
+function hex(r, g, b)
+{
+  return ((r * 255 * 255) + (g * 255) + b)
+}
 
 @Injectable()
 export class UserService {
@@ -24,8 +40,8 @@ export class UserService {
     user.Avatar = (Avatar);
     user.Friends = [];
     user.Elo = 0;
-    user.Actual_skin = 0;
-    user.Global_skin = [];
+    user.Actual_skin = hex(red_Create, green_Created, blue_Create);
+    user.Global_skin = [hex(red_Create, green_Created, blue_Create)];
     user.Blocked = [];
     user.Wins = 0;
     user.Loses = 0;
@@ -75,7 +91,6 @@ export class UserService {
         let out =  this.userRepository.findOne({
             where:{ID: Equal(id)},
             relations: ['Friends', 'Blocked']
-
         });
         if (out)
             return out;
@@ -108,6 +123,12 @@ export class UserService {
     return null;
   }
 
+  async addSkin(user:User, r:number, g:number, b:number)
+  {
+    user.Global_skin = [...user.Global_skin, hex(r, g, b)]
+    return this.userRepository.save(user);
+  }
+
   async addFriend(user: User, friend: User): Promise<User> {
     if (user.Friends.find(f => f.Pseudo === friend.Pseudo))
       throw new Error('User already friend');
@@ -115,6 +136,8 @@ export class UserService {
       throw new Error('User blocked');
     if (friend.Blocked.find(f => f.Pseudo === user.Pseudo))
       throw new Error('User blocked');
+    if (user.Friends.length === 0)
+      user.Global_skin = [...user.Global_skin, hex(red_New_friend, green_New_friend, blue_New_friend)]
     user.Friends = [...user.Friends, friend];
     friend.Friends = [...friend.Friends, user];
     friend.save();
@@ -124,6 +147,8 @@ export class UserService {
   async blockUser(user: User, blockedUser: User): Promise<User> {
     if (user.Blocked.includes(blockedUser))
       throw new Error('User already blocked');
+    if (user.Blocked.length === 0)
+      user.Global_skin = [...user.Global_skin, hex(red_New_Blocked, green_New_Blocked, blue_New_Blocked)]
     user.Blocked = [...user.Blocked, blockedUser];
     return this.userRepository.save(user);
   }

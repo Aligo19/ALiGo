@@ -1,4 +1,3 @@
-// conv.seed.ts
 import { Conv } from './conv.entity';
 import { User } from '../user/user.entity';
 const fields = require('/app/datas/conv.seed.json');

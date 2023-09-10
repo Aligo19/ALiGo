@@ -1,4 +1,3 @@
-// match.seed.ts
 import { Match } from './match.entity';
 import { User } from '../user/user.entity';
 const fields = require('/app/datas/match.seed.json');

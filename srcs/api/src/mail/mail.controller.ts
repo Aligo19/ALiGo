@@ -2,8 +2,6 @@ import { Controller, Post, Body, Logger } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { UserService } from 'src/user/user.service';
 
-
-
 @Controller('mail')
 export class MailController {
   constructor(private readonly mailService: MailerService,

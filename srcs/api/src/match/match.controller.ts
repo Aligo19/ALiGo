@@ -1,12 +1,22 @@
-// match.controller.ts
 import { Controller, Get, Post, Body, Param, ParseIntPipe, NotFoundException, Logger } from '@nestjs/common';
 import { MatchService } from './match.service';
-import { CreateMatchDto } from './create-match.dto';
 import { Match } from 'src/match/match.entity';
 import { UserService } from 'src/user/user.service';
-import { CreateUserDto } from 'src/user/create-user.dto';
 import { EndMatchDto } from './end-match.dot';
 import { ConvService } from 'src/conv/conv.service';
+
+const red_New_Match = 40;
+const green_New_Match = 40;
+const blue_New_Match = 40;
+
+const red_First_Lose = 110;
+const green_First_Lose = 110;
+const blue_First_Lose = 110;
+
+const red_First_Win = 120;
+const green_First_Win = 120;
+const blue_First_Win = 120;
+
 
 @Controller('matches')
 export class MatchController {
@@ -155,28 +165,6 @@ async sdf() {
     return JSON.stringify(output);
   }
 
-  // @Get(":id/connect/:idGame")
-  // async joinGame(@Param('id', ParseIntPipe) id1: number, @Param('idGame', ParseIntPipe) idGame: number)
-  // {
-  //   let output, logger;
-  //   try {
-  //     const user1 = await this.userService.getUserById(id1);
-  //     this.userService.updateGameStatus(user1, true);
-  //     this.userService.updateDate(user1);
-  //     let matches = await this.matchService.getMatchById(idGame);
-  //     if (user1.Pseudo === matches.ID_user1.Pseudo)
-  //       return;
-  //     matches.Status = 1;
-  //     output = await this.matchService.updateMatch(matches);
-  //     logger = ["The request is ok", "Request: POST[ /matches ]"];
-  // } catch (error) {
-  //     logger = ["The request doesn't work", "Request: POST[ /matches ]"];
-  //     output = error;
-  // }
-  // Logger.log(logger[0], logger[1]);
-  // return JSON.stringify(output);
-  // }
-
   /****************************************/
   /*                                      */
   /*   POST                               */
@@ -196,19 +184,35 @@ async sdf() {
             match = await this.matchService.getMatchById(matchDatas.Id);
             this.userService.updateGameStatus(match.ID_user1, false);
             this.userService.updateGameStatus(match.ID_user2, false);
-            this.userService.updateUser(match.ID_user1);
-            this.userService.updateUser(match.ID_user2);
             if (match.Status != 1)
                 throw new NotFoundException('Match is finished or not start');
             match.Status = 2;
+            if (match.ID_user1.Loses === 0 && match.ID_user1.Wins === 0)
+             this.userService.addSkin(match.ID_user1, red_New_Match, green_New_Match, blue_New_Match)
+            if (match.ID_user2.Loses === 0 && match.ID_user2.Wins === 0)
+             this.userService.addSkin(match.ID_user2, red_New_Match, green_New_Match, blue_New_Match)
             if (matchDatas.Score_user1 < matchDatas.Score_user2) {
                 match.ID_user1.Elo -= 10;
                 match.ID_user2.Elo += 10;
+                if (match.ID_user2.Wins === 0)
+                  this.userService.addSkin(match.ID_user2, red_First_Win, green_First_Win, blue_First_Win)
+                if (match.ID_user1.Loses === 0)
+                  this.userService.addSkin(match.ID_user1, red_First_Lose, green_First_Lose, blue_First_Lose)
+                match.ID_user2.Wins++;
+                match.ID_user1.Loses++;
             }
             else {
                 match.ID_user1.Elo += 10;
                 match.ID_user2.Elo -= 10;
+                if (match.ID_user1.Wins === 0)
+                  this.userService.addSkin(match.ID_user1, red_First_Win, green_First_Win, blue_First_Win)
+                if (match.ID_user2.Loses === 0)
+                  this.userService.addSkin(match.ID_user2, red_First_Lose, green_First_Lose, blue_First_Lose)
+                match.ID_user1.Wins++;
+                match.ID_user2.Loses++;
             }
+            this.userService.updateUser(match.ID_user1);
+            this.userService.updateUser(match.ID_user2);
             logger = ["The request is ok", "Request: POST[ /matches/:id/end ]"];
             output = await this.matchService.updateMatch(match);
         } catch (error) {
@@ -218,21 +222,4 @@ async sdf() {
         Logger.log(logger[0], logger[1]);
         return JSON.stringify(output);
     }
-
-
 }
-
-
-
-/**
-    let output, logger;
-    try {
-      logger = ["The request is ok", "Request: POST[ /conv ]"];
-      output = await this.convService.getConversationsByUserId(id);
-    } catch (error) {
-      logger = ["The request doesn't work", "Request: POST[ /conv ]"];
-      output = error;
-    }
-    Logger.log(logger[0], logger[1]);
-    return JSON.stringify(output);
- */
