@@ -15,59 +15,67 @@ const io  = new Server(server, {
     //transports: ['websocket', 'polling'], 
 });
 
-let send_players = {  };
+let players = {  };
 let gameStarted = false;
 let rooms = {};
 
 io.on("connection", (socket) => {
 
+    //co sans room
+    // socket.once('new_player', (data) => {
+    //     console.log("new player connected: " + socket.id);
+    //     //setup dans players avec le socket id les data envoyer (voir si autre chose que x et y necessaire)
+    //     players[socket.id] = data;
+    //     console.log("current nb players: " +Object.keys(players).length);
+    //     console.log("players: ", players);
+    //     io.emit('update_players', players);
+    // });
+
+    //connexion avec room
     socket.once('create_room', (roomName, objMatch) => {
         if (!rooms[roomName]) {
             rooms[roomName] = {
                 players: [],
-                spectators: []
+                spectators: [] //a set dans l event joinRoom
             };
         }
         console.log(rooms[roomName].players.length);
         if (rooms[roomName].players.length < 5) {
             rooms[roomName].players.push(socket.id);
         }
-        else {
-            //envoier une var dans client pour qu il n ait pas acces au input
-            rooms[roomName].spectators.push(socket.id);
-        }
+
         socket.join(roomName);
 
-        // if (objMatch.ID_user2 === null){
-        if (objMatch.Status === -1 || objMatch.Status === 0) {
-            send_players[socket.id] = {
+        if (objMatch.ID_user2 === null){
+        // if (objMatch.Status === -1 || objMatch.Status === 0) {
+            players[socket.id] = {
                 x: 20,
-                isLeft: true
+                isLeft: true,
+                name: objMatch.ID_user1.Pseudo,
+                roomName: objMatch.ID
             };
-            console.log(send_players[socket.id]);
-            io.to(roomName).emit('update_players', send_players);
-        // } else if (objMatch.ID_user2) {
-        } else if (objMatch.Status === 1) {
-            send_players[socket.id] = {
+            console.log(players[socket.id]);
+        } else if (objMatch.ID_user2) {
+        // } else if (objMatch.Status === 1) {
+            players[socket.id] = {
                 x: 760,
-                isLeft: false
+                isLeft: false, 
+                name: objMatch.ID_user2.Pseudo, 
+                roomName: objMatch.ID
             };
-            console.log(send_players[socket.id]);
+            console.log(players[socket.id]);
             gameStarted = true;
-            io.to(roomName).emit('update_players', send_players);
+            io.to(roomName).emit('game_started', true);
         }
+        io.to(roomName).emit('update_players', players);
 
         console.log("player: " + socket.id + " | joined room:" + roomName);
         console.log("player: " + rooms[roomName].players + " | in room:" + roomName);
     });
 
-    //voir si besoin de passer des data
-    socket.on('join_spectator', () => {
-
-    });
-
-    socket.on('game_started', (inGame, roomName) => {
-        socket.to(roomName).emit('receive_start', inGame);
+    socket.on('join_room', (roomName) => {
+            //envoier une var dans client pour qu il n ait pas acces au input
+            rooms[roomName].spectators.push(socket.id);
     });
 
     socket.on('send_position', (data, roomName) => {
@@ -85,9 +93,19 @@ io.on("connection", (socket) => {
         socket.to(roomName).emit('receive_score', data);
     });
     
-    socket.on('disconnect', (reason) => {
+    // //deco sans room
+    // socket.on('disconnect', function() {
+    //     delete players[socket.id];
+    //     console.log("player left: " +socket.id);
+    //     console.log("current nb players: " +Object.keys(players).length);
+    //     console.log("server side -> the other player left the game " + socket.id);
+    //     io.emit('update_players', players);
+    // });
+
+    //deco avec room 
+    socket.on('disconnect', function() {
         //console.log(reason);
-        delete send_players[socket.id];
+        delete players[socket.id];
         
         //console.log("ID been disconnected: " + socket.id);
         
@@ -109,9 +127,7 @@ io.on("connection", (socket) => {
                 }
 
                 // Émettre un événement pour informer les autres joueurs de la déconnexion
-                console.log("Here ");
-                io.to(roomName).emit('update_players', send_players);
-                console.log("There ");
+                io.to(roomName).emit('update_players', players);
             }
 
             // Vous pouvez également gérer le cas où le joueur est un spectateur

@@ -2,9 +2,12 @@ import { def } from "./Constants";
 import { useEffect, useRef } from 'react';
 
 
-export default function Canvas({ me, opponent, ball, inGame, ...props}) {
+export default function Canvas({me, opponent, ball, ...props}) {
+	// export default function Canvas({me, opponent, ball, inGame, startedGame, ...props}) {
 	const ref = useRef(null);
 	let canvas = ref.current;
+
+	let start;
 
 	const drawBackground = (context) => {
 		context.clearRect(0, 0, def.WIN_W, def.WIN_H);
@@ -16,21 +19,42 @@ export default function Canvas({ me, opponent, ball, inGame, ...props}) {
 		context.fillRect(def.WIN_W/2 - 2, 0, 4, def.WIN_H);
 	};
 	
-	const drawPlayer = (context, player) => {
-	
+	const drawPlayerLeft = (context, player) => {
 		//draw player
 		context.fillStyle = "white";
 		context.fillRect(player.posX, player.posY, player.x, player.y);
+
+		context.fillText(player.meScore, def.WIN_W / 2 - (2*def.PL_W), 50);
+		context.fillText(player.oppScore, def.WIN_W / 2 + (2*def.PL_W), 50);
+
+		context.fillText(player.name, def.WIN_W / 4, 200);
+		
 	};
 	
-	const drawScore = (context, player) => {
-		if (me.isLeft) {
-			context.fillText(player.meScore, def.WIN_W / 2 - (2*def.PL_W), 50, 100);
-			context.fillText(player.oppScore, def.WIN_W / 2 + (2*def.PL_W), 50, 100);
+	const drawPlayerRight = (context, player) => {
+		//draw player
+		context.fillStyle = "white";
+		context.fillRect(player.posX, player.posY, player.x, player.y);
+
+		//context.fillText(player.oppScore, def.WIN_W / 2 + (2*def.PL_W), 50);
+		context.fillText(player.name, (def.WIN_W / 4 *3), 200);
+		
+	};
+
+	const drawData = (context, player) => {
+		if (player.isLeft) {
+			context.fillText(player.meScore, def.WIN_W / 2 - (2*def.PL_W), 50);
+			context.fillText(player.name, def.WIN_W / 4, 200);
+			
+			context.fillText(player.oppScore, def.WIN_W / 2 + (2*def.PL_W), 50);
+			context.fillText(opponent.name, (def.WIN_W / 4 *3), 200);
 		}
 		else {
-			context.fillText(player.oppScore, def.WIN_W / 2 - (2*def.PL_W), 50, 100);
-			context.fillText(player.meScore, def.WIN_W / 2 + (2*def.PL_W), 50, 100);
+			context.fillText(player.oppScore, def.WIN_W / 2 - (2*def.PL_W), 50);
+			context.fillText(player.name, (def.WIN_W / 4 *3), 200);
+			
+			context.fillText(player.meScore, def.WIN_W / 2 + (2*def.PL_W), 50);
+			context.fillText(opponent.name, def.WIN_W / 4, 200);
 		}
 	};
 	
@@ -47,15 +71,32 @@ export default function Canvas({ me, opponent, ball, inGame, ...props}) {
 		
 		canvas = ref.current;
 		const context = canvas.getContext('2d');
+		context.font = 'bold 20px Verdana, Arial, serif';
+		context.textAlign = 'center';
 
 		drawBackground(context);
-		if (inGame) {
-			drawPlayer(context, me);
-			drawPlayer(context, opponent);
-			drawBall(context);
-			drawScore(context, me);
+
+		if (me.isLeft) {
+			drawPlayerLeft(context, me);
+			drawPlayerRight(context, opponent);
 		}
+		else {
+			drawPlayerLeft(context, opponent);
+			drawPlayerRight(context, me);
+		}
+
+		// if (!inGame) {
+		// 	context.fillText("Waiting another player to join", def.WIN_W / 2, def.WIN_H / 2);
+		// }
+
+		// if (inGame && !startedGame) {
+		// 	context.fillText("Player left press p to start", def.WIN_W / 2, def.WIN_H / 2);
+		// }
+
+		drawBall(context);
 		
+		//console.log(start);
+
 		requestAnimationFrame(drawAll);
 	};
 
@@ -72,8 +113,8 @@ export default function Canvas({ me, opponent, ball, inGame, ...props}) {
 	// 	canvas.width = newWidth;
 	// 	canvas.height = newHeight;
 
-		// console.log("client canva w: " + canvas.clientWidth);
-		// console.log("client canva h: " + canvas.clientHeight);
+	// 	console.log("client canva w: " + canvas.clientWidth);
+	// 	console.log("client canva h: " + canvas.clientHeight);
 	// 	console.log("canva w: " + canvas.width);
 	// 	console.log("canva h: " + canvas.height);
 	// 	console.log("sizeScreen w: " + sizeScreen.width);
@@ -82,15 +123,16 @@ export default function Canvas({ me, opponent, ball, inGame, ...props}) {
 	
 	useEffect(() => {
 		//dessiner tous les elements q utiliser dqns lq boucleaui servira d anim
-		//drawAll();
 		const animationFrameId = requestAnimationFrame(drawAll);
 		//window.addEventListener('resize', handleResize);
+		//start = inGame;
 		
 		return () => {
 			cancelAnimationFrame(animationFrameId);
 		};
 	
-	},  [] );
+	}, [  ]);
+	//}, [ inGame, startedGame ]);
 
 	return (
 		<div className="GameCanvas"> 

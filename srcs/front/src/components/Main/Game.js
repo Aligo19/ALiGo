@@ -4,24 +4,26 @@ import { def } from "./Game/Constants";
 import Canvas from './Game/GameCanvas';
 import axios from 'axios';
 
+const socket = io("http://127.0.0.1:3002");
+
 //si spectator envoyer un props isPlayer a false sinon true et ajouter un roomID si spectator
 export default function Game()  {
 	sessionStorage.setItem('idConv', 0);
-
-    const socket = io("http://127.0.0.1:3002");
 
     // const [sizeScreen, updateScreen] = useState({width: 800, height: 600});
     // let ratioX = sizeScreen.height/def.WIN_H;
     // let ratioY = sizeScreen.width/def.WIN_W;
 	const ref=useRef();
-    const [players, setPlayers] = useState({});
     const [inGame, setInGame] = useState(false);
+    const [startedGame, setStartedGame] = useState(false);
+    let players = {};
     let createdRoom = false;
     let playerLeft;
     let playerRight;
     //a passer en parametre dans game
     let isPlayer = true;
     //let inGame = false;
+    let objMatch = {};
     
     const ball = {
         x: 20, 
@@ -43,6 +45,7 @@ export default function Game()  {
         oppScore: 0,
         isLeft: false,
         roomName: "",
+        name: "",
         id: 0,
     };
     
@@ -56,21 +59,25 @@ export default function Game()  {
         oppScore: 0,
         isLeft: false,
         roomName: "",
+        name: "",
         id: 0,
     };
 
     const handleKeyDown = (event) => {
-        if (isPlayer) {
-            if (me.isLeft && event.key === 'p') {
+        if (isPlayer && inGame) {
+            if (!startedGame && me.isLeft && event.key === 'p') {
                 playerLeft = me.isLeft ? me : opponent;
                 playerRight = me.isLeft ? opponent : me;
+                //verifier si besoin de fqire un event server pour receptionner le starrt ga;e
+                setStartedGame(true);
                 updateBallPosition();
             }
-            if (event.key === 'w' && me.posY > 0) {
+            if (startedGame && event.key === 'w' && me.posY > 0) {
                 me.speed = -5;
                 me.posY += me.speed;
                 sendPosition(); 
-            } else if (event.key === 's' && me.posY + def.PL_H < def.WIN_H) {
+            } 
+            else if (startedGame && event.key === 's' && me.posY + def.PL_H < def.WIN_H) {
                 me.speed = 5;
                 me.posY += me.speed;
                 sendPosition(); // Assurez-vous également de mettre à jour cette fonction pour envoyer la nouvelle position.
@@ -89,35 +96,28 @@ export default function Game()  {
     const createRoom = async () => {
         try {
             //condition qui empeche le joueur de setup un game si deja une en cours et donc il est que spectator
-            console.log("player started game");
             const playerData = JSON.parse(sessionStorage.getItem('userData'));
             //console.log(playerData);
             const gameID = playerData.ID;
             //console.log(gameID);
             let jsonMatch;
             ///ici
-		    if (sessionStorage.getItem("selectFriend"))
-            {
-                const otherPlayer = parseInt((sessionStorage.getItem("selectFriend") || 'null'))
-                jsonMatch = await axios.get(`http://127.0.0.1:3001/matches/${gameID}/search/${otherPlayer}`);
-            }
-            else
+		    // if (sessionStorage.getItem("selectFriend"))
+            // {
+            //     const otherPlayer = parseInt((sessionStorage.getItem("selectFriend") || 'null'))
+            //     console.log(otherPlayer);
+            //     jsonMatch = await axios.get(`http://127.0.0.1:3001/matches/${gameID}/search/${otherPlayer}`);
+            // }
+            // else
                 jsonMatch = await axios.get(`http://127.0.0.1:3001/matches/${gameID}/search`);
 
-            const objMatch = jsonMatch.data;
-            //console.log(objMatch); 
+            objMatch = jsonMatch.data;
+            console.log(objMatch.ID_user1.Pseudo);
             socket.emit('create_room', objMatch.ID, objMatch);
-            createdRoom = true;
-            me.roomName = objMatch.ID;
         } catch (error) {
             console.error('Une erreur s\'est produite lors de la requête:', error);
         }
     };
-
-    // const launchGame = () => {
-    //     socket.emit('set_player', objMatch.ID, objMatch);
-    //     me.roomName = objMatch.ID;
-    // };
 
     // const joinRoom = () => {
     //     //voir si il faut faire une requete ou si on recup la roomName d une autre maniere
@@ -171,12 +171,12 @@ export default function Game()  {
             sendScore();
         }
 
+        //a tester avec Hugo
         if (me.meScore === 5 || me.oppScore === 5) {
-            axios.post({
-                "Score_user1" : me.meScore,
-                "Score_user2" : me.oppScore,
-                "Id": me.roomName
-            });
+            if (me.isLeft) 
+                sendRequest(me);
+            else if (!me.isLeft)
+                sendRequest(opponent);
         }
     };
 
@@ -186,13 +186,19 @@ export default function Game()  {
         if (ball.posY <= 0  || ball.posY + ball.y >= def.WIN_H) {
             ball.velY = -ball.velY;
         }
+        
+        //collision horizontale
+        if ((ball.posX <= playerLeft.posX + playerLeft.x) && (ball.posX + ball.x >= playerLeft.posX) &&   (ball.posY <= playerLeft.posY + playerLeft.y) && (ball.posY + ball.y >= playerLeft.posY) || 
+            (ball.posX + ball.x >= playerLeft.posX) && (ball.posX <= playerLeft.posX + playerLeft.x) && (ball.posY <= playerLeft.posY + playerLeft.y) && (ball.posY >= playerLeft.posY - ball.y)) {
+            ball.velY = -ball.velY;
+        }
 
-        //collision avec les player
+        //collision vertical avec les player
         if (((ball.posX <= playerLeft.posX + playerLeft.x) && (ball.posY + ball.y >= playerLeft.posY) && (ball.posY <= playerLeft.posY + playerLeft.y)) || 
             ((ball.posX + ball.x >= playerRight.posX) && (ball.posY + ball.y >= playerRight.posY) && (ball.posY <= playerRight.posY + playerRight.y))) {
             ball.velX = -ball.velX;
         }
-        
+
         // // Mettre à jour la position de la balle en fonction de sa vitesse
         ball.posX += ball.velX;
         ball.posY += ball.velY;
@@ -208,11 +214,11 @@ export default function Game()  {
         requestAnimationFrame(updateBallPosition);
     };
 
-    const sendRequest = async () => {
+    const sendRequest = async (me) => {
         try {
             await axios.post(`http://127.0.0.1:3001/matches/end`,{
-                "Score_user1" : 5,
-                "Score_user2" : 0,
+                "Score_user1" : me.meScore,
+                "Score_user2" : me.oppScore,
                 "Id": me.roomName
             });
         } catch (error) {
@@ -223,63 +229,58 @@ export default function Game()  {
     useEffect(() => {
         //console.log("win win X: " + sizeScreen.width + "win hei Y: " + sizeScreen.height);
  
-        if (isPlayer && !createdRoom) {
-            createRoom();
-        }
+        createRoom();
 
-        if(!isPlayer) {
-            //joinRoom();
-        }
+        // if(!isPlayer) {
+        //     //joinRoom();
+        // }
 
         socket.on('update_players', (backendPlayers) => {
             // console.log(backendPlayers);
             // console.log("connection socket ID: " + socket.id);
-            // Créer une copie mise à jour des joueurs
-            const updatedPlayers = { ...players };
-            console.log(backendPlayers);
-    
             // Mettre à jour les données des joueurs en fonction de backendPlayers
     
             for (const id in backendPlayers) {
                 const backendPlayer = backendPlayers[id];
                 console.log(backendPlayer);
-                if (!updatedPlayers[id] && Object.keys(updatedPlayers).length < 3)
+                if (!players[id])
                 {
-                    console.log("ID: " + id + " - X: " + backendPlayer.x + " - left:" + backendPlayer.isLeft);
+                    //console.log("ID: " + id + " - X: " + backendPlayer.x + " - left:" + backendPlayer.isLeft);
                     if (socket.id === id) {
                         me.id = id;
                         me.posX = backendPlayer.x;
                         me.isLeft = backendPlayer.isLeft;
+                        me.name = backendPlayer.name;
+                        me.roomName = backendPlayer.roomName;
                     }
                     else {
                         opponent.id = id;
                         opponent.posX = backendPlayer.x;
                         opponent.isLeft = backendPlayer.isLeft;
+                        opponent.name = backendPlayer.name;
+                        opponent.roomName = backendPlayer.roomName;
                     }
-                    console.log("ME ID: " + me.id + " -ME X: " + me.posX + " -ME left:" + me.isLeft);
-                    console.log("OP ID: " + opponent.id + " -OP X: " + opponent.posX + " -OP left:" + opponent.isLeft);
-                    updatedPlayers[id] = backendPlayer;
+                    players[id] = backendPlayer;
                 }
             }
 
-            if(!inGame && players.length > 1) {
-                console.log("start game");
-                setInGame(true);
-                socket.emit("game_started", inGame, me.roomName);
-                //inGame = true;
-            }
-
             //supp le/les player si deconnexion
-            for (const id in updatedPlayers) {
+            for (const id in players) {
                 if (!backendPlayers[id]) {
-                    console.log("the other player left the game " + updatedPlayers[id]);
-                    updatedPlayers[id].remove();
-                    delete updatedPlayers[id];
+                    //si doconnexion gerer comme lorsqu on clique sur trancescendqnce et quitte
+                    console.log("the other player left the game " + players[id]);
+                    //players[id].remove();
+                    delete players[id];
+                    sendRequest();
                 }
             }
             //console.log("players in client updated Players");
             //console.log(updatedPlayers);
-            setPlayers(updatedPlayers);
+        });
+
+        socket.on('game_started', (data) => {
+            setInGame(data);
+            console.log("game started: " + inGame);
         });
 
         socket.on("receive_position", (data) => {
@@ -302,13 +303,6 @@ export default function Game()  {
             console.log("me" + me.meScore);
             console.log("opp" + me.oppScore);
         });
-        
-        socket.on('player_left', (disconnectID) => {
-            //definir qui est user 1 et 2 (genre le player qui lance la game est 1 et l autre 2)
-            //dans ce cas ajouter des conditions isLeft....
-            console.log("the other player left the game " + disconnectID);
-            sendRequest();
-        });
 
         document.addEventListener('keydown', handleKeyDown);
         document.addEventListener('keyup', handleKeyUp);
@@ -320,14 +314,14 @@ export default function Game()  {
             document.removeEventListener('keyup', handleKeyUp);
             
             //clear les ecoute du serveur
-            socket.off('setup_player');
+            socket.off('update_players');
             socket.off('receive_position');
             socket.off('receive_ball_pos');
             socket.off('receive_score');
-            socket.off('player_left');
         };
 
-    }, [ ]);
+    }, [  ]);
+    //}, [ inGame, startedGame ]);
     
     return (
         <Canvas 
@@ -338,7 +332,8 @@ export default function Game()  {
             me={me}
             opponent={opponent}
             ball={ball}
-            inGame= {inGame}
+            // inGame= {inGame}
+            // startedGame= {startedGame}
         /> 
     );
 }
