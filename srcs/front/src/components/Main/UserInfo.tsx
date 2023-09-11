@@ -13,7 +13,7 @@ interface UserProps {
     level: number;
     winnb: number;
     losenb: number;
-    histo: any[]; // Remplacez any[] par le type approprié de votre historique
+    histo: any[];
 }
 
 export default function UserInfo(props: UserProps) {

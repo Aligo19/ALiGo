@@ -444,7 +444,7 @@ html {
 	margin-bottom: -5px;
 	border-radius: 13px;
 	text-align: center;
-	height: 95vh;
+	height: 94vh;
 	width: 25vw;
 }
 
@@ -527,6 +527,10 @@ html {
     margin: 4%;
 }
 
+.Stat::-webkit-scrollbar-thumb {
+	background-color: #4CAF50;
+}
+
 .Stat--noMatch {
 	width: 90%;
     border: 1px solid #7288da;
@@ -542,8 +546,8 @@ html {
 	width: 110%;
 	height: auto;    
 	flex : 1;
-	margin-top: -10%;
-	margin-bottom: -10%;
+	margin-top: -11%;
+	margin-bottom: -11%;
 }
 
 .History {
