@@ -13,7 +13,8 @@ const server = http.createServer(app);
 const io  = new Server(server, {
     cors: {
         origin: "*",
-        methods: ["GET", "POST"],
+        methods: ["GET", "POST", "PATCH", "DELETE"],
+        optionsSuccessStatus: 204,
     },
     //transports: ['websocket', 'polling'], 
 });
@@ -42,9 +43,9 @@ io.on("connection", (socket) => {
             };
         }
 
-        if (rooms[roomName].players.length < 2) {
-            rooms[roomName].push(socket.id);
-        }
+        // if (rooms[roomName].players.length < 2) {
+        //     rooms[roomName].push(socket.id);
+        // }
 
         socket.join(roomName);
 
@@ -69,21 +70,24 @@ io.on("connection", (socket) => {
                 skin: objMatch.ID_user2.Actual_skin,
                 roomName: objMatch.ID
             };
+            rooms[roomName].status = true;
 
             io.to(roomName).emit('game_started', true);
         }
-        console.log(rooms[roomName].players);
 
         //on passait player avant et ca marchait 
         io.to(roomName).emit('update_players', rooms[roomName].players);
 
-        console.log("player: " + socket.id + " | joined room:" + roomName);
-        console.log("player: " + rooms[roomName].players + " | in room:" + roomName);
+        console.log("player: " + Object.keys(rooms[roomName].players) + " | in room:" + roomName);
     });
 
-    socket.on('join_room', (roomName) => {
-            //envoier une var dans client pour qu il n ait pas acces au input
-            rooms[roomName].spectators.push(socket.id);
+    socket.on('join_spectator', (roomName) => {
+        //envoier une var dans client pour qu il n ait pas acces au input
+        //rooms[roomName].push(socket.id);
+        console.log("spsect: " + Object.keys(rooms[roomName].spectators) + " | in room:" + roomName);
+        socket.join(roomName);
+        io.to(roomName).emit('update_players', rooms[roomName].players);
+
     });
 
     socket.on('send_position', (data, roomName) => {
@@ -130,10 +134,9 @@ io.on("connection", (socket) => {
             }
 
             // Vous pouvez également gérer le cas où le joueur est un spectateur
-            // const spectatorIndex = room.spectators.indexOf(socket.id);
-            // if (spectatorIndex !== -1) {
-            //     room.spectators.splice(spectatorIndex, 1);
-            // }
+            if (socket.id in room.spectators) {
+                delete room.spectators[socket.id];
+            }
         }
     });
 });

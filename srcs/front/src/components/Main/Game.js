@@ -6,22 +6,20 @@ import axios from 'axios';
 import env from "react-dotenv";
 const socket = io(env.URL_RED2);
 
-//si spectator envoyer un props isPlayer a false sinon true et ajouter un roomID si spectator
-export default function Game()  {
+//si spectator envoyer un props props.spec a false sinon true et ajouter un roomID si spectator
+export default function Game(props)  {
 	sessionStorage.setItem('idConv', 0);
 
 	const ref=useRef();
     const [inGame, setInGame] = useState(false);
     const [startedGame, setStartedGame] = useState(false);
     
+    let isPlayer = props.spec;
     let players = {};
-    let createdRoom = false;
+    let objMatch = {};
     let playerLeft;
     let playerRight;
-    //a passer en parametre dans game
-    let isPlayer = true;
     let twoConnected = false;
-    let objMatch = {};
     let rightScore = 0;
     let leftScore = 0;
     
@@ -113,10 +111,11 @@ export default function Game()  {
         }
     };
 
-    // const joinRoom = () => {
-    //     //voir si il faut faire une requete ou si on recup la roomName d une autre maniere
-    //     socket.emit('join_spectator', 4);
-    // };
+    const joinRoom = () => {
+        console.log("join");
+        //voir si il faut faire une requete ou si on recup la roomName d une autre maniere
+        socket.emit('join_spectator', props.roomName);
+    };
 
     const sendPosition = () => {
         socket.emit("send_position", me.posY, me.roomName);
@@ -233,19 +232,19 @@ export default function Game()  {
 
     useEffect(() => {
         //console.log("win win X: " + sizeScreen.width + "win hei Y: " + sizeScreen.height);
- 
-        createRoom();
+        
+        if(isPlayer) {
+            console.log(isPlayer);
+            createRoom();
+        }
 
-        // if(!isPlayer) {
-        //     //joinRoom();
-        // }
+        else
+            joinRoom();
 
         socket.on('update_players', (backendPlayers) => {
             // console.log(backendPlayers);
             // console.log("connection socket ID: " + socket.id);
             // Mettre à jour les données des joueurs en fonction de backendPlayers
-            console.log(backendPlayers);
-            console.log("here");
 
             for (const id in backendPlayers) {
                 const backendPlayer = backendPlayers[id];
@@ -255,7 +254,7 @@ export default function Game()  {
                 if (!players[id])
                 {
                     console.log("ID: " + id + " - X: " + backendPlayer.x + " - left:" + backendPlayer.isLeft);
-                    if (socket.id === id) {
+                    if (socket.id === id || (!isPlayer && backendPlayer.isLeft)) {
                         me.id = id;
                         me.posX = backendPlayer.x;
                         me.isLeft = backendPlayer.isLeft;

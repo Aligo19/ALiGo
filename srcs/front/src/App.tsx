@@ -28,6 +28,8 @@ export default function App() {
 	const [timeoutIdUserInfos, setTimeouIdUserInfos] = useState<any>(null);
 	const [matchHisto, setMatchHisto] = useState<any>([]);
 	const [gestion, setGestion] = useState<any>([]);
+	const [spec, setSpec] = useState<any>(true);
+	const [idGame, setIdGame] = useState<any>(0);
 
 
 	async function update(newUser: any) {
@@ -572,9 +574,12 @@ export default function App() {
 			seStreamtMatch (	<div className="GameVsFriendForm">
 									<div className="GameVsFriendForm-title">Select a match to watch</div>
 									{streamMatchs.map((item: any) => (
-										<div key={item.ID} className="watchMatchGroup">
+										<div className="watchMatchGroup">
 											{item.ID_user1.Pseudo} vs. {item.ID_user2.Pseudo}
-											<button className="watchMatchGroup-button" type="button" onClick={() => showGameCanvas()}>WATCH</button>
+											<button className="watchMatchGroup-button" type="button" onClick={(e) => {
+												setSpec(false);
+												setIdGame(item.ID);
+												showGameCanvas()}}>WATCH</button>
 										</div>
 									))}
 								</div>);
@@ -767,6 +772,7 @@ export default function App() {
 		setCurrentView("addPerson");
 	}
 	let content;
+	
 	if (sessionStorage.getItem('status') == '1')
 	{
 		const localUser = JSON.parse(sessionStorage.getItem('userData') || 'null');
@@ -811,7 +817,7 @@ export default function App() {
 							{gchatComponents}
 						</div>
 					</div>
-					{((currentView === "game") ? <Game /> : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup :(currentView === "login") ? <Login Pseudo='' Avatar='' update={update} />:(currentView === "gestion") ? gestion : (currentView === "gameFriend") ? friend : (currentView === "stream") ? streamMatch : ( <div className='EmptyCanvas'></div>))}
+					{((currentView === "game") ? <Game spec={spec} roomName={idGame}/> : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup :(currentView === "login") ? <Login Pseudo='' Avatar='' update={update} />:(currentView === "gestion") ? gestion : (currentView === "gameFriend") ? friend : (currentView === "stream") ? streamMatch : ( <div className='EmptyCanvas'></div>))}
 					{userInfoComponents}
 				</div>
 	}
