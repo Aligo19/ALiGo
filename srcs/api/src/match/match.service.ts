@@ -13,6 +13,11 @@ export class MatchService {
     private userService: UserService
   ) {}
 
+    async deleteMatch(id: number)
+    {
+      await this.matchRepository.delete(id);
+    }
+
   async createMatch(user1: User): Promise<Match> {
     let testUser = await this.userService.getUserById(user1.ID);
     let testGame = await this.matchRepository.findOne({

@@ -1,8 +1,11 @@
+const axios = require('axios');
 const express = require('express');
 const app = express();
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
+require("dotenv").config(); // Import dotenv package
+
 
 app.use(cors());
 
@@ -15,8 +18,6 @@ const io  = new Server(server, {
     //transports: ['websocket', 'polling'], 
 });
 
-let players = {  };
-let gameStarted = false;
 let rooms = {};
 
 io.on("connection", (socket) => {
@@ -35,31 +36,32 @@ io.on("connection", (socket) => {
     socket.once('create_room', (roomName, objMatch) => {
         if (!rooms[roomName]) {
             rooms[roomName] = {
-                players: [],
-                spectators: [] //a set dans l event joinRoom
+                players: {},
+                spectators: {}, //a set dans l event joinRoom
+                status: false
             };
         }
-        if (rooms[roomName].players.length < 5) {
-            rooms[roomName].players.push(socket.id);
+
+        if (rooms[roomName].players.length < 2) {
+            rooms[roomName].push(socket.id);
         }
-        
-        console.log("length tab player: " + rooms[roomName].players.length);
-        
+
         socket.join(roomName);
 
         // if (objMatch.ID_user2 === null){
         if (objMatch.ID_user2===null || objMatch.Status === -1) {
             rooms[roomName].players[socket.id] = {
+                //rooms[roomName].players[socket.id] = {
                 x: 20,
                 isLeft: true,
                 name: objMatch.ID_user1.Pseudo,
                 skin: objMatch.ID_user1.Actual_skin,
                 roomName: objMatch.ID
             };
-            console.log(players[socket.id]);
-        } 
+        }
         else if (objMatch.ID_user2) {
         // } else if (objMatch.Status === 1) {
+            //allPlayers[socket.id] = {
             rooms[roomName].players[socket.id] = {
                 x: 760,
                 isLeft: false, 
@@ -67,12 +69,12 @@ io.on("connection", (socket) => {
                 skin: objMatch.ID_user2.Actual_skin,
                 roomName: objMatch.ID
             };
-            console.log(rooms[roomName].players);
-            console.log(rooms[roomName].players[socket.id]);
-            gameStarted = true;
+
             io.to(roomName).emit('game_started', true);
         }
+        console.log(rooms[roomName].players);
 
+        //on passait player avant et ca marchait 
         io.to(roomName).emit('update_players', rooms[roomName].players);
 
         console.log("player: " + socket.id + " | joined room:" + roomName);
@@ -95,54 +97,43 @@ io.on("connection", (socket) => {
     });
     
     socket.on('send_score', (leftScore, rightScore, roomName) => {
-        console.log(leftScore, rightScore);
         //envoi au joueur inviter la pos de la ball
         socket.to(roomName).emit('receive_score', leftScore, rightScore);
     });
-    
-    // //deco sans room
-    // socket.on('disconnect', function() {
-    //     delete players[socket.id];
-    //     console.log("player left: " +socket.id);
-    //     console.log("current nb players: " +Object.keys(players).length);
-    //     console.log("server side -> the other player left the game " + socket.id);
-    //     io.emit('update_players', players);
-    // });
 
     //deco avec room 
     socket.on('disconnect', function() {
-        //console.log(reason);
-        delete players[socket.id];
-        
-        //console.log("ID been disconnected: " + socket.id);
+
+        console.log("ID been disconnected: " + socket.id);
         
         for (const roomName in rooms) {
             const room = rooms[roomName];
-            
-            // Supprimer le joueur de la liste des joueurs de la salle
-            //console.log(rooms[roomName].players);
-            const playerIndex = rooms[roomName].players.indexOf(socket.id); //find index
-            if (playerIndex !== -1) {
-                console.log(room.players);
-                room.players.splice(playerIndex, 1); 
 
+            if (socket.id in room.players)  {
+                    
                 // Si la salle n'a plus de joueurs, vous pouvez la supprimer si nécessaire
-                console.log("nb player in room: " + rooms[roomName].players.length);
-                if (rooms[roomName].players.length === 0) {
+                console.log("nb player in room: " + Object.keys(rooms[roomName].players).length);
+                // Émettre un événement pour informer les autres joueurs de la déconnexion
+                //error si room delete...
+                io.to(roomName).emit('update_players', rooms[roomName].players);
+                io.to(roomName).emit('end_game');
+                
+                delete rooms[roomName].players[socket.id];
+
+                if (Object.keys(rooms[roomName].players).length === 0) {
+                    if (!rooms[roomName].status) {
+                        axios.get(process.env.URL_API + `/matches/delete/${roomName}`);
+                    }
                     console.log("deleted room");
                     delete rooms[roomName];
                 }
-
-                // Émettre un événement pour informer les autres joueurs de la déconnexion
-                io.to(roomName).emit('update_players', rooms[roomName].players);
-                io.to(roomName).emit('end_game');
             }
 
             // Vous pouvez également gérer le cas où le joueur est un spectateur
-            const spectatorIndex = room.spectators.indexOf(socket.id);
-            if (spectatorIndex !== -1) {
-                room.spectators.splice(spectatorIndex, 1);
-            }
+            // const spectatorIndex = room.spectators.indexOf(socket.id);
+            // if (spectatorIndex !== -1) {
+            //     room.spectators.splice(spectatorIndex, 1);
+            // }
         }
     });
 });

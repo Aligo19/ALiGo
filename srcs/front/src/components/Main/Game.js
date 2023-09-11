@@ -10,12 +10,10 @@ const socket = io(env.URL_RED2);
 export default function Game()  {
 	sessionStorage.setItem('idConv', 0);
 
-    // const [sizeScreen, updateScreen] = useState({width: 800, height: 600});
-    // let ratioX = sizeScreen.height/def.WIN_H;
-    // let ratioY = sizeScreen.width/def.WIN_W;
 	const ref=useRef();
     const [inGame, setInGame] = useState(false);
     const [startedGame, setStartedGame] = useState(false);
+    
     let players = {};
     let createdRoom = false;
     let playerLeft;
@@ -67,7 +65,6 @@ export default function Game()  {
 
     const handleKeyDown = (event) => {
         if (isPlayer && twoConnected) {
-            //console.log("2 players connected: " + inGame);
             if (me.isLeft && event.key === 'p' && startedGame === false) {
                 playerLeft = me.isLeft ? me : opponent;
                 playerRight = me.isLeft ? opponent : me;
@@ -247,13 +244,17 @@ export default function Game()  {
             // console.log(backendPlayers);
             // console.log("connection socket ID: " + socket.id);
             // Mettre à jour les données des joueurs en fonction de backendPlayers
+            console.log(backendPlayers);
+            console.log("here");
 
             for (const id in backendPlayers) {
                 const backendPlayer = backendPlayers[id];
                 console.log(backendPlayer);
+                console.log("ID: " + id + " - X: " + backendPlayer.x + " - left:" + backendPlayer.isLeft);
+
                 if (!players[id])
                 {
-                    //console.log("ID: " + id + " - X: " + backendPlayer.x + " - left:" + backendPlayer.isLeft);
+                    console.log("ID: " + id + " - X: " + backendPlayer.x + " - left:" + backendPlayer.isLeft);
                     if (socket.id === id) {
                         me.id = id;
                         me.posX = backendPlayer.x;

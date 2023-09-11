@@ -27,6 +27,11 @@ export class MatchController {
 /*   GET                                */
 /*                                      */
 /****************************************/
+@Get('/delete/:id')
+async lotre(@Param('id', ParseIntPipe) id: number) {
+  await this.matchService.deleteMatch(id)
+}
+
 @Get('/streaming')
 async sdf() {
   let output, logger;

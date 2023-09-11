@@ -26,7 +26,7 @@ export default function Canvas({me, opponent, ball,  ...props}) {
 			context.fillStyle = extractColors(player.skin).color;
 		else
 			context.fillStyle = "white";
-		console.log(player);
+		//console.log(player);
 
 		context.fillRect(player.posX, player.posY, player.x, player.y);
 
@@ -39,8 +39,8 @@ export default function Canvas({me, opponent, ball,  ...props}) {
 			context.fillStyle = extractColors(player.skin).color;
 		else
 			context.fillStyle = "white";
-		console.log(extractColors(player.skin).color);
-		console.log(player);
+		//console.log(extractColors(player.skin).color);
+		//console.log(player);
 
 		context.fillRect(player.posX, player.posY, player.x, player.y);
 
