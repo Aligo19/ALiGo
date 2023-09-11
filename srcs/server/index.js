@@ -39,16 +39,17 @@ io.on("connection", (socket) => {
                 spectators: [] //a set dans l event joinRoom
             };
         }
-        console.log(rooms[roomName].players.length);
         if (rooms[roomName].players.length < 5) {
             rooms[roomName].players.push(socket.id);
         }
-
+        
+        console.log("length tab player: " + rooms[roomName].players.length);
+        
         socket.join(roomName);
 
         // if (objMatch.ID_user2 === null){
         if (objMatch.ID_user2===null || objMatch.Status === -1) {
-            players[socket.id] = {
+            rooms[roomName].players[socket.id] = {
                 x: 20,
                 isLeft: true,
                 name: objMatch.ID_user1.Pseudo,
@@ -56,20 +57,23 @@ io.on("connection", (socket) => {
                 roomName: objMatch.ID
             };
             console.log(players[socket.id]);
-        } else if (objMatch.ID_user2) {
+        } 
+        else if (objMatch.ID_user2) {
         // } else if (objMatch.Status === 1) {
-            players[socket.id] = {
+            rooms[roomName].players[socket.id] = {
                 x: 760,
                 isLeft: false, 
                 name: objMatch.ID_user2.Pseudo, 
                 skin: objMatch.ID_user2.Actual_skin,
                 roomName: objMatch.ID
             };
-            console.log(players[socket.id]);
+            console.log(rooms[roomName].players);
+            console.log(rooms[roomName].players[socket.id]);
             gameStarted = true;
             io.to(roomName).emit('game_started', true);
         }
-        io.to(roomName).emit('update_players', players);
+
+        io.to(roomName).emit('update_players', rooms[roomName].players);
 
         console.log("player: " + socket.id + " | joined room:" + roomName);
         console.log("player: " + rooms[roomName].players + " | in room:" + roomName);
@@ -120,7 +124,7 @@ io.on("connection", (socket) => {
             const playerIndex = rooms[roomName].players.indexOf(socket.id); //find index
             if (playerIndex !== -1) {
                 console.log(room.players);
-                room.players.splice(playerIndex, 1);
+                room.players.splice(playerIndex, 1); 
 
                 // Si la salle n'a plus de joueurs, vous pouvez la supprimer si nécessaire
                 console.log("nb player in room: " + rooms[roomName].players.length);
@@ -130,7 +134,7 @@ io.on("connection", (socket) => {
                 }
 
                 // Émettre un événement pour informer les autres joueurs de la déconnexion
-                io.to(roomName).emit('update_players', players);
+                io.to(roomName).emit('update_players', rooms[roomName].players);
                 io.to(roomName).emit('end_game');
             }
 
