@@ -23,6 +23,7 @@ export default function App() {
 	const [userData, setUserData] = useState<any>([]);
 	const [friend, setFriend] = useState<any>([]);
 	const [streamMatch, seStreamtMatch] = useState<any>([]);
+	const [timeoutStream, setTimeoutStream] = useState<any>(null);
 	const [timeoutIdConv, setTimeoutIdConv] = useState<any>(null);
 	const [timeoutIdConvs, setTimeoutIdConvs] = useState<any>(null);
 	const [timeoutIdUserInfos, setTimeouIdUserInfos] = useState<any>(null);
@@ -498,6 +499,8 @@ export default function App() {
 				clearTimeout(timeoutIdConvs);
 		if (timeoutIdUserInfos)
 				clearTimeout(timeoutIdUserInfos);
+		if (timeoutStream)
+			clearTimeout(timeoutStream);
 		setCurrentView("game");
 	}
 
@@ -588,6 +591,9 @@ export default function App() {
 			// if (sessionStorage.getItem('userData'))
 			// window.location.replace(env.URL_REACT + '/error.html');
 		};
+		if (timeoutStream)
+			clearTimeout(timeoutStream);
+		setTimeoutStream( await setTimeout(async () => { showStream() }, clock));
 		setCurrentView("stream");
 	}
 
