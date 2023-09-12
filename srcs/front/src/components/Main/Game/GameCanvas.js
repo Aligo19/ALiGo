@@ -26,8 +26,6 @@ export default function Canvas({me, opponent, ball,  ...props}) {
 			context.fillStyle = extractColors(player.skin).color;
 		else
 			context.fillStyle = "white";
-		//console.log(player);
-
 		context.fillRect(player.posX, player.posY, player.x, player.y);
 
 		context.fillText(player.name, def.WIN_W / 4, 200);
@@ -39,9 +37,6 @@ export default function Canvas({me, opponent, ball,  ...props}) {
 			context.fillStyle = extractColors(player.skin).color;
 		else
 			context.fillStyle = "white";
-		//console.log(extractColors(player.skin).color);
-		//console.log(player);
-
 		context.fillRect(player.posX, player.posY, player.x, player.y);
 
 		context.fillText(player.name, (def.WIN_W / 4 *3), 200);	
@@ -125,13 +120,12 @@ export default function Canvas({me, opponent, ball,  ...props}) {
 	//}, [ inGame, startedGame ]);
 
 	return (
-		<div className="GameCanvas"> 
-		<span id='me'>
-			0
-		</span>
-		<span id='opp'>
-			0
-		</span>
+		<div className="GameCanvas">
+			<div className="Score">
+				<span id='me'>0</span>
+				<span>	-	</span>
+				<span id='opp'>0</span>
+			</div>
 			<canvas ref={ref} width={props.width} height={props.height}  /> 
 		</div>
 	)

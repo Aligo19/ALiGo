@@ -958,6 +958,8 @@ html {
 }
 
 .watchMatchGroup {
+	align-items: center;
+	flex-direction: row;
 	max-width: 90%;
 	max-height: 80%;
 	width: 100%;
@@ -1087,4 +1089,17 @@ html {
 	outline: none;
 	padding: 1.5%;
 	margin: 3%;
+}
+
+.Score {
+	margin: 3%;
+	padding: 1%;
+	width: 20%;
+	flex-direction: row;
+    justify-content: space-around;
+	align-items: center;
+	font-weight: bold;
+	font-size: 14px;
+	border: #7288da 1px solid;
+	border-radius: 3px;
 }

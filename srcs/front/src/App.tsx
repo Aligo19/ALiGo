@@ -591,9 +591,9 @@ export default function App() {
 			// if (sessionStorage.getItem('userData'))
 			// window.location.replace(env.URL_REACT + '/error.html');
 		};
-		if (timeoutStream)
-			clearTimeout(timeoutStream);
-		setTimeoutStream( await setTimeout(async () => { showStream() }, clock));
+		// if (timeoutStream)
+		// 	clearTimeout(timeoutStream);
+		// setTimeoutStream( await setTimeout(async () => { showStream() }, clock));
 		setCurrentView("stream");
 	}
 

@@ -272,6 +272,9 @@ export default function Game(props)  {
                         twoConnected = true;
                     }
                     players[id] = backendPlayer;
+                    console.log("client me-> ID: " + socket.id + " - X: " +  me.posX + " - Y: " +  me.posY + " - left:" + me.isLeft);
+                    console.log("client opp->ID: " + socket.id + " - X: " + opponent.posX + " - Y: " + opponent.posY + " - left:" + opponent.isLeft);
+
                 }
             }
 
@@ -301,6 +304,7 @@ export default function Game(props)  {
 
         socket.on("receive_position", (data) => {
             opponent.posY = data;
+            console.log("Client-> opp X:" + opponent.posX + " opp Y: " + opponent.posY);
         });
 
         socket.on('receive_ball_pos', (newBall) => {

@@ -92,6 +92,8 @@ io.on("connection", (socket) => {
 
     socket.on('send_position', (data, roomName) => {
         // Diffusez la nouvelle position à tous les autres joueurs sauf l'expéditeur
+        console.log("Server-> client X:" + opponent.posX + " client Y: " + opponent.posY);
+
         socket.to(roomName).emit('receive_position', data);
     });
     
