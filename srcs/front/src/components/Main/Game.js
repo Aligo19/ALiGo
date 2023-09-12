@@ -20,8 +20,11 @@ export default function Game(props)  {
     let playerLeft;
     let playerRight;
     let twoConnected = false;
+    let endGame = false;
     let rightScore = 0;
     let leftScore = 0;
+    let req;
+
     
     const ball = {
         x: 20, 
@@ -37,7 +40,7 @@ export default function Game(props)  {
         x: def.PL_W,
         y: def.PL_H,
         posX: 20,
-        posY: def.WIN_H/2 - 10,
+        posY: def.WIN_H/2 - def.PL_H/2,
         speed: 7,
         meScore: 0,
         oppScore: 0,
@@ -51,7 +54,7 @@ export default function Game(props)  {
         x: def.PL_W,
         y: def.PL_H,
         posX: 760,
-        posY: def.WIN_H/2 - 10,
+        posY: def.WIN_H/2 - def.PL_H/2,
         speed: 7,
         meScore: 0,
         oppScore: 0,
@@ -118,7 +121,7 @@ export default function Game(props)  {
     };
 
     const sendPosition = () => {
-        socket.emit("send_position", me.posY, me.roomName);
+        socket.emit("send_position", me, me.roomName, opponent);
     };
 
     const sendBallPosition = () => {
@@ -128,6 +131,7 @@ export default function Game(props)  {
     const sendScore = () => {
         socket.emit("send_score", leftScore, rightScore, me.roomName);
     }
+    
 
     const reset = () => {
         ball.posX = def.WIN_W /2 -10;
@@ -212,8 +216,10 @@ export default function Game(props)  {
         
         //a mettre dans l interval comme si on send update de la ball au joueur tout les x secondes
         sendBallPosition();
-        
-        requestAnimationFrame(updateBallPosition);
+        if (!endGame) 
+            req = requestAnimationFrame(updateBallPosition);
+        else
+            cancelAnimationFrame(req);
     };
 
     const sendRequest = async (score1, score2, me) => {
@@ -233,10 +239,8 @@ export default function Game(props)  {
     useEffect(() => {
         //console.log("win win X: " + sizeScreen.width + "win hei Y: " + sizeScreen.height);
         
-        if(isPlayer) {
-            console.log(isPlayer);
+        if(isPlayer)
             createRoom();
-        }
 
         else
             joinRoom();
@@ -248,8 +252,6 @@ export default function Game(props)  {
 
             for (const id in backendPlayers) {
                 const backendPlayer = backendPlayers[id];
-                console.log(backendPlayer);
-                console.log("ID: " + id + " - X: " + backendPlayer.x + " - left:" + backendPlayer.isLeft);
 
                 if (!players[id])
                 {
@@ -272,9 +274,6 @@ export default function Game(props)  {
                         twoConnected = true;
                     }
                     players[id] = backendPlayer;
-                    console.log("client me-> ID: " + socket.id + " - X: " +  me.posX + " - Y: " +  me.posY + " - left:" + me.isLeft);
-                    console.log("client opp->ID: " + socket.id + " - X: " + opponent.posX + " - Y: " + opponent.posY + " - left:" + opponent.isLeft);
-
                 }
             }
 
@@ -297,14 +296,8 @@ export default function Game(props)  {
             //console.log(updatedPlayers);
         });
 
-        socket.on('game_started', (data) => {
-            setInGame(data);
-            console.log("game started: " + inGame);
-        });
-
         socket.on("receive_position", (data) => {
-            opponent.posY = data;
-            console.log("Client-> opp X:" + opponent.posX + " opp Y: " + opponent.posY);
+            opponent.posY = data.posY;
         });
 
         socket.on('receive_ball_pos', (newBall) => {
@@ -321,7 +314,6 @@ export default function Game(props)  {
 
             document.getElementById('me').textContent = leftScore
             document.getElementById('opp').textContent = rightScore
-
         });
 
         socket.on('end_game', () => {
@@ -331,8 +323,10 @@ export default function Game(props)  {
             window.location.replace(env.URL_REACT);
         });
 
-        document.addEventListener('keydown', handleKeyDown);
-        document.addEventListener('keyup', handleKeyUp);
+        if (!endGame) {
+            document.addEventListener('keydown', handleKeyDown);
+            document.addEventListener('keyup', handleKeyUp);
+        }
             
         // Nettoyage de l'écoute lorsque le composant se démonte
         return () => {
@@ -345,22 +339,18 @@ export default function Game(props)  {
             socket.off('receive_position');
             socket.off('receive_ball_pos');
             socket.off('receive_score');
+            socket.off('end_game');
         };
 
     }, [  ]);
-   // }, [ inGame, startedGame ]);
     
     return (
         <Canvas 
             width="800"
             height="600"
-            // sizeScreen={sizeScreen}
-            // updateScreen={updateScreen}
             me={me}
             opponent={opponent}
             ball={ball}
-            //inGame= {inGame}
-            //startedGame= {startedGame}
         /> 
     );
 }

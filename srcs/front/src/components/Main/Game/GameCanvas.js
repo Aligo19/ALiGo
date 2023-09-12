@@ -4,7 +4,6 @@ import {extractColors} from "../../../utils"
 
 
 export default function Canvas({me, opponent, ball,  ...props}) {
-//export default function Canvas({me, opponent, ball, inGame, startedGame, ...props}) {
 	const ref = useRef(null);
 	let canvas = ref.current;
 
@@ -42,8 +41,6 @@ export default function Canvas({me, opponent, ball,  ...props}) {
 		context.fillText(player.name, (def.WIN_W / 4 *3), 200);	
 	};
 
-	
-	//undefined meme apres instansiation voir ce que je fais mal
 	const drawBall = (context) => {
 		if (ball) {
 			//draw ball
@@ -70,54 +67,21 @@ export default function Canvas({me, opponent, ball,  ...props}) {
 			drawPlayerRight(context, me);
 		}
 
-		// if (!inGame) {
-		// 	context.fillText("Waiting another player to join", def.WIN_W / 2, def.WIN_H / 2);
-		// }
-
-		// if (inGame && !startedGame) {
-		// 	context.fillText("Player left press p to start", def.WIN_W / 2, def.WIN_H / 2);
-		// }
-
 		drawBall(context);
-		
-		//console.log(start);
 
 		requestAnimationFrame(drawAll);
 	};
 
-	// const handleResize = () => {
-	// 	const newWidth = canvas.clientWidth;
-  	// 	const newHeight = canvas.clientHeight;
-
-	// 	updateScreen({
-	// 		...sizeScreen,
-	// 		width: newWidth,
-	// 		height: newHeight
-	// 	});
-
-	// 	canvas.width = newWidth;
-	// 	canvas.height = newHeight;
-
-	// 	console.log("client canva w: " + canvas.clientWidth);
-	// 	console.log("client canva h: " + canvas.clientHeight);
-	// 	console.log("canva w: " + canvas.width);
-	// 	console.log("canva h: " + canvas.height);
-	// 	console.log("sizeScreen w: " + sizeScreen.width);
-	// 	console.log("sizeScreen h: " + sizeScreen.height);
-	// };
-	
 	useEffect(() => {
 		//dessiner tous les elements q utiliser dqns lq boucleaui servira d anim
 		const animationFrameId = requestAnimationFrame(drawAll);
-		//window.addEventListener('resize', handleResize);
-		//start = inGame;
+
 		
 		return () => {
 			cancelAnimationFrame(animationFrameId);
 		};
 	
 	}, [  ]);
-	//}, [ inGame, startedGame ]);
 
 	return (
 		<div className="GameCanvas">

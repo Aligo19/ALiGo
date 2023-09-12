@@ -71,30 +71,24 @@ io.on("connection", (socket) => {
                 roomName: objMatch.ID
             };
             rooms[roomName].status = true;
-
-            io.to(roomName).emit('game_started', true);
         }
 
         //on passait player avant et ca marchait 
         io.to(roomName).emit('update_players', rooms[roomName].players);
 
-        console.log("player: " + Object.keys(rooms[roomName].players) + " | in room:" + roomName);
     });
 
     socket.on('join_spectator', (roomName) => {
         //envoier une var dans client pour qu il n ait pas acces au input
         //rooms[roomName].push(socket.id);
-        console.log("spsect: " + Object.keys(rooms[roomName].spectators) + " | in room:" + roomName);
         socket.join(roomName);
         io.to(roomName).emit('update_players', rooms[roomName].players);
 
     });
 
-    socket.on('send_position', (data, roomName) => {
-        // Diffusez la nouvelle position à tous les autres joueurs sauf l'expéditeur
-        console.log("Server-> client X:" + opponent.posX + " client Y: " + opponent.posY);
-
-        socket.to(roomName).emit('receive_position', data);
+    socket.on('send_position', (me, roomName, opponent) => {
+        socket.to(roomName).emit('receive_position', me);
+        socket.to(roomName).emit('rec_pos_spec', me, opponent);
     });
     
     socket.on('send_ball_pos', (data, roomName) => {

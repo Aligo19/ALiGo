@@ -9,6 +9,7 @@ import MessageCanvas from "./components/Main/MessageCanvas";
 import UserInfo from "./components/Main/UserInfo";
 import Login from './components/Main/Login';
 import Game from './components/Main/Game';
+import GameSpec from './components/Main/GameSpec';
 import MessageJoinGame from './components/Main/MessageJoinGame';
 
 const clock = 500;
@@ -823,7 +824,7 @@ export default function App() {
 							{gchatComponents}
 						</div>
 					</div>
-					{((currentView === "game") ? <Game spec={spec} roomName={idGame}/> : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup :(currentView === "login") ? <Login Pseudo='' Avatar='' update={update} />:(currentView === "gestion") ? gestion : (currentView === "gameFriend") ? friend : (currentView === "stream") ? streamMatch : ( <div className='EmptyCanvas'></div>))}
+					{((currentView === "game") ? ((!spec) ? <GameSpec roomName={idGame}/> : <Game spec={spec} roomName={idGame}/>) : (currentView === "messages") ? messages:(currentView === "addPerson") ? createGroup :(currentView === "login") ? <Login Pseudo='' Avatar='' update={update} />:(currentView === "gestion") ? gestion : (currentView === "gameFriend") ? friend : (currentView === "stream") ? streamMatch : ( <div className='EmptyCanvas'></div>))}
 					{userInfoComponents}
 				</div>
 	}
