@@ -29,6 +29,23 @@ export class MatchController {
 /****************************************/
 @Get('/delete/:id')
 async lotre(@Param('id', ParseIntPipe) id: number) {
+  Logger.log("test", "test")
+
+  let matches = await this.matchService.getMatchById(id);
+  const user1 = await this.userService.getUserById(matches.ID_user1.ID);
+  const user2 = await this.userService.getUserById(matches.ID_user1.ID);
+    matches.Status = 1;
+    let convs1:any = await this.convService.getConversationsByUserId(user1.ID)
+    let convs2:any = await this.convService.getConversationsByUserId(user2.ID)
+    let conv;
+    for (let i1 = 0; i1 < convs1.length; i1++)
+      for (let i2 = 0; i2 < convs2.length; i2++)
+        if (convs1[i1].ID === convs2[i2].ID && convs1[i1].Status === 2)
+          conv = convs1[i1]
+    conv = await this.convService.getConvById(conv.ID);
+    conv.Messages = conv.Messages.filter(message => message.Button !== true);
+    conv.save();
+  await this.matchService.updateMatch(matches);
   await this.matchService.deleteMatch(id)
 }
 
