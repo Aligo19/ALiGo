@@ -184,7 +184,8 @@ export default function Game(props: GameProps) {
       sendScore();
     }
 
-    if (leftScore === 1 || rightScore === 1) {
+    if (leftScore === 5 || rightScore === 5) {
+      endGame = true;
       if (me.isLeft) {
         sendRequest(leftScore, rightScore, me);
       }
@@ -234,9 +235,9 @@ export default function Game(props: GameProps) {
 
     checkGoal();
 
-    sendBallPosition();
-
+    
     if (!endGame) {
+      sendBallPosition();
       req = requestAnimationFrame(updateBallPosition);
     } else {
       cancelAnimationFrame(req);

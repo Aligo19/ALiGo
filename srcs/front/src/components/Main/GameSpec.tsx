@@ -4,21 +4,22 @@ import { def } from "./Game/Constants";
 import Canvas from './Game/GameCanvas';
 import axios from 'axios';
 import env from "react-dotenv";
+import React from 'react';
 const socket = io(env.URL_RED2);
 
 //si spectator envoyer un props props.spec a false sinon true et ajouter un roomID si spectator
-export default function GameSpec(props)  {
-	sessionStorage.setItem('idConv', 0);
+export default function GameSpec(props:any )  {
+	sessionStorage.setItem('idConv', '0');
 
 	const ref=useRef();
     
-    let players = {};
-    let playerLeft;
-    let playerRight;
+    let players: { [key: string]: any } = {};
+    let playerLeft:any;
+    let playerRight:any;
     let endGame = false;
     let rightScore = 0;
     let leftScore = 0;
-    let req;
+    let req:any;
     
     const ball = {
         x: 20, 
@@ -42,6 +43,7 @@ export default function GameSpec(props)  {
         roomName: "",
         name: "",
         id: 0,
+        skin: 0
     };
     
     const right = {
@@ -56,6 +58,7 @@ export default function GameSpec(props)  {
         roomName: "",
         name: "",
         id: 0,
+        skin: 0
     };
     
 
@@ -105,7 +108,7 @@ export default function GameSpec(props)  {
                 if (!players[id])
                 {
                     if (backendPlayer.isLeft) {
-                        left.id = id;
+                        left.id = parseInt(id);
                         left.posX = backendPlayer.x;
                         left.isLeft = backendPlayer.isLeft;
                         left.name = backendPlayer.name;
@@ -113,7 +116,7 @@ export default function GameSpec(props)  {
                         left.skin = backendPlayer.skin;
                     }
                     else {
-                        right.id = id;
+                        right.id = parseInt(id);
                         right.posX = backendPlayer.x;
                         right.isLeft = backendPlayer.isLeft;
                         right.name = backendPlayer.name;
@@ -166,8 +169,15 @@ export default function GameSpec(props)  {
             leftScore = lfScore;
             rightScore = rtScore;
 
-            document.getElementById('me').textContent = leftScore
-            document.getElementById('opp').textContent = rightScore
+            const meElement = document.getElementById('me');
+            if (meElement) {
+                meElement.textContent = leftScore.toString();
+            }
+
+            const oppElement = document.getElementById('opp');
+            if (oppElement) {
+                oppElement.textContent = rightScore.toString();
+            }
         });
 
         socket.on('end_game', () => {

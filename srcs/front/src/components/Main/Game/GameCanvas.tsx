@@ -1,15 +1,16 @@
 import { def } from "./Constants";
 import { useEffect, useRef } from 'react';
 import {extractColors} from "../../../utils"
+import React from "react";
 
 
-export default function Canvas({me, opponent, ball,  ...props}) {
+export default function Canvas({me, opponent, ball,  ...props}: any) {
 	const ref = useRef(null);
-	let canvas = ref.current;
+	let canvas:any = ref.current;
 
 	let start;
 
-	const drawBackground = (context) => {
+	const drawBackground = (context:any) => {
 		context.clearRect(0, 0, def.WIN_W, def.WIN_H);
 		context.fillStyle = 'black';
 		context.fillRect(0, 0, def.WIN_W, def.WIN_H);
@@ -19,7 +20,7 @@ export default function Canvas({me, opponent, ball,  ...props}) {
 		context.fillRect(def.WIN_W/2 - 2, 0, 4, def.WIN_H);
 	};
 
-	const drawPlayerLeft = (context, player) => {
+	const drawPlayerLeft = (context:any, player:any) => {
 		//draw player
 		if(player.skin)
 			context.fillStyle = extractColors(player.skin).color;
@@ -30,7 +31,7 @@ export default function Canvas({me, opponent, ball,  ...props}) {
 		context.fillText(player.name, def.WIN_W / 4, 200);
 	};
 	
-	const drawPlayerRight = (context, player) => {
+	const drawPlayerRight = (context:any, player:any) => {
 		//draw player
 		if(player.skin)
 			context.fillStyle = extractColors(player.skin).color;
@@ -41,7 +42,7 @@ export default function Canvas({me, opponent, ball,  ...props}) {
 		context.fillText(player.name, (def.WIN_W / 4 *3), 200);	
 	};
 
-	const drawBall = (context) => {
+	const drawBall = (context:any) => {
 		if (ball) {
 			//draw ball
 			context.fillStyle = 'white';

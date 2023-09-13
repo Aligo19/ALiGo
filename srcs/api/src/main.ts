@@ -9,9 +9,9 @@ import * as dotenv from 'dotenv';
 async function bootstrap() {
   dotenv.config();
   const app = await NestFactory.create(AppModule);
-  await seedUsers();
-  await seedMatches();
-  await seedConvs();
+  // await seedUsers();
+  // await seedMatches();
+  // await seedConvs();
     // Configuration des options CORS
     const corsOptions: CorsOptions = {
       origin: [process.env.URL_RED, process.env.URL_RED2],
