@@ -70,7 +70,7 @@ export default function Game(props: GameProps) {
 
   const handleKeyDown = (event: any) => {
     if (isPlayer && twoConnected) {
-      if (me.isLeft && event.key === 'p' && startedGame === false) {
+      if (me.isLeft && event.key === 'p' && startedGame == false) {
         playerLeft = me.isLeft ? me : opponent;
         playerRight = me.isLeft ? opponent : me;
         setStartedGame(true);

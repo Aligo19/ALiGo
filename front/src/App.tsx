@@ -56,7 +56,7 @@ export default function App() {
 
   	async function fetchUserInfo() {
 		try {
-			let id = sessionStorage.getItem('idUserInfos');
+			let id = parseInt(sessionStorage.getItem('idUserInfos') || 'null');
 			let userProfile = await axios.get(env.URL_API + `/users/${id}`);
 			if (!userProfile || !userProfile.data || userProfile.status < 200 || userProfile.status >= 300 || userProfile.data.status)
 				return ;
@@ -118,7 +118,7 @@ export default function App() {
 						email: response.email,
 						pseudo: response.Pseudo
 					})
-					sessionStorage.setItem('userData', JSON.stringify({data: "bouh"}));
+					// sessionStorage.setItem('userData', JSON.stringify({data: "bouh"}));
 				}
 				else if (sessionStorage.getItem('status') !== '2')
 					sessionStorage.setItem('userData', JSON.stringify(response));
@@ -427,7 +427,7 @@ export default function App() {
 		}
 
 		let button;
-		if (datas.Status !== 2 && datas.Admins && datas.Admins.find((user:any) => user.ID === datasUser.ID))
+		if (datas.Status !== 2 && datas.Admin && datas.Admin.find((user:any) => user.ID === datasUser.ID))
 			button = <button className="ConvSettings-btn" onClick={() => {control(datas)}}>Settings</button>;
 		else
         {
@@ -754,6 +754,7 @@ export default function App() {
 		out = out.data;
 		sessionStorage.setItem('userData', JSON.stringify(out));
 		sessionStorage.setItem('status', '0');
+		window.location.replace(env.URL_REACT)
 	}
 
 	function handleAddFriend() {

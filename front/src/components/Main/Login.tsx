@@ -7,7 +7,6 @@ import { extractColors } from "../../utils";
 export default function Login(props: any) {
     const [user, setUser] = useState<any>({
         Pseudo: props.Pseudo,
-        Avatar: props.Avatar,
         update: props.update,
         email: props.email,
         Actual_skin: props.Actual_skin
@@ -21,8 +20,8 @@ export default function Login(props: any) {
     };
 
     async function update() {
-        await user.update(user);
         await AvatarUpload();
+        await user.update(user);
     }
 
     async function AvatarUpload() {
@@ -31,12 +30,12 @@ export default function Login(props: any) {
             formData.append('file', file);
         }
         try {
-            await axios.post(env.URL_API + '/users/' + props.Pseudo, formData, {
+            await axios.post(env.URL_API + '/users/' + user.Pseudo, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            const userData = await axios.get(env.URL_API + `/users/${props.Pseudo}/pseudo`);
+            const userData = await axios.get(env.URL_API + `/users/${user.Pseudo}/pseudo`);
             sessionStorage.setItem('userData', JSON.stringify(userData.data));
         } catch (error) {
             console.error('Error uploading file:', error);
