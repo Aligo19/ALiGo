@@ -70,6 +70,7 @@ export default function Game(props: GameProps) {
 
   const handleKeyDown = (event: any) => {
     if (isPlayer && twoConnected) {
+      // eslint-disable-next-line 
       if (me.isLeft && event.key === 'p' && startedGame == false) {
         playerLeft = me.isLeft ? me : opponent;
         playerRight = me.isLeft ? opponent : me;
@@ -194,17 +195,17 @@ export default function Game(props: GameProps) {
     if (ball.posY <= 0 || ball.posY + ball.y >= def.WIN_H) {
       ball.velY = -ball.velY;
     }
-    if (( (ball.posX <= playerLeft.posX + playerLeft.x) &&
-          (ball.posX + ball.x >= playerLeft.posX) &&
-          (ball.posY <= playerLeft.posY + playerLeft.y) &&
-          (ball.posY + ball.y >= playerLeft.posY)) ||
-        ( (ball.posX + ball.x >= playerLeft.posX) &&
-          (ball.posX <= playerLeft.posX + playerLeft.x) &&
-          (ball.posY <= playerLeft.posY + playerLeft.y) &&
-          (ball.posY >= playerLeft.posY - ball.y)))
-    {
-      ball.velY = -ball.velY;
-    }
+    // if (( (ball.posX <= playerLeft.posX + playerLeft.x) &&
+    //       (ball.posX + ball.x >= playerLeft.posX) &&
+    //       (ball.posY <= playerLeft.posY + playerLeft.y) &&
+    //       (ball.posY + ball.y >= playerLeft.posY)) ||
+    //     ( (ball.posX + ball.x >= playerLeft.posX) &&
+    //       (ball.posX <= playerLeft.posX + playerLeft.x) &&
+    //       (ball.posY <= playerLeft.posY + playerLeft.y) &&
+    //       (ball.posY >= playerLeft.posY - ball.y)))
+    // {
+    //   ball.velY = -ball.velY;
+    // }
     if (( (ball.posX <= playerLeft.posX + playerLeft.x) &&
           (ball.posY + ball.y >= playerLeft.posY) &&
           (ball.posY <= playerLeft.posY + playerLeft.y)) ||
@@ -315,6 +316,11 @@ export default function Game(props: GameProps) {
       const user = JSON.parse(sessionStorage.getItem('userData') || '{}');
       sessionStorage.setItem('idConv', '0');
       sessionStorage.setItem('idUserInfos', user.ID);
+      axios.post(env.URL_API + `/matches/end`, {
+        "Score_user1": leftScore,
+        "Score_user2": rightScore,
+        "Id": me.roomName
+      });
       window.location.replace(env.URL_REACT);
     });
 

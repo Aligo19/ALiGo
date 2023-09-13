@@ -28,7 +28,9 @@ async lotre(@Param('id', ParseIntPipe) id: number) {
 
   let matches = await this.matchService.getMatchById(id);
   const user1 = await this.userService.getUserById(matches.ID_user1.ID);
-  const user2 = await this.userService.getUserById(matches.ID_user1.ID);
+  const user2 = await this.userService.getUserById(matches.ID_user2.ID);
+  this.userService.updateGameStatus(user1, false)
+  this.userService.updateGameStatus(user2, false)
     matches.Status = 1;
     let convs1:any = await this.convService.getConversationsByUserId(user1.ID)
     let convs2:any = await this.convService.getConversationsByUserId(user2.ID)

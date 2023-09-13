@@ -76,12 +76,12 @@ io.on("connection", (socket:any) => {
         for (const roomName in rooms) {
             const room = rooms[roomName];
             if (socket.id in room.players)  {
+                io.to(roomName).emit('end_game');
                 console.log("nb player in room: " + Object.keys(rooms[roomName].players).length);
                 io.to(roomName).emit('update_players', rooms[roomName].players);
-                io.to(roomName).emit('end_game');
                 
                 delete rooms[roomName].players[socket.id];
-
+                axios.get(process.env.URL_API + `/matches/delete/${roomName}`);
                 if (Object.keys(rooms[roomName].players).length === 0) {
                     if (!rooms[roomName].status) {
                         axios.get(process.env.URL_API + `/matches/delete/${roomName}`);

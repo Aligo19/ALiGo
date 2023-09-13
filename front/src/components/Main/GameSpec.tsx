@@ -151,6 +151,8 @@ export default function GameSpec(props:any )  {
     
     return (
         <Canvas
+        width="800"
+        height="600"
             me={left}
             opponent={right}
             ball={ball}

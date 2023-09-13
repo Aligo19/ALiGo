@@ -23,3 +23,5 @@
 /reactnpm-debug.log*
 /reactyarn-debug.log*
 /reactyarn-error.log*
+
+.env
