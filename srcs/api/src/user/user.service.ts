@@ -132,10 +132,7 @@ export class UserService {
   async addFriend(user: User, friend: User): Promise<User> {
     if (user.Friends.find(f => f.Pseudo === friend.Pseudo))
       throw new Error('User already friend');
-    if (user.Blocked.find(f => f.Pseudo === friend.Pseudo))
-      throw new Error('User blocked');
-    if (friend.Blocked.find(f => f.Pseudo === user.Pseudo))
-      throw new Error('User blocked');
+    user.Blocked = user.Blocked.filter(f => f.Pseudo !== friend.Pseudo);
     if (user.Friends.length === 0)
       user.Global_skin = [...user.Global_skin, hex(red_New_friend, green_New_friend, blue_New_friend)]
     user.Friends = [...user.Friends, friend];

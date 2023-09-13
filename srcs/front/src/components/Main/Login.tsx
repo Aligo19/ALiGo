@@ -9,7 +9,7 @@ export default function Login(props: any) {
         Pseudo: props.Pseudo,
         Avatar: props.Avatar,
         update: props.update,
-        email: '',
+        email: props.email,
         Actual_skin: props.Actual_skin
     });
 

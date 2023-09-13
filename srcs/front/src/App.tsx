@@ -71,8 +71,8 @@ export default function App() {
 			setTimeouIdUserInfos(setTimeout(() => fetchUserInfo(), clock));
 		} catch (error) {
 			console.error("Error getting user infos: ", error);
-			// if (sessionStorage.getItem('userData'))
-			// 	window.location.replace(env.URL_REACT + '/error.html');
+			if (sessionStorage.getItem('userData'))
+				window.location.replace(env.URL_REACT + '/error.html');
 
 		}
 	}
@@ -86,8 +86,8 @@ export default function App() {
 			setMatchHisto(response.data);
 		} catch (error) {
 			console.error("Error getting match historique: ", error);
-			// if (sessionStorage.getItem('userData'))
-			// 	window.location.replace(env.URL_REACT + '/error.html');
+			if (sessionStorage.getItem('userData'))
+				window.location.replace(env.URL_REACT + '/error.html');
 		}
 	}
 
@@ -151,8 +151,8 @@ export default function App() {
 				setTimeoutIdConvs( await setTimeout(async () => { fetchChats() }, clock));
 			} catch (error) {
 				console.error("Error fetching chats:", error);
-				// if (sessionStorage.getItem('userData'))
-				// 	window.location.replace(env.URL_REACT + '/error.html');
+				if (sessionStorage.getItem('userData'))
+					window.location.replace(env.URL_REACT + '/error.html');
 			}
 		}
 
@@ -166,7 +166,7 @@ export default function App() {
 		test();
 	}, []);
 
-	const userInfoComponents = <UserInfo name={userData.Pseudo} avatar={userData.Avatar} lstCo={userData.Last_connection} level={userData.Elo} winnb={userData.Wins} losenb={userData.Loses} histo={matchHisto} Game_status={false}/>;
+	const userInfoComponents = <UserInfo name={userData.Pseudo} avatar={userData.Avatar} lstCo={userData.Last_connection} level={userData.Elo} winnb={userData.Wins} losenb={userData.Loses} histo={matchHisto} Game_status={userData.Game_status}/>;
 	let pchatComponents = [],
 		gchatComponents = [];
 	if (pchats)
@@ -187,6 +187,7 @@ export default function App() {
 		sessionStorage.setItem('idConv', '0');
 		setCurrentView("gestion");
 		let user = '';
+		let modifPwd:any  = '';
 		if (datasConv.Users)
 		{
 			user = datasConv.Users.map((user:any, index:any) => {
@@ -210,9 +211,25 @@ export default function App() {
 							sessionStorage.setItem('idConv', datasConv.ID);
 							window.location.reload();
 						}}>DEMOTE</button>;
+						modifPwd = 	<div>
+										<input id="pwd"></input>
+										<button onClick={async () => {
+											let value:any = document.getElementById("pwd") as HTMLInputElement | null;
+											if(value)
+											{
+												value = value.value
+												console.log(value);
+												await axios.post(env.URL_API + `/conv/${datasConv.ID}/pwd`, {
+													value});
+												sessionStorage.setItem('idConv', datasConv.ID);
+												window.location.reload();
+											}
+										}}>
+											Change password
+										</button>
+									</div>
 					}
 				}
-
 				else
 					buttonAdmin = <button className="ConvSettingsContent-btn" onClick={async () => {
 						await axios.get(env.URL_API + `/conv/${datasConv.ID}/admins/${user.ID}`);
@@ -289,6 +306,7 @@ export default function App() {
 						<div align-content="stretch">
 							{user}
 						</div>
+						{modifPwd}
 						{addUserInput}
 						<button className="ConvSettingsBack-btn" onClick={async () => {
 							sessionStorage.setItem('statusConv', '0');
@@ -334,8 +352,8 @@ export default function App() {
 		catch (error)
 		{
 			console.log("coucou");
-			// if (sessionStorage.getItem('userData'))
-			// 	window.location.replace(env.URL_REACT + '/error.html');
+			if (sessionStorage.getItem('userData'))
+				window.location.replace(env.URL_REACT + '/error.html');
 		}
 		if (!datas)
 		{
@@ -401,9 +419,12 @@ export default function App() {
 		{
 			newMessages = datas.Messages.map((item:any, index: number) => {
 				const user = datas.Users.find((user:any) => user.ID === item.ID_user);
-				if (item.Button && item.Button === true)
-					return (<MessageJoinGame content={item.data} sent={datasUser.ID === item.ID_user} user={user} joinFriend={joinFriend}/>);
-				return (<MessageCanvas content={item.data} sent={datasUser.ID === item.ID_user} user={user}/>);
+				if (!datasUser.Blocked.find((f:any) => f.Pseudo === user.Pseudo))
+				{
+					if (item.Button && item.Button === true)
+						return (<MessageJoinGame content={item.data} sent={datasUser.ID === item.ID_user} user={user} joinFriend={joinFriend}/>);
+					return (<MessageCanvas content={item.data} sent={datasUser.ID === item.ID_user} user={user}/>);
+				}
 			});
 		}
 
@@ -589,8 +610,8 @@ export default function App() {
 								</div>);
 		} catch (error) {
 			console.error("Error while getting stream: ", error);
-			// if (sessionStorage.getItem('userData'))
-			// window.location.replace(env.URL_REACT + '/error.html');
+			if (sessionStorage.getItem('userData'))
+				window.location.replace(env.URL_REACT + '/error.html');
 		};
 		// if (timeoutStream)
 		// 	clearTimeout(timeoutStream);
@@ -723,8 +744,8 @@ export default function App() {
 				selectedPeople.push(user.ID);
 			} catch (error) {
 				console.log("error");
-				// if (sessionStorage.getItem('userData'))
-				// 	window.location.replace(env.URL_REACT + '/error.html');
+				if (sessionStorage.getItem('userData'))
+					window.location.replace(env.URL_REACT + '/error.html');
 			}
 		}
 		try {
@@ -739,8 +760,8 @@ export default function App() {
 			sessionStorage.setItem('idConv', String(out.ID));
 		} catch (error) {
 			console.log("error");
-			// if (sessionStorage.getItem('userData'))
-			// 	window.location.replace(env.URL_REACT + '/error.html');
+			if (sessionStorage.getItem('userData'))
+				window.location.replace(env.URL_REACT + '/error.html');
 		}
 	}
 
@@ -783,7 +804,7 @@ export default function App() {
 	if (sessionStorage.getItem('status') == '1')
 	{
 		const localUser = JSON.parse(sessionStorage.getItem('userData') || 'null');
-		content = <Login Pseudo={localUser.Pseudo} Avatar={localUser.Avatar} update={update} Actual_skin={localUser.Actual_skin} Global_skin={localUser.Global_skin} />;
+		content = <Login email={localUser.email} Pseudo={localUser.Pseudo} Avatar={localUser.Avatar} update={update} Actual_skin={localUser.Actual_skin} Global_skin={localUser.Global_skin} />;
 	}
 	else if (sessionStorage.getItem('status') == '2')
 	{

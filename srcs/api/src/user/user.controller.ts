@@ -138,9 +138,15 @@ export class UserController {
             output =  await this.userService.getUserBy19Id(user.data["login"]);
             logger = ["The request is ok", "Request: GET[ /users/:code/login ]"];
             if (output == null)
-                output = (await this.userService.createUser(user.data["login"], user.data["login"], user.data["image"]["link"]));
+            {
+              output = (await this.userService.createUser(user.data["login"], user.data["login"], user.data["image"]["link"]));
+              await this.userService.updateDate(output);
+              output = { data: output}
+            }
+            else{
+              await this.userService.updateDate(output);
+            }
             console.log('tre')
-            await this.userService.updateDate(output);
         } catch (error) {
             logger = ["The request doesn't work", output];
             output = error;
@@ -196,7 +202,6 @@ export class UserController {
                         "error": "Bad Request"
                 }
                 return JSON.stringify(out);
-
             }
             output = await this.userService.addFriend(user, friend);
             if (output == null)
@@ -225,6 +230,7 @@ export class UserController {
       if (!user || !blockedUser)
         throw new NotFoundException('User not found');
       logger = ["The request is ok", "Request: POST[ /users/:id/block ]"];
+      output = await this.userService.blockUser(user, blockedUser);
       output = await this.userService.removeFriend(user, blockedUser);
     } catch (error) {
       logger = ["The request doesn't work", "Request: POST[ /users/:id/block ]"];

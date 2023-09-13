@@ -215,6 +215,19 @@ export class ConvService {
     return this.convRepository.save(conv);
   }
 
+  async updatePwd(conv: Conv, pwd:string)
+  {
+    if (pwd !== null)
+    {
+        const hashedPassword = await this.hashPassword(pwd);
+        conv.Password = hashedPassword;
+    }
+    else
+        conv.Password = null;
+    conv.Status = (pwd) ? 1 : 0;
+    conv.save();
+  }
+
   //le status de la conv doit etre 2 et doit contenir dans ses users idUser et idFriend
   async removeConv(idUser: number, idFriend: number): Promise<Conv> {
     const conv = await this.convRepository.find({

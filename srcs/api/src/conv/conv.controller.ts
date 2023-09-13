@@ -3,6 +3,7 @@ import { ConvService } from './conv.service';
 import { CreateConvDto } from './create-conv.dto';
 import { UserService } from 'src/user/user.service';
 import { Message } from './message.objet';
+import { Conv } from './conv.entity';
 
 @Controller('conv')
 export class ConvController {
@@ -52,6 +53,24 @@ export class ConvController {
     }
     Logger.log(logger[0], logger[1]);
     return JSON.stringify(output);
+  }
+
+  @Post(':id/pwd')
+  async modifPwd(@Param('id', ParseIntPipe) id : number, @Body() pwd: string)
+  {
+    try {
+      if (pwd)
+      {
+        let conv:Conv = await this.convService.getConvById(id)
+        Logger.log("conv", pwd)
+        if (!conv)
+          return ;
+        this.convService.updatePwd(conv, (pwd['value'].length === 0) ? null: pwd['value']);
+      }
+      
+    } catch (error) {
+        Logger.log(error)
+    }
   }
 
   /**
