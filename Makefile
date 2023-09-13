@@ -4,7 +4,7 @@
 
 SRCS 			=	./srcs
 DOCKER			=	docker
-COMPOSE 		=	cd srcs/ &&  docker-compose
+COMPOSE 		=	docker-compose
 DATA_PATH 		=	./srcs/data
 
 ##############
@@ -25,8 +25,8 @@ all		:	build up
 # build or rebuild services
 build	:
 			@printf "${BLUE}%-30s${DEFAULT}${YELLOW}%-30s${DEFAULT}" "Building dockers" "in progress"
-#			@cd srcs/ && sudo docker-compose build
-			@cd srcs/ && docker-compose build
+			@${COMPOSE} up --build
+#			@cd srcs/ && docker-compose build
 			@printf "${START_FIRST}${BLUE}%-30s%-30s${DEFAULT}\n" "Building dockers" "is done"
 
 # Create and start containers

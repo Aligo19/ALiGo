@@ -1,25 +1,25 @@
 .DS_Store
-srcs/data
+/data
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-srcs/react/node_modules/
-srcs/react/.pnp
-srcs/react.pnp.js
+/react/node_modules/
+/react/.pnp
+/react.pnp.js
 
 # testing
-/srcs/react/coverage
+/react/coverage
 
 # production
-/srcs/react/build
+/react/build
 
 # misc
-/srcs/react.DS_Store
-/srcs/react.env.local
-/srcs/react.env.development.local
-/srcs/react.env.test.local
-/srcs/react.env.production.local
+/react.DS_Store
+/react.env.local
+/react.env.development.local
+/react.env.test.local
+/react.env.production.local
 
-/srcs/reactnpm-debug.log*
-/srcs/reactyarn-debug.log*
-/srcs/reactyarn-error.log*
+/reactnpm-debug.log*
+/reactyarn-debug.log*
+/reactyarn-error.log*
