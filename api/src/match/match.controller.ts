@@ -22,11 +22,6 @@ const blue_First_Win = 120;
 export class MatchController {
   constructor(private matchService: MatchService, private userService: UserService, private convService: ConvService) {}
 
-/****************************************/
-/*                                      */
-/*   GET                                */
-/*                                      */
-/****************************************/
 @Get('/delete/:id')
 async lotre(@Param('id', ParseIntPipe) id: number) {
   Logger.log("test", "test")
@@ -63,11 +58,7 @@ async sdf() {
   Logger.log(logger[0], logger[1]);
   return JSON.stringify(output);
 }
-/**
- * @description Get match with id
- * @param id 
- * @returns 
- */
+
   @Get(':id')
   async getMatchById(@Param('id', ParseIntPipe) id: number): Promise<Match> {
     let output, logger;
@@ -84,11 +75,6 @@ async sdf() {
     return output;
   }
 
-/**
- * @description Get all matches of id user
- * @param userId 
- * @returns 
- */
   @Get(':userId/user')
   async getMatchesByUserId(@Param('userId', ParseIntPipe) userId: number): Promise<String> {
     let output, logger;
@@ -103,13 +89,6 @@ async sdf() {
     return JSON.stringify(output);
   }
 
-
-  
-/**
- * @description Create a new match
- * @param createMatchDto 
- * @returns 
- */
   @Get(':id/search')
   async createMatch(@Param('id', ParseIntPipe) id: number) {
     let output, logger;
@@ -187,18 +166,6 @@ async sdf() {
     return JSON.stringify(output);
   }
 
-  /****************************************/
-  /*                                      */
-  /*   POST                               */
-  /*                                      */
-  /****************************************/
-  /**
-   * @description End a match
-   * @param match
-   * @returns
-   * 
-   * TODO: Add a winner and loser to the match and update the elo of the players and the status
-   **/
     @Post('/end')
     async endMatch(@Body() matchDatas: EndMatchDto) {
         let output, logger, match;

@@ -7,7 +7,6 @@ import { Message } from './message.objet';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 
-
 @Injectable()
 export class ConvService {
     constructor(
@@ -175,10 +174,8 @@ export class ConvService {
         });
         if (!conv)
             throw new Error('Conversation not found');
-
         if (conv && conv.Admin && conv.Admin.length)
             conv.Admin = conv.Admin.filter(user => user.ID !== userId);
-
         return this.convRepository.save(conv);
     }
 
@@ -189,10 +186,8 @@ export class ConvService {
         });
         if (!conv)
             throw new Error('Conversation not found');
-
         if (conv && conv.Muted && conv.Muted.length)
             conv.Muted = conv.Muted.filter(user => user.ID !== userId);
-
         return this.convRepository.save(conv);
     }
 
@@ -206,12 +201,10 @@ export class ConvService {
     });
     if (!conv)
       throw new Error('Conversation not found');
-
     if (!conv.Messages)
       conv.Messages = [message];
     else
       conv.Messages.push(message);
-
     return this.convRepository.save(conv);
   }
 
@@ -228,7 +221,6 @@ export class ConvService {
     conv.save();
   }
 
-  //le status de la conv doit etre 2 et doit contenir dans ses users idUser et idFriend
   async removeConv(idUser: number, idFriend: number): Promise<Conv> {
     const conv = await this.convRepository.find({
         where : {Status: Equal(2)},

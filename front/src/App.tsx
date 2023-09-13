@@ -72,7 +72,6 @@ export default function App() {
 			console.error("Error getting user infos: ", error);
 			if (sessionStorage.getItem('userData'))
 				window.location.replace(env.URL_REACT + '/error.html');
-
 		}
 	}
 
@@ -218,7 +217,6 @@ export default function App() {
 											if(value)
 											{
 												value = value.value
-												console.log(value);
 												await axios.post(env.URL_API + `/conv/${datasConv.ID}/pwd`, {
 													value});
 												sessionStorage.setItem('idConv', datasConv.ID);
@@ -351,7 +349,6 @@ export default function App() {
 		}
 		catch (error)
 		{
-			console.log("coucou");
 			if (sessionStorage.getItem('userData'))
 				window.location.replace(env.URL_REACT + '/error.html');
 		}

@@ -9,17 +9,6 @@ import { Conv } from './conv.entity';
 export class ConvController {
   constructor(private convService: ConvService, private userService: UserService) {}
 
-/****************************************/
-/*                                      */
-/*   GET                                */
-/*                                      */
-/****************************************/
-
-/**
- * @description Get conv with id
- * @param id 
- * @returns 
- */
   @Get(':id')
   async getConvById(@Param('id', ParseIntPipe) id: number) {
     let output,
@@ -34,12 +23,7 @@ export class ConvController {
     Logger.log(logger[0], logger[1]);
     return JSON.stringify(output);
   }
-  
-/**
- * @description Get all convs with user id
- * @param id 
- * @returns 
- */
+
   @Get(':id/user')
   async getConvUsers(@Param('id', ParseIntPipe) id: number) {
     let output,
@@ -73,12 +57,6 @@ export class ConvController {
     }
   }
 
-  /**
- * @description Add banned to conv
- * @param id
- * @param bannedIds
- * @returns
-  */
   @Get(':id/banned/:bannedId')
   async addBannedToConv( @Param('id', ParseIntPipe) id: number, @Param('bannedId', ParseIntPipe) bannedId: number ) {
     let output, logger;
@@ -98,19 +76,6 @@ export class ConvController {
     return this.convService.checkPwd(id, pwd);
   }
 
-
-/****************************************/
-/*                                      */
-/*   POST                               */
-/*                                      */
-/****************************************/
-
-
-/**
- * @description Create a new conv
- * @param createConvDto
- * @returns
- */
   @Post()
   async createConv(@Body() createConvDto: CreateConvDto) {
     let output,
@@ -127,12 +92,6 @@ export class ConvController {
     return JSON.stringify(output);
   }
 
-/**
- * @description Add users to conv
- * @param id 
- * @param userIds 
- * @returns 
- */
   @Get(':id/users/:idUser')
   async addUsersToConv( @Param('id', ParseIntPipe) id: number, @Param('idUser', ParseIntPipe) userId: number ) {
     let output, logger;
@@ -149,12 +108,6 @@ export class ConvController {
     return JSON.stringify(output);
   }
 
-/**
- * @description Add admins to conv
- * @param id 
- * @param adminIds 
- * @returns 
- */
   @Get(':id/admins/:adminId')
   async addAdminsToConv( @Param('id', ParseIntPipe) id: number, @Param('adminId', ParseIntPipe) adminId: number) {
     let output, logger;
@@ -172,12 +125,6 @@ export class ConvController {
     return JSON.stringify(output);
   }
 
-/**
- * @description Add muteds to conv
- * @param id 
- * @param mutedIds 
- * @returns 
- */
   @Get(':id/muteds/:mutedId')
   async addMutedsToConv( @Param('id', ParseIntPipe) id: number, @Param('mutedId', ParseIntPipe) mutedId: number) {
     let output, logger;

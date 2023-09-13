@@ -12,52 +12,42 @@ export default function Canvas({me, opponent, ball,  ...props}: any) {
 		context.clearRect(0, 0, def.WIN_W, def.WIN_H);
 		context.fillStyle = 'black';
 		context.fillRect(0, 0, def.WIN_W, def.WIN_H);
-	
-		//ligne du centre
 		context.fillStyle = "white";
 		context.fillRect(def.WIN_W/2 - 2, 0, 4, def.WIN_H);
 	};
 
 	const drawPlayerLeft = (context:any, player:any) => {
-		//draw player
 		if(player.skin)
 			context.fillStyle = extractColors(player.skin).color;
 		else
 			context.fillStyle = "white";
 		context.fillRect(player.posX, player.posY, player.x, player.y);
-
 		context.fillText(player.name, def.WIN_W / 4, 200);
 	};
 	
 	const drawPlayerRight = (context:any, player:any) => {
-		//draw player
 		if(player.skin)
 			context.fillStyle = extractColors(player.skin).color;
 		else
 			context.fillStyle = "white";
 		context.fillRect(player.posX, player.posY, player.x, player.y);
-
 		context.fillText(player.name, (def.WIN_W / 4 *3), 200);	
 	};
 
 	const drawBall = (context:any) => {
 		if (ball) {
-			//draw ball
 			context.fillStyle = 'white';
 			context.fillRect(ball.posX, ball.posY, ball.x, ball.y);
 		}
 	};
 	
 	const drawAll = () => {
-		
 		canvas = ref.current;
 		const context = canvas.getContext('2d');
 		context.font = 'bold 20px Verdana, Arial, serif';
 		context.textAlign = 'center';
-
 		drawBackground(context);
 		if (me.isLeft) {
-
 			drawPlayerLeft(context, me);
 			drawPlayerRight(context, opponent);
 		}
@@ -65,17 +55,12 @@ export default function Canvas({me, opponent, ball,  ...props}: any) {
 			drawPlayerLeft(context, opponent);
 			drawPlayerRight(context, me);
 		}
-
 		drawBall(context);
-
 		requestAnimationFrame(drawAll);
 	};
 
 	useEffect(() => {
-		//dessiner tous les elements q utiliser dqns lq boucleaui servira d anim
 		const animationFrameId = requestAnimationFrame(drawAll);
-
-		
 		return () => {
 			cancelAnimationFrame(animationFrameId);
 		};

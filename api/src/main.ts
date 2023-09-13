@@ -12,7 +12,6 @@ async function bootstrap() {
   // await seedUsers();
   // await seedMatches();
   // await seedConvs();
-    // Configuration des options CORS
     const corsOptions: CorsOptions = {
       origin: [process.env.URL_RED, process.env.URL_RED2],
       methods: 'GET,POST,PATCH',

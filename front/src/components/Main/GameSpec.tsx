@@ -6,7 +6,6 @@ import env from "react-dotenv";
 import React from 'react';
 const socket = io(env.URL_RED2);
 
-//si spectator envoyer un props props.spec a false sinon true et ajouter un roomID si spectator
 export default function GameSpec(props:any )  {
 	sessionStorage.setItem('idConv', '0');
     
@@ -55,21 +54,15 @@ export default function GameSpec(props:any )  {
 
     const joinRoom = () => {
         console.log("join");
-        //voir si il faut faire une requete ou si on recup la roomName d une autre maniere
         socket.emit('join_spectator', props.roomName);
     };
 
-    useEffect(() => {
-        //console.log("win win X: " + sizeScreen.width + "win hei Y: " + sizeScreen.height);
-        
+    useEffect(() => {    
         joinRoom();
 
         socket.on('update_players', (backendPlayers:any) => {
-            // Mettre à jour les données des joueurs en fonction de backendPlayers
-
             for (const id in backendPlayers) {
                 const backendPlayer = backendPlayers[id];
-
                 if (!players[id])
                 {
                     if (backendPlayer.isLeft) {
@@ -92,11 +85,8 @@ export default function GameSpec(props:any )  {
                 }
             }
 
-            //supp le/les player si deconnexion
-           
             for (const id in players) {
                 if (!backendPlayers[id]) {
-                    //si doconnexion gerer comme lorsqu on clique sur trancescendqnce et quitte
                     console.log("the other player left the game " + players[id]);
 
                     let user = JSON.parse(sessionStorage.getItem('userData') || 'null')
@@ -135,7 +125,6 @@ export default function GameSpec(props:any )  {
             if (meElement) {
                 meElement.textContent = lfScore.toString();
             }
-
             const oppElement = document.getElementById('opp');
             if (oppElement) {
                 oppElement.textContent = rtScore.toString();
@@ -149,10 +138,8 @@ export default function GameSpec(props:any )  {
             window.location.replace(env.URL_REACT);
         });
 
-            
-        // Nettoyage de l'écoute lorsque le composant se démonte
+
         return () => {
-            //clear les ecoute du serveur
             socket.off('update_players');
             socket.off('rec_pos_spec');
             socket.off('receive_ball_pos');

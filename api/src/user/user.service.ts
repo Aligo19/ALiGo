@@ -160,11 +160,9 @@ export class UserService {
   }
 
   async updateUser(user: User): Promise<String> {
-    //verif if user exist
     let tmp = await this.getUserById(user.ID);
     if (!tmp)
       throw new Error('User not found');
-    //verif if pseudo exist
     tmp = await this.getUserByPseudo(user.Pseudo);
     if (tmp && tmp.ID != user.ID)
       throw new Error('Pseudo already exist');

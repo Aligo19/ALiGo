@@ -2,7 +2,6 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, BaseEnti
 import { User } from '../user/user.entity';
 import { Message } from './message.objet';
 
-
 @Entity()
 export class Conv extends BaseEntity{
   @PrimaryGeneratedColumn()

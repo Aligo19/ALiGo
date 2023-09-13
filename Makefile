@@ -20,7 +20,7 @@ BLUE_UNDERLINE	=	\033[4;34m
 START_FIRST		=	\033[999D
 
 # Create and start the dockers without all the details
-all		:	build up
+all		:	build
 
 # build or rebuild services
 build	:
@@ -28,12 +28,6 @@ build	:
 			@${COMPOSE} up --build
 #			@cd srcs/ && docker-compose build
 			@printf "${START_FIRST}${BLUE}%-30s%-30s${DEFAULT}\n" "Building dockers" "is done"
-
-# Create and start containers
-up:
-			@printf "${BLUE}%-30s${DEFAULT}${YELLOW}%-30s${DEFAULT}" "Creating dockers" "in progress"
-			@${COMPOSE} up -d
-			@printf "${START_FIRST}${BLUE}%-30s%-30s${DEFAULT}\n" "Creating dockers" "is done"
 
 # Stop containers and remove containers, networks, volumes, and images created with up
 down	:
@@ -62,4 +56,4 @@ fclean	:	clean
 # $(DOCKER) volume prune --force
 re		:	fclean all
 
-.PHONY : all build up down pause unpause clean fclean re show_me
+.PHONY : all build down pause unpause clean fclean re show_me

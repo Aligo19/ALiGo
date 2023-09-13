@@ -1,6 +1,5 @@
 import React from 'react';
 
-// Définir le type pour les props
 interface HistoryProps {
     histo?: Array<{
         ID_user1: { ID: number, Pseudo: string },

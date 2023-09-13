@@ -146,7 +146,6 @@ export class UserController {
             else{
               await this.userService.updateDate(output);
             }
-            console.log('tre')
         } catch (error) {
             logger = ["The request doesn't work", output];
             output = error;

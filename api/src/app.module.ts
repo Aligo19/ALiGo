@@ -1,7 +1,7 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_PIPE } from '@nestjs/core';
-import * as dotenv from 'dotenv'; // Import dotenv package
+import * as dotenv from 'dotenv';
 
 import { User } from './user/user.entity';
 import { Conv } from './conv/conv.entity';

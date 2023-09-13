@@ -8,8 +8,8 @@ import env from "react-dotenv";
 const socket = io(env.URL_RED2);
 
 interface GameProps {
-  spec: boolean; // Assurez-vous que le type de props est correct
-  roomName: string; // Assurez-vous que le type de props est correct
+  spec: boolean;
+  roomName: string;
 }
 
 export default function Game(props: GameProps) {
@@ -73,7 +73,6 @@ export default function Game(props: GameProps) {
       if (me.isLeft && event.key === 'p' && startedGame === false) {
         playerLeft = me.isLeft ? me : opponent;
         playerRight = me.isLeft ? opponent : me;
-        // vérifier si besoin de faire un event server pour recevoir le start game
         setStartedGame(true);
         updateBallPosition();
       }
@@ -100,7 +99,6 @@ export default function Game(props: GameProps) {
 
   const createRoom = async () => {
     try {
-      // condition qui empêche le joueur de configurer un jeu s'il y en a déjà un en cours et donc il est que spectateur
       const playerData = JSON.parse(sessionStorage.getItem('userData') || '{}');
       const gameID = playerData.ID;
       let jsonMatch;
@@ -119,7 +117,6 @@ export default function Game(props: GameProps) {
 
   const joinRoom = () => {
     console.log("join");
-    // voir si il faut faire une requête ou si on récupère la roomName d'une autre manière
     socket.emit('join_spectator', props.roomName);
   };
 
@@ -138,10 +135,8 @@ export default function Game(props: GameProps) {
   const reset = () => {
     ball.posX = def.WIN_W / 2 - 10;
     ball.posY = def.WIN_H / 2 - 10;
-
     me.posY = def.WIN_H / 2 - 50;
     opponent.posY = def.WIN_H / 2 - 50;
-
     sendPosition();
   };
 
@@ -196,44 +191,32 @@ export default function Game(props: GameProps) {
   };
 
   const updateBallPosition = () => {
-    // Vérifier les collisions avec les bords verticaux du canvas
     if (ball.posY <= 0 || ball.posY + ball.y >= def.WIN_H) {
       ball.velY = -ball.velY;
     }
-
-    // collision horizontale
-    if (
-      ((ball.posX <= playerLeft.posX + playerLeft.x) &&
-      (ball.posX + ball.x >= playerLeft.posX) &&
-      (ball.posY <= playerLeft.posY + playerLeft.y) &&
-      (ball.posY + ball.y >= playerLeft.posY)) ||
-      ((ball.posX + ball.x >= playerLeft.posX) &&
-      (ball.posX <= playerLeft.posX + playerLeft.x) &&
-      (ball.posY <= playerLeft.posY + playerLeft.y) &&
-      (ball.posY >= playerLeft.posY - ball.y))
-    ) {
+    if (( (ball.posX <= playerLeft.posX + playerLeft.x) &&
+          (ball.posX + ball.x >= playerLeft.posX) &&
+          (ball.posY <= playerLeft.posY + playerLeft.y) &&
+          (ball.posY + ball.y >= playerLeft.posY)) ||
+        ( (ball.posX + ball.x >= playerLeft.posX) &&
+          (ball.posX <= playerLeft.posX + playerLeft.x) &&
+          (ball.posY <= playerLeft.posY + playerLeft.y) &&
+          (ball.posY >= playerLeft.posY - ball.y)))
+    {
       ball.velY = -ball.velY;
     }
-
-    // collision verticale avec les joueurs
-    if (
-      ((ball.posX <= playerLeft.posX + playerLeft.x) &&
-        (ball.posY + ball.y >= playerLeft.posY) &&
-        (ball.posY <= playerLeft.posY + playerLeft.y)) ||
-      ((ball.posX + ball.x >= playerRight.posX) &&
-        (ball.posY + ball.y >= playerRight.posY) &&
-        (ball.posY <= playerRight.posY + playerRight.y))
-    ) {
+    if (( (ball.posX <= playerLeft.posX + playerLeft.x) &&
+          (ball.posY + ball.y >= playerLeft.posY) &&
+          (ball.posY <= playerLeft.posY + playerLeft.y)) ||
+        ( (ball.posX + ball.x >= playerRight.posX) &&
+          (ball.posY + ball.y >= playerRight.posY) &&
+          (ball.posY <= playerRight.posY + playerRight.y)))
+    {
       ball.velX = -ball.velX;
     }
-
-    // Mettre à jour la position de la balle en fonction de sa vitesse
     ball.posX += ball.velX;
     ball.posY += ball.velY;
-
     checkGoal();
-
-    
     if (!endGame) {
       sendBallPosition();
       req = requestAnimationFrame(updateBallPosition);
@@ -244,13 +227,11 @@ export default function Game(props: GameProps) {
 
   const sendRequest = async (score1: number, score2: number, me: any) => {
     try {
-      console.log(score1 + " - " + score2);
       await axios.post(env.URL_API + `/matches/end`, {
         "Score_user1": score1,
         "Score_user2": score2,
         "Id": me.roomName
       });
-
     } catch (error) {
       console.error('Une erreur s\'est produite lors de la requête:', error);
     }
@@ -268,7 +249,6 @@ export default function Game(props: GameProps) {
         const backendPlayer = backendPlayers[id];
 
         if (!players[id]) {
-          console.log("ID: " + id + " - X: " + backendPlayer.x + " - left:" + backendPlayer.isLeft);
           if (socket.id === id || (!isPlayer && backendPlayer.isLeft)) {
             me.id = parseInt(id);
             me.posX = backendPlayer.x;
